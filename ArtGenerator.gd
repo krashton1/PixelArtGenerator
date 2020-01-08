@@ -8,8 +8,10 @@ enum ObjectType{
 # Constant Declarations
 const ColorBlack = Color(0.0, 0.0, 0.0)
 
+
 # Declare member variables here. Examples:
 var objectType : int #enums are currently just shorthand for dicts of constants, so type has to be int
+var assetSize = 64
 var pixelSize : int = 16
 var screenSize : Vector2 = Vector2(1280, 720)
 var pixelArray = [[0,0,0,0,0],[0,1,0,1,0],[0,0,0,0,0],[1,0,0,0,1],[0,1,1,1,0]] #default smile face
@@ -22,26 +24,35 @@ var colorPalette : Dictionary = {"black": Color(0.0, 0.0, 0.0)}
 func _ready():
 	pass # Replace with function body.
 
+# Called every frame
+func _draw():
+	drawPixelArray(Vector2(0,0), colorPalette.get("black"))
+	pass
 
-func setup(objectType : int, screenSize : Vector2 = Vector2(1280, 720), pixelSize : int = 16, colorPalette : Dictionary = {"black": Color(0.0, 0.0, 0.0)}):
+
+func setup(objectType : int, screenSize : Vector2 = Vector2(1280, 720), pixelSize : int = 16, assetSize : int = 64, colorPalette : Dictionary = {"black": Color(0.0, 0.0, 0.0)}):
 	set("objectType", objectType)
 	set("pixelSize", pixelSize)
+	set("assetSize", assetSize)
 	set("screenSize", screenSize)
 	set("colorPalette", colorPalette)
+	
+	# Init 2D array to correct dimensions
+	pixelArray.resize(assetSize)
+	for x in range(assetSize):
+		pixelArray[x]=[]
+		pixelArray[x].resize(assetSize)
+		for y in range(assetSize):
+			 pixelArray[x][y]=0
+	
 	pass
 
 func setPixelArray(pixelArray : Array):
 	set("pixelArray", pixelArray)
 	pass
 
-
-func _draw():
-	
-	if(objectType == ObjectType.PIXEL):
-		drawPixel(Vector2(0,0), colorPalette.get("black"))
-	elif(objectType == ObjectType.PIXEL_ARRAY):
-		drawPixelArray(Vector2(0,0), colorPalette.get("black"))
-	
+func setPixelArrayElem(x : int, y : int, value):
+	pixelArray[x][y]=value
 	pass
 
 
@@ -54,17 +65,36 @@ func drawPixel(pos : Vector2 = Vector2(0,0), color : Color = ColorBlack):
 func drawPixelArray(pos : Vector2 = Vector2(0,0), color : Color = ColorBlack):
 	for i in range(0,pixelArray.size()):
 		for j in range(0,pixelArray[i].size()):
-			if pixelArray[j][i] == 1:
-				drawPixel(Vector2(i * pixelSize, j * pixelSize), color)
+			if str(pixelArray[i][j]) != "0":
+				drawPixel(Vector2(i * pixelSize, j * pixelSize), pixelArray[i][j])
+
+
+
+
+func addLine(from : Vector2, to : Vector2, color : Color = ColorBlack):
+	# normalize line length
+	from -= Vector2(1,1)
+	to -= Vector2(1,1)
 	
-	
-func drawPixelLine(from : Vector2, to : Vector2, color : Color = ColorBlack):
 	# step size
-	var stepSize = pixelSize / max(screenSize.x, screenSize.y)
+	var stepSize =  float(1.0) / float(pow(assetSize, 1.0))
+	
+	# if a line is more vertical than horizontal, than it should not have 2 pixels in same y coord
+	# inverse for horizontal
+	var isVertical
+	if abs(from.y-to.y) >= abs(from.x-to.x):
+		isVertical = true
+	else:
+		isVertical = false
 	
 	# temp x and y coords as we step through the line
 	var tX = from.x
 	var tY = from.y
+	
+	# holds the previous/current coord for x/y, depending on if line is vert or horiz
+	# used to remove jaggies
+	var lastXY
+	var thisXY
 	
 	# Coefficient of line
 	# coef = 0 draws first pixel of line
@@ -72,9 +102,55 @@ func drawPixelLine(from : Vector2, to : Vector2, color : Color = ColorBlack):
 	var coef = 0.0
 	
 	while(coef <= 1.0):
-		tX = floor((from.x * (1-coef) + to.x * coef) / pixelSize) * pixelSize
-		tY = floor((from.y * (1-coef) + to.y * coef) / pixelSize) * pixelSize
-		drawPixel(Vector2(tX, tY), color)
+		tX = round(from.x * (1-coef) + to.x * coef)
+		tY = round(from.y * (1-coef) + to.y * coef)
+		
+		if isVertical:
+			thisXY = tY
+		else:
+			thisXY = tX
+		
+		if thisXY != lastXY:
+			setPixelArrayElem(tX, tY, ColorBlack)
+			lastXY = thisXY
+		
 		coef += stepSize
+	
+	pass
+
+
+# Converts array from 'human-ish readable' to 'coord readable'
+#
+# smile1 = [[0,0,0,0,0],[0,1,0,1,0],[0,0,0,0,0],[1,0,0,0,1],[0,1,1,1,0]]
+# smile2 = [[0,0,0,1,0],[0,1,0,0,1],[0,0,0,0,1],[0,1,0,0,1],[0,0,0,1,0]]
+func convertArray(origArray):
+	
+	# Create and size converted array
+	var newArray = []
+	newArray.resize(origArray[0].size())
+	for x in range(origArray[0].size()):
+		newArray[x]=[]
+		newArray[x].resize(origArray.size())
+		for y in range(origArray.size()):
+			 newArray[x][y]=0
+	
+	# Copy elems from old to new Array, swapping x and y values
+	for y in range(newArray.size()):
+		for x in range(newArray[y].size()):
+			newArray[x][y] = origArray[y][x]
+	
+	return newArray
+
+
+# Takes an image file, and pixelizes it
+func pixelizeImage(image : Image):
+	
+	var stepSizeX = image.get_width() / float(assetSize)
+	var stepSizeY = image.get_height() / float(assetSize)
+
+	for x in range(0,assetSize):
+		for y in range(0,assetSize):
+			var color = image.get_pixel(int(stepSizeX * x), int(stepSizeY * y))
+			setPixelArrayElem(x,y,color)
 	
 	pass
