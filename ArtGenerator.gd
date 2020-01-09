@@ -12,9 +12,16 @@ const ColorBlack = Color(0.0, 0.0, 0.0)
 # Declare member variables here. Examples:
 var objectType : int #enums are currently just shorthand for dicts of constants, so type has to be int
 var assetSize = 64
-var pixelSize : int = 16
+var pixelSize = 16
 var screenSize : Vector2 = Vector2(1280, 720)
 var pixelArray = [[0,0,0,0,0],[0,1,0,1,0],[0,0,0,0,0],[1,0,0,0,1],[0,1,1,1,0]] #default smile face
+
+func getPixelSize():
+	return pixelSize
+
+func setPixelSize(var ps):
+	pixelSize = ps
+	pass
 
 # color palette
 var colorPalette : Dictionary = {"black": Color(0.0, 0.0, 0.0)}
@@ -30,7 +37,7 @@ func _draw():
 	pass
 
 
-func setup(objectType : int, screenSize : Vector2 = Vector2(1280, 720), pixelSize : int = 16, assetSize : int = 64, colorPalette : Dictionary = {"black": Color(0.0, 0.0, 0.0)}):
+func setup(objectType : int, screenSize : Vector2 = Vector2(1280, 720), pixelSize = 16, assetSize : int = 64, colorPalette : Dictionary = {"black": Color(0.0, 0.0, 0.0)}):
 	set("objectType", objectType)
 	set("pixelSize", pixelSize)
 	set("assetSize", assetSize)
@@ -71,25 +78,28 @@ func drawPixelArray(pos : Vector2 = Vector2(0,0), color : Color = ColorBlack):
 
 
 
-func addLine(from : Vector2, to : Vector2, color : Color = ColorBlack):
-	# normalize line length
-	from -= Vector2(1,1)
-	to -= Vector2(1,1)
-	
+func addLine(origin : Vector2, dir : Vector2, color : Color = ColorBlack):
+#	# normalize line length
+#	from -= Vector2(1,1)
+#	to -= Vector2(1,1)
+#
 	# step size
 	var stepSize =  float(1.0) / float(pow(assetSize, 1.0))
+	
+	# dest pos
+	var dest = origin + dir
 	
 	# if a line is more vertical than horizontal, than it should not have 2 pixels in same y coord
 	# inverse for horizontal
 	var isVertical
-	if abs(from.y-to.y) >= abs(from.x-to.x):
+	if abs(dir.y) >= abs(dir.x):
 		isVertical = true
 	else:
 		isVertical = false
 	
 	# temp x and y coords as we step through the line
-	var tX = from.x
-	var tY = from.y
+	var tX = origin.x
+	var tY = origin.y
 	
 	# holds the previous/current coord for x/y, depending on if line is vert or horiz
 	# used to remove jaggies
@@ -102,8 +112,13 @@ func addLine(from : Vector2, to : Vector2, color : Color = ColorBlack):
 	var coef = 0.0
 	
 	while(coef <= 1.0):
-		tX = round(from.x * (1-coef) + to.x * coef)
-		tY = round(from.y * (1-coef) + to.y * coef)
+		tX = round(origin.x * (1-coef) + dest.x * coef)
+		tY = round(origin.y * (1-coef) + dest.y * coef)
+		
+		coef += stepSize
+		
+		if tX < 0 || tX >= assetSize || tY < 0 || tY >= assetSize:
+			continue
 		
 		if isVertical:
 			thisXY = tY
@@ -114,8 +129,6 @@ func addLine(from : Vector2, to : Vector2, color : Color = ColorBlack):
 			setPixelArrayElem(tX, tY, ColorBlack)
 			lastXY = thisXY
 		
-		coef += stepSize
-	
 	pass
 
 

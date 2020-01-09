@@ -19,18 +19,18 @@ func _ready():
 	add_child(smileGenerator)
 	smileGenerator.setup(1, Vector2(1280,720), 16, 64, colorPalette)
 	smileGenerator.position = Vector2(720,360)
-	
+
 	var smile = [[0,0,0,0,0],[0,1,0,1,0],[0,0,0,0,0],[1,0,0,0,1],[0,1,1,1,0]]
 	smile = smileGenerator.convertArray(smile)
-	
+
 	for x in range(0,smile.size()):
 		for y in range(0,smile[x].size()):
 			if smile[x][y] == 1:
 				smileGenerator.setPixelArrayElem(x,y,"#c1c1c1")
-	
-	
-	
-	
+
+
+
+
 	var image = Image.new()
 	image.load("res://rengar.png")
 	image.lock()
@@ -39,19 +39,20 @@ func _ready():
 	add_child(rengarGenerator)
 	rengarGenerator.setup(0, Vector2(1280,720), 16, 64, colorPalette)
 	rengarGenerator.position = Vector2(320,360)
-	
+
 	rengarGenerator.pixelizeImage(image)
-	rengarGenerator.set_scale(Vector2(0.2,0.2))
+	rengarGenerator.set_scale(Vector2(0.25,0.25))
 	
 	
 	
 	
 	var lineGenerator = artGenerator.instance()
 	add_child(lineGenerator)
-	lineGenerator.setup(0, Vector2(1280,720), 16, 64, colorPalette)
-	lineGenerator.position = Vector2(0,0)
-	lineGenerator.addLine(Vector2(37,1),Vector2(1,57))
-	lineGenerator.set_scale(Vector2(0.5,0.5))
+	lineGenerator.set_name("lineGen")
+	lineGenerator.setup(0, Vector2(1280,720), 3.5, 64, colorPalette)
+	lineGenerator.position = Vector2(1000,0)
+	lineGenerator.addLine(Vector2(0,0),Vector2(63,63))
+#	lineGenerator.set_scale(Vector2(0.25,0.25))
 
 
 
@@ -59,12 +60,26 @@ func _ready():
 
 
 func _draw():
-
 	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	
+	var l = 64
+	var x1 = randi()%64
+	var y1 = randi()%64
+	var x2 = randi()%l-l/2
+	var y2 = randi()%l-l/2
+	
+	var lineGenerator = get_node("lineGen")
+	lineGenerator.addLine(Vector2(x1,y1),Vector2(x2,y2))
+	lineGenerator.update()
+	
+#	var ps = lineGenerator.getPixelSize()
+#	if ps > 1.7:
+#		lineGenerator.setPixelSize(ps-.01)
+	
 	pass
 
 
