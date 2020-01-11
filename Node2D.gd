@@ -3,29 +3,76 @@ extends Node2D
 # Declare member variables here. Examples:
 var colorPalette = {}
 
-
+var dynamicLineNode
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	buildColorPalette()
-	$ArtGenerator.setup(1, Vector2(1280,720), 16, colorPalette)
-	$ArtGenerator.position = Vector2(640,360)
-	$ArtGenerator.setPixelArray([[0,0,0,0,0],[0,1,0,1,0],[0,0,0,0,0],[1,0,0,0,1],[0,1,1,1,0]])
 	
-	var scene = load("res://ArtGenerator.tscn")
-	var node = scene.instance()
-	node.setup(0, Vector2(1280,720), 16, colorPalette)
-	node.position = Vector2(320,360)
-	add_child(node)
+	var artGenerator = preload("res://ArtGenerator.tscn")
 	
-	var line = load("res://LineGenerator.gd")
-	node = line.new()
-	node.setup(0, Vector2(1280,720), 16, colorPalette)
-	node.position = Vector2(160,360)
-	node.destPos = Vector2(-100,-100)
-	add_child(node)
 	
+	
+	
+	var smileGenerator = artGenerator.instance()
+	add_child(smileGenerator)
+	smileGenerator.setup(1, Vector2(1280,720), 16, 64, colorPalette)
+	smileGenerator.position = Vector2(720,360)
+
+	var smile = [[0,0,0,0,0],[0,1,0,1,0],[0,0,0,0,0],[1,0,0,0,1],[0,1,1,1,0]]
+	smile = smileGenerator.convertArray(smile)
+
+	for x in range(0,smile.size()):
+		for y in range(0,smile[x].size()):
+			if smile[x][y] == 1:
+				smileGenerator.setPixelArrayElem(x,y,"#c1c1c1")
+
+
+
+
+	var image = Image.new()
+	image.load("res://rengar.png")
+	image.lock()
+
+	var rengarGenerator = artGenerator.instance()
+	add_child(rengarGenerator)
+	rengarGenerator.setup(0, Vector2(1280,720), 4, 64, colorPalette)
+	rengarGenerator.position = Vector2(320,360)
+
+	rengarGenerator.pixelizeImage(image)
+#	rengarGenerator.set_scale(Vector2(0.25,0.25))
+	
+	
+	
+	
+	var lineGenerator = artGenerator.instance()
+	add_child(lineGenerator)
+	lineGenerator.set_name("lineGen")
+	lineGenerator.setup(0, Vector2(1280,720), 3.5, 64, colorPalette)
+	lineGenerator.position = Vector2(1000,0)
+#	lineGenerator.addLine(Vector2(0,0),Vector2(63,63))
+	
+	
+	
+	
+	var shapeGenerator = artGenerator.instance()
+	add_child(shapeGenerator)
+	shapeGenerator.setup(0, Vector2(1280,720), 4, 64, colorPalette)
+	shapeGenerator.position = Vector2(500,0)
+	
+	shapeGenerator.addLine(Vector2(31,31),Vector2(0,0))
+	shapeGenerator.addLine(Vector2(30,31),Vector2(0,0))
+	shapeGenerator.addLine(Vector2(32,31),Vector2(0,0))
+	shapeGenerator.addLine(Vector2(31,30),Vector2(0,0))
+	shapeGenerator.addLine(Vector2(31,32),Vector2(0,0))
+	
+	shapeGenerator.addCircle(Vector2(31,31), 30, 31)
+	
+	shapeGenerator.fillColor(Vector2(0,0), colorPalette.get('white'))
+
+
+
 	pass # Replace with function body.
 
 
@@ -35,6 +82,21 @@ func _draw():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	
+	var l = 64
+	var x1 = randi()%64
+	var y1 = randi()%64
+	var x2 = randi()%l-l/2
+	var y2 = randi()%l-l/2
+	
+	var lineGenerator = get_node("lineGen")
+	lineGenerator.addLine(Vector2(x1,y1),Vector2(x2,y2))
+	lineGenerator.update()
+	
+#	var ps = lineGenerator.getPixelSize()
+#	if ps > 1.7:
+#		lineGenerator.setPixelSize(ps-.01)
+	
 	pass
 
 
