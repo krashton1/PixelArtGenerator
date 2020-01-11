@@ -37,11 +37,11 @@ func _ready():
 
 	var rengarGenerator = artGenerator.instance()
 	add_child(rengarGenerator)
-	rengarGenerator.setup(0, Vector2(1280,720), 16, 64, colorPalette)
+	rengarGenerator.setup(0, Vector2(1280,720), 4, 64, colorPalette)
 	rengarGenerator.position = Vector2(320,360)
 
 	rengarGenerator.pixelizeImage(image)
-	rengarGenerator.set_scale(Vector2(0.25,0.25))
+#	rengarGenerator.set_scale(Vector2(0.25,0.25))
 	
 	
 	
@@ -51,8 +51,25 @@ func _ready():
 	lineGenerator.set_name("lineGen")
 	lineGenerator.setup(0, Vector2(1280,720), 3.5, 64, colorPalette)
 	lineGenerator.position = Vector2(1000,0)
-	lineGenerator.addLine(Vector2(0,0),Vector2(63,63))
-#	lineGenerator.set_scale(Vector2(0.25,0.25))
+#	lineGenerator.addLine(Vector2(0,0),Vector2(63,63))
+	
+	
+	
+	
+	var shapeGenerator = artGenerator.instance()
+	add_child(shapeGenerator)
+	shapeGenerator.setup(0, Vector2(1280,720), 4, 64, colorPalette)
+	shapeGenerator.position = Vector2(500,0)
+	
+	shapeGenerator.addLine(Vector2(31,31),Vector2(0,0))
+	shapeGenerator.addLine(Vector2(30,31),Vector2(0,0))
+	shapeGenerator.addLine(Vector2(32,31),Vector2(0,0))
+	shapeGenerator.addLine(Vector2(31,30),Vector2(0,0))
+	shapeGenerator.addLine(Vector2(31,32),Vector2(0,0))
+	
+	shapeGenerator.addCircle(Vector2(31,31), 30, 31)
+	
+	shapeGenerator.fillColor(Vector2(0,0), colorPalette.get('white'))
 
 
 

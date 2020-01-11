@@ -132,6 +132,92 @@ func addLine(origin : Vector2, dir : Vector2, color : Color = ColorBlack):
 	pass
 
 
+
+func addCircle(origin : Vector2, radius : float, samples : int, color : Color = ColorBlack):
+	
+	var lastPos = origin
+	var thisPos = origin
+	
+	var dirOfLine
+	
+	for i in range(0, samples + 1):
+		thisPos.x = origin.x + radius * cos(i / (samples / 2.0) * PI)
+		thisPos.y = origin.y + radius * sin(i / (samples / 2.0) * PI)
+		
+		if (i != 0):
+			dirOfLine = thisPos - lastPos
+			addLine(lastPos, dirOfLine, color)
+		lastPos = thisPos
+	
+	pass
+
+
+func fillColor(origin : Vector2, destColor : Color = ColorBlack, origColor : String = '-1'):
+	
+	var x = origin.x
+	var y = origin.y
+
+	
+	if (origColor == '-1'):
+		origColor = str(pixelArray[x][y])
+	
+	var likeValidNeighbours = []
+	var toSearch = [origin]
+	var tempOrigin
+	while (toSearch.size() > 0):
+		findLikeNeighbours(toSearch[0], origColor, likeValidNeighbours, toSearch)
+	
+	for validNeighbour in likeValidNeighbours:
+		pixelArray[validNeighbour.x][validNeighbour.y] = destColor
+	
+
+	
+	
+#	for neighbour in likeValidNeighbours:
+#		fillColor(neighbour, destColor, origColor)
+	
+	pass
+
+
+func findLikeNeighbours(origin : Vector2, origColor : String = '-1', validNeighbours = [], toSearch = []):
+	
+	var x = origin.x
+	var y = origin.y
+	
+	if (validNeighbours.find(Vector2(x,y)) == -1):
+		validNeighbours.append(Vector2(x,y))
+	
+		#up
+	if (y!=0):
+		if (str(pixelArray[x][y-1]) == origColor):
+			if (validNeighbours.find(Vector2(x,y-1)) == -1):
+				validNeighbours.append(Vector2(x,y-1))
+				toSearch.append(Vector2(x,y-1))
+	#down
+	if (y!=assetSize-1):
+		if (str(pixelArray[x][y+1]) == origColor):
+			if (validNeighbours.find(Vector2(x,y+1)) == -1):
+				validNeighbours.append(Vector2(x,y+1))
+				toSearch.append(Vector2(x,y+1))
+	#left
+	if (x!=0):
+		if (str(pixelArray[x-1][y]) == origColor):
+			if (validNeighbours.find(Vector2(x-1,y)) == -1):
+				validNeighbours.append(Vector2(x-1,y))
+				toSearch.append(Vector2(x-1,y))
+	#right
+	if (x!=assetSize-1):
+		if (str(pixelArray[x+1][y]) == origColor):
+			if (validNeighbours.find(Vector2(x+1,y)) == -1):
+				validNeighbours.append(Vector2(x+1,y))
+				toSearch.append(Vector2(x+1,y))
+	
+	toSearch.remove(toSearch.find(origin))
+	
+#	findLikeNeighbours(toSearch[0], origColor, validNeighbours, toSearch)
+	
+	pass
+
 # Converts array from 'human-ish readable' to 'coord readable'
 #
 # smile1 = [[0,0,0,0,0],[0,1,0,1,0],[0,0,0,0,0],[1,0,0,0,1],[0,1,1,1,0]]
