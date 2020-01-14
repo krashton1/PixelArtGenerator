@@ -170,9 +170,6 @@ func fillColor(origin : Vector2, destColor : Color = ColorBlack, origColor : Str
 	for validNeighbour in likeValidNeighbours:
 		pixelArray[validNeighbour.x][validNeighbour.y] = destColor
 	
-
-	
-	
 #	for neighbour in likeValidNeighbours:
 #		fillColor(neighbour, destColor, origColor)
 	
@@ -213,10 +210,27 @@ func findLikeNeighbours(origin : Vector2, origColor : String = '-1', validNeighb
 				toSearch.append(Vector2(x+1,y))
 	
 	toSearch.remove(toSearch.find(origin))
+	pass
+
+
+func drawShape(inputPoints, lineColor : Color = ColorBlack, fill : bool = false, fillColor : Color = ColorBlack):
 	
-#	findLikeNeighbours(toSearch[0], origColor, validNeighbours, toSearch)
+	var pt0 : Vector2 = inputPoints[0]
+	for i in range(0, inputPoints.size()):
+		if (i == inputPoints.size() - 1):
+			addLine(inputPoints[i], pt0 - inputPoints[i], lineColor)
+		else:
+			addLine(inputPoints[i], inputPoints[i+1] - inputPoints[i], lineColor)
+	
+	if fill:
+		var avgPt : Vector2
+		for pt in inputPoints:
+			avgPt = avgPt + pt
+		avgPt = avgPt / float(inputPoints.size())
+		fillColor(avgPt, fillColor)
 	
 	pass
+
 
 # Converts array from 'human-ish readable' to 'coord readable'
 #

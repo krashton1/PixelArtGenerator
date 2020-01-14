@@ -70,6 +70,16 @@ func _ready():
 	shapeGenerator.addCircle(Vector2(31,31), 30, 31)
 	
 	shapeGenerator.fillColor(Vector2(0,0), colorPalette.get('white'))
+	
+	
+	var tri = [Vector2(31, 21), Vector2(37, 37), Vector2(25, 37)]
+	var triGen = artGenerator.instance()
+	add_child(triGen)
+	triGen.setup(0, Vector2(1280,720), 4, 64, colorPalette)
+	triGen.position = Vector2(900,400)
+	triGen.drawShape(tri, colorPalette.get('black'), true, colorPalette.get('white'))
+	
+	
 
 
 
