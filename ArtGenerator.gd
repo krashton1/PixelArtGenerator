@@ -54,6 +54,15 @@ func setup(objectType : int, screenSize : Vector2 = Vector2(1280, 720), pixelSiz
 	
 	pass
 
+func clearPixelArray():
+	pixelArray.resize(assetSize)
+	for x in range(assetSize):
+		pixelArray[x]=[]
+		pixelArray[x].resize(assetSize)
+		for y in range(assetSize):
+			 pixelArray[x][y]=0
+	pass
+
 func setPixelArray(pixelArray : Array):
 	set("pixelArray", pixelArray)
 	pass
