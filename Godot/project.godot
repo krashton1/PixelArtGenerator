@@ -9,12 +9,12 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Node2D",
+"base": "",
 "class": "ArtGenerator",
 "language": "NativeScript",
 "path": "res://ArtGenerator.gdns"
 }, {
-"base": "KinematicBody2D",
+"base": "",
 "class": "Player",
 "language": "NativeScript",
 "path": "res://Player.gdns"

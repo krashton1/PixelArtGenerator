@@ -10,7 +10,10 @@ var timer = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-#	yield(get_tree().create_timer(15.0),"timeout")
+	
+	if (OS.get_cmdline_args().join("") == "-waitForDebug"):
+		yield(get_tree().create_timer(8.0),"timeout")
+		
 	randomize()
 	buildColorPalette()
 	
