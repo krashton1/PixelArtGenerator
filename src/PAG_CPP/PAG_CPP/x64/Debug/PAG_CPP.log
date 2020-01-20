@@ -1,17 +1,2 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(377,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
-  ArtGenerator.cpp
-d:\code\github\pixelartgenerator\godot-cpp\include\core\vector2.hpp(214): warning C4244: 'argument': conversion from 'double' to 'real_t', possible loss of data
-d:\code\github\pixelartgenerator\godot-cpp\include\core\vector2.hpp(213): warning C4244: 'argument': conversion from 'double' to 'real_t', possible loss of data
-d:\code\github\pixelartgenerator\src\pag_cpp\pag_cpp\artgenerator.cpp(73): warning C4244: 'argument': conversion from 'real_t' to 'const unsigned __int64', possible loss of data
-  GodotLibrary.cpp
-d:\code\github\pixelartgenerator\godot-cpp\include\core\vector2.hpp(214): warning C4244: 'argument': conversion from 'double' to 'real_t', possible loss of data
-d:\code\github\pixelartgenerator\godot-cpp\include\core\vector2.hpp(213): warning C4244: 'argument': conversion from 'double' to 'real_t', possible loss of data
-  Player.cpp
-d:\code\github\pixelartgenerator\godot-cpp\include\core\vector2.hpp(214): warning C4244: 'argument': conversion from 'double' to 'real_t', possible loss of data
-d:\code\github\pixelartgenerator\godot-cpp\include\core\vector2.hpp(213): warning C4244: 'argument': conversion from 'double' to 'real_t', possible loss of data
-d:\code\github\pixelartgenerator\src\pag_cpp\pag_cpp\player.cpp(44): warning C4244: '=': conversion from 'const int' to 'real_t', possible loss of data
-d:\code\github\pixelartgenerator\src\pag_cpp\pag_cpp\player.cpp(48): warning C4244: '=': conversion from 'const int' to 'real_t', possible loss of data
-  Source.cpp
-  Generating Code...
-     Creating library ..\..\..\Godot\LibPAG_CPP-x64-Debug.lib and object ..\..\..\Godot\LibPAG_CPP-x64-Debug.exp
   PAG_CPP.vcxproj -> D:\Code\GitHub\PixelArtGenerator\src\PAG_CPP\PAG_CPP\..\..\..\Godot\LibPAG_CPP-x64-Debug.dll
