@@ -3,61 +3,18 @@
 #include "ArtGenerator.h"
 
 #include <cmath>
+#include <algorithm>
 
 namespace godot
 {
 
-ArtGenerator::ArtGenerator()
-	: mPixelSize(16)
-	, mAssetSize(64)
+ArtGenerator::ArtGenerator(Vector2 pos /*= Vector2(0,0)*/, Vector2 size /*= Vector2(1024,1024)*/, int numPixels /*= 64*/) 
+	: mPosition(pos)
+	, mSize(size)
+	, mAssetSize(numPixels)
 	, mScreenSize(Vector2(1280, 720)) 
+	, mPixelSize(std::min(mSize.x, mSize.y) / numPixels)
 {
-	resetPixelArray();
-
-	Color* black = new Color(BLACK->r, BLACK->g, BLACK->b);
-
-
-
-
-
-	std::vector<std::vector<Color*>> smileArr;
-	smileArr.resize(5);
-	for (int x = 0; x < smileArr.size(); x++)
-		smileArr[x].resize(5);
-
-	smileArr[1][1] = black;
-	smileArr[1][3] = black;
-	smileArr[3][0] = black;
-	smileArr[3][4] = black;
-	smileArr[4][1] = black;
-	smileArr[4][2] = black;
-	smileArr[4][3] = black;
-
-	for (int x = 0; x < smileArr.size(); x++) 
-	{
-		for (int y = 0; y < smileArr[x].size(); y++) 
-		{
-			if (smileArr[x][y] != nullptr)
-				setPixel(Vector2(x, y), smileArr[x][y]);
-		}
-	}
-
-	pivotPixelArray();
-
-
-
-
-	addLine(Vector2(10, 20), Vector2(20, 10), black);
-
-	addCircle(Vector2(31, 31), 5.0f, 12, black);
-	fillColor(Vector2(31, 31), new Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-
-	std::vector<Vector2> triangle;
-	triangle.push_back(Vector2(40, 10));
-	triangle.push_back(Vector2(40, 20));
-	triangle.push_back(Vector2(50, 20));
-	addShape(triangle, black, new Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 }
 
@@ -74,8 +31,7 @@ void ArtGenerator::_register_methods()
 
 void ArtGenerator::_init()
 {
-	//if (0 == 1)
-	//	return;
+	setup();
 }
 
 void ArtGenerator::ready()
@@ -96,9 +52,9 @@ void ArtGenerator::drawPixel(Vector2 pos, Color* color)
 
 void ArtGenerator::drawPixelArray()
 {
-	for (int i = 0; i < mPixelArray.size(); i++) 
+	for (int i = 0; i < mAssetSize; i++) 
 	{
-		for (int j = 0; j < mPixelArray[i].size(); j++)
+		for (int j = 0; j < mAssetSize; j++)
 		{
 			if (mPixelArray[i][j] != nullptr)
 			{
@@ -110,7 +66,7 @@ void ArtGenerator::drawPixelArray()
 
 void ArtGenerator::setPixel(Vector2 pos, Color* color)
 {
-	mPixelArray[pos.x][pos.y] = color;
+	mPixelArray[(int)pos.x][(int)pos.y] = color;
 }
 
 void ArtGenerator::addLine(Vector2 origin, Vector2 dest, Color* color)
@@ -202,7 +158,7 @@ void ArtGenerator::addShape(std::vector<Vector2> points, Color* lineColor, Color
 void ArtGenerator::fillColor(Vector2 origin, Color* destColor, Color* origColor /*= nullptr*/)
 {
 	if (origColor == nullptr)
-		origColor = mPixelArray[origin.x][origin.y];
+		origColor = mPixelArray[(int)origin.x][(int)origin.y];
 
 	std::set<Vector2> likeValidNeighbours;
 	std::set<Vector2> toSearch;
@@ -219,11 +175,9 @@ void ArtGenerator::fillColor(Vector2 origin, Color* destColor, Color* origColor 
 
 void ArtGenerator::resetPixelArray()
 {
-	mPixelArray.resize(mAssetSize);
-	for (int i = 0; i < mPixelArray.size(); i++)
+	for (int i = 0; i < mAssetSize; i++)
 	{
-		mPixelArray[i].resize(mAssetSize);
-		for (int j = 0; j < mPixelArray[i].size(); j++)
+		for (int j = 0; j < mAssetSize; j++)
 		{
 			mPixelArray[i][j] = nullptr;
 		}
@@ -232,16 +186,19 @@ void ArtGenerator::resetPixelArray()
 
 void ArtGenerator::pivotPixelArray()
 {
-	std::vector<std::vector<Color*>> newPixelArray;
-	newPixelArray.resize(mAssetSize);
-	for (int x = 0; x < newPixelArray.size(); x++)
+	Color* newPixelArray[64][64];
+
+	for (int x = 0; x < mAssetSize; x++)
 	{
-		newPixelArray[x].resize(mAssetSize);
-		for (int y = 0; y < newPixelArray[x].size(); y++)
+		for (int y = 0; y < mAssetSize; y++)
 			newPixelArray[x][y] = mPixelArray[y][x];
 	}
 
-	mPixelArray = newPixelArray;
+	for (int x = 0; x < mAssetSize; x++)
+	{
+		for (int y = 0; y < mAssetSize; y++)
+			mPixelArray[x][y] = newPixelArray[x][y];
+	}
 }
 
 void ArtGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNeighbours, std::set<Vector2> &toSearch, Color* origColor /*= nullptr*/)
@@ -292,6 +249,19 @@ void ArtGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNe
 		toSearch.erase(origin);
 
 }	
+
+void ArtGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vector2(1024, 1024)*/, int numPixels /*= 64*/)
+{
+	mPosition = pos;
+	mSize = size;
+	mAssetSize = numPixels;
+	mScreenSize = Vector2(1280, 720);
+	mPixelSize = std::min(mSize.x, mSize.y) / numPixels;
+	
+	resetPixelArray();
+
+	//addLine(Vector2(0, 0), Vector2(20, 10), new Color(0.0, 0.0, 0.0, 1.0));
+}
 
 }
 

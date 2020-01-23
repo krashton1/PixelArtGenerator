@@ -15,19 +15,25 @@ _global_script_classes=[ {
 "path": "res://ArtGenerator.gdns"
 }, {
 "base": "",
+"class": "Main",
+"language": "NativeScript",
+"path": "res://Main.gdns"
+}, {
+"base": "",
 "class": "Player",
 "language": "NativeScript",
 "path": "res://Player.gdns"
 } ]
 _global_script_class_icons={
 "ArtGenerator": "",
+"Main": "",
 "Player": ""
 }
 
 [application]
 
 config/name="PixelArtGenerator"
-run/main_scene="res://Node2D.tscn"
+run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
 [display]
