@@ -3,6 +3,7 @@
 [ext_resource path="res://PAG_CPP.gdnlib" type="GDNativeLibrary" id=1]
 
 [resource]
-resource_name = "ArtGenerator"
-class_name = "ArtGenerator"
+resource_name = "RockGenerator"
+class_name = "RockGenerator"
 library = ExtResource( 1 )
+script_class_name = "RockGenerator"

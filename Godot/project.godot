@@ -9,25 +9,25 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "",
-"class": "ArtGenerator",
-"language": "NativeScript",
-"path": "res://ArtGenerator.gdns"
-}, {
-"base": "",
+"base": "Node2D",
 "class": "Main",
 "language": "NativeScript",
 "path": "res://Main.gdns"
 }, {
-"base": "",
+"base": "KinematicBody2D",
 "class": "Player",
 "language": "NativeScript",
 "path": "res://Player.gdns"
+}, {
+"base": "Node2D",
+"class": "RockGenerator",
+"language": "NativeScript",
+"path": "res://RockGenerator.gdns"
 } ]
 _global_script_class_icons={
-"ArtGenerator": "",
 "Main": "",
-"Player": ""
+"Player": "",
+"RockGenerator": ""
 }
 
 [application]

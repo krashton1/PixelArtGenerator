@@ -6,14 +6,17 @@
 #include <ResourceLoader.hpp>
 #include <PackedScene.hpp>
 
-#include <cassert>
+#include <cassert>  
+#include <time.h>
+
+
+#include <Input.hpp>
 
 namespace godot
 {
 
 Main::Main()
 {
-	
 	// Wait for Debugger
 	if (OS::get_singleton()->get_cmdline_args().size() > 0 && OS::get_singleton()->get_cmdline_args()[0] == String("-waitForDebug"))
 	{
@@ -21,13 +24,7 @@ Main::Main()
 			Sleep(100);
 	}
 
-
-	
-
-
-
-	
-
+	srand(time(NULL));
 }
 
 Main::~Main()
@@ -40,31 +37,18 @@ void Main::_register_methods()
 	register_method((char*)"_ready", &ready);
 	register_method((char*)"_draw", &draw);
 	register_method((char*)"_init", &_init);
+	register_method((char*)"_process", &process);
+	
 }
 
 void Main::_init()
 {
-
-	//ResourceLoader *resource_loader = ResourceLoader::get_singleton();
-	//Ref<Resource> res = ResourceLoader::load("res://ArtGenerator.tscn");
-	//Ref<PackedScene> res = Object::cast_to<PackedScene>(resource_loader->load("res://ArtGenerator.tscn"));
-
 	Ref<PackedScene> artGenScene = ResourceLoader::get_singleton()->load("res://ArtGenerator.tscn");
-	assert(artGenScene.is_valid());
 
-	//Node* node = scene->instance();
-
-	ArtGenerator* artGen = Object::cast_to<ArtGenerator>(artGenScene->instance());
-	//body->set_translation(get_transform().origin + position);
-	// set direction variable defined other node object (c++ code variable) 
-	
-	//artGen->setPixel(Vector2(5, 0), new Color(1,0,0,1));
-	artGen->set_position(Vector2(100, 100));
-
-	//artGen->setup();
-
-
+	ArtGenerator* smileGen = Object::cast_to<ArtGenerator>(artGenScene->instance());
 	Color* black = new Color(0.0, 0.0, 0.0);
+
+	smileGen->set_position(Vector2(500, 100));
 
 	std::vector<std::vector<Color*>> smileArr;
 	smileArr.resize(5);
@@ -84,13 +68,26 @@ void Main::_init()
 		for (int y = 0; y < smileArr[x].size(); y++)
 		{
 			if (smileArr[x][y] != nullptr)
-				artGen->setPixel(Vector2(x, y), smileArr[x][y]);
+				smileGen->setPixel(Vector2(x, y), smileArr[x][y]);
 		}
 	}
 
-	artGen->pivotPixelArray();
+	smileGen->pivotPixelArray();
+	add_child(smileGen, "smileGen");
+	mGenerators.push_back(smileGen);
 
-	add_child(artGen, "artGenerator");
+
+
+	Ref<PackedScene> rockGenScene = ResourceLoader::get_singleton()->load("res://RockGenerator.tscn");
+
+	RockGenerator* rockGen = Object::cast_to<RockGenerator>(rockGenScene->instance());
+	//ArtGenerator* artGen2 = Object::cast_to<ArtGenerator>(artGenScene->instance());
+
+	//RockGenerator* rockGen = static_cast<RockGenerator*>(Object::cast_to<ArtGenerator>(artGenScene->instance()));
+	//rockGen->buildRock();
+	rockGen->apply_scale(Vector2(0.5, 0.5));
+	add_child(rockGen, "rockGen");
+	mGenerators.push_back(rockGen);
 
 }
 
@@ -102,6 +99,18 @@ void Main::ready()
 void Main::draw()
 {
 
+}
+
+void Main::process()
+{
+	if (Input::get_singleton()->is_action_just_pressed("ui_right"))
+	{
+		int i = 0;
+		RockGenerator* rockGen = dynamic_cast<RockGenerator*>(mGenerators[1]);
+		rockGen->buildRock();
+		rockGen->update();
+		return;
+	}
 }
 
 }

@@ -2,9 +2,9 @@
 
 #include <core/Godot.hpp>
 #include <Node2D.hpp>
-//#include <Input.hpp>
 
 #include "ArtGenerator.h"
+#include "RockGenerator.h"
 
 #include <vector>
 
@@ -22,6 +22,7 @@ namespace godot
 		void _init();
 		void ready();
 		void draw();
+		void process();
 
 	private:
 

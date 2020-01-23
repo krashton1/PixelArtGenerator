@@ -8,12 +8,11 @@
 namespace godot
 {
 
-ArtGenerator::ArtGenerator(Vector2 pos /*= Vector2(0,0)*/, Vector2 size /*= Vector2(1024,1024)*/, int numPixels /*= 64*/) 
-	: mPosition(pos)
-	, mSize(size)
+ArtGenerator::ArtGenerator(Vector2 size /*= Vector2(1024,1024)*/, int numPixels /*= 64*/) 
+	: mSize(size)
 	, mAssetSize(numPixels)
 	, mScreenSize(Vector2(1280, 720)) 
-	, mPixelSize(std::min(mSize.x, mSize.y) / numPixels)
+	, mPixelSize(std::min(size.x, size.y) / numPixels)
 {
 
 }

@@ -6,7 +6,6 @@
 # Custom Ignores
 *.exe
 godot-cpp/
-x64/
 
 # User-specific files
 *.rsuser

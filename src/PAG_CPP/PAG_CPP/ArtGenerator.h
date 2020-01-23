@@ -16,11 +16,11 @@ namespace godot
 		GODOT_CLASS(ArtGenerator, Node2D)
 
 	public:
-		ArtGenerator(Vector2 pos = Vector2(0,0), Vector2 size = Vector2(1024,1024), int numPixels = 64);
+		ArtGenerator(Vector2 size = Vector2(1024,1024), int numPixels = 64);
 		~ArtGenerator();
 		static void _register_methods();
 
-		void _init();
+		virtual void _init();
 		void ready();
 		void draw();
 
@@ -36,7 +36,7 @@ namespace godot
 		void resetPixelArray();
 		void pivotPixelArray();
 
-	private:
+	protected:
 
 		void drawPixel(Vector2 pos, Color* color);
 		void drawPixelArray();
