@@ -360,3 +360,7 @@ MigrationBackup/
 #*.filters
 
 *.dll
+
+Godot/LibPAG_CPP-x64-Debug.exp
+
+Godot/LibPAG_CPP-x64-Debug.lib
