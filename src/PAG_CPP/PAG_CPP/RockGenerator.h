@@ -19,6 +19,8 @@ namespace godot
 
 		void buildRock();
 
+		inline Array getPoints() { return mPoints; }
+
 
 	private:
 

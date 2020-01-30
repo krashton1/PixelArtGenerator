@@ -43,4 +43,5 @@ window/size/height=720
 
 [rendering]
 
+environment/default_clear_color=Color( 1, 0.784314, 0.65098, 1 )
 environment/default_environment="res://default_env.tres"

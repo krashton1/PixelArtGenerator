@@ -15,6 +15,7 @@ RockGenerator::RockGenerator()
 	, mMinRadius(18)
 	, mMaxRadius(22)
 {
+	setup();
 	buildRock();
 }
 
@@ -64,10 +65,41 @@ void RockGenerator::buildRock()
 
 	for (int i = 0; i < mPoints.size() - 1; i++)
 	{
-		addLine(mPoints[i], mPoints[i + 1], new Color(0, 0, 0, 1));
+		addLine(mPoints[i], mPoints[i + 1], mBlack);
 	}
 
-	fillColor(origin, new Color(1, 1, 1, 1));
+	fillColor(origin, new Color(.35, .34, .34));
+
+
+	//Array points = rockGen->getPoints();
+	for (int i = 1; i < mPoints.size(); i++)
+	{
+		Array pointsOnLine = getLine(mPoints[i - 1], mPoints[i]);
+		for (int j = 1; j < pointsOnLine.size(); j++)
+		{
+			sprayPixel(pointsOnLine[j], 12, .03, new Color(0.49, 0.48, 0.48), true);
+			sprayPixel(pointsOnLine[j], 6, .05, new Color(0.49, 0.48, 0.48), true);
+			sprayPixel(pointsOnLine[j], 3, .08, new Color(0.49, 0.48, 0.48), true);
+
+			sprayPixel(pointsOnLine[j], 4, .08, new Color(0.65, 0.62, 0.60), true);
+			sprayPixel(pointsOnLine[j], 2, .7, new Color(0.65, 0.62, 0.60), true);
+		}
+	}
+
+	//Array pointsOnLine = getLine(mPoints[(rand() % 2) == 0 ? floor(mPoints.size() / 2.0) : ceil(mPoints.size() / 2.0)], Vector2(31, 63));
+	for (int i = 0; i < rand()%2 + 3; i++)
+	{
+		Array pointsOnLine = getLine(mPoints[(rand() % (mPoints.size()-2) + 1)], Vector2(rand() % 20 + 21, 63));
+		for (int j = 1; j < pointsOnLine.size(); j++)
+		{
+			sprayPixel(pointsOnLine[j], 4, .03, new Color(0.49, 0.48, 0.48), true);
+			sprayPixel(pointsOnLine[j], 2, .12, new Color(0.49, 0.48, 0.48), true);
+
+			sprayPixel(pointsOnLine[j], 2, .09, new Color(0.65, 0.62, 0.60), true);
+			sprayPixel(pointsOnLine[j], 0, .2, new Color(0.65, 0.62, 0.60), true);
+		}
+	}
+	
 }
 
 }

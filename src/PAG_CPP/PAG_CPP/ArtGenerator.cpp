@@ -63,9 +63,22 @@ void ArtGenerator::drawPixelArray()
 	}
 }
 
-void ArtGenerator::setPixel(Vector2 pos, Color* color)
+void ArtGenerator::setPixel(Vector2 pos, Color* color, int flag /*= 0*/)
 {
-	mPixelArray[(int)pos.x][(int)pos.y] = color;
+	// flag == 0 : force pixel to be colored
+	// flag == 1 : only change pixel if it was previously colored
+	// flag == 2 : only change pixel if it was NOT previously colored
+
+	if (flag == 0)
+		mPixelArray[(int)pos.x][(int)pos.y] = color;
+	else if (flag == 1)
+		if (mPixelArray[(int)pos.x][(int)pos.y] != nullptr && !compareColor(mPixelArray[(int)pos.x][(int)pos.y], mBlack))
+			mPixelArray[(int)pos.x][(int)pos.y] = color;
+	else if (flag == 2)
+		if (mPixelArray[(int)pos.x][(int)pos.y] == nullptr)
+			mPixelArray[(int)pos.x][(int)pos.y] = color;
+		
+	
 }
 
 void ArtGenerator::addLine(Vector2 origin, Vector2 dest, Color* color)
@@ -84,8 +97,8 @@ void ArtGenerator::addLine(Vector2 origin, Vector2 dest, Color* color)
 	Vector2 temp = origin;
 
 	// Holds prev XY coord, depending on if line is horizontal or vertical, which is then used to remove jaggies
-	int lastXY = 0;
-	int thisXY = 0;
+	int lastXY = -1;
+	int thisXY = -1;
 
 	// Coef of line, 0 is first pixel, 1 is last pixel
 	float coef = 0.0f;
@@ -172,6 +185,40 @@ void ArtGenerator::fillColor(Vector2 origin, Color* destColor, Color* origColor 
 		setPixel(*it, destColor);
 }
 
+void ArtGenerator::sprayPixel(Vector2 origin, float size, float intensity, Color* color, bool paintOver /*= false*/)
+{
+	// Circle of radius size located at origin
+	// intensity 0 means no pixels are colored
+	// intensity of 1 means all pixels are colored
+	// Does pixels closer to center get colored more often? thinking no after gut feeling said yes
+
+	Vector2 start = origin - Vector2(size, size);
+
+	for (int x = start.x; x <= origin.x + size; x++)
+	{
+		for (int y = start.y; y <= origin.y + size; y++)
+		{
+			//setPixel(Vector2(x, y), new Color(1, 0, 0));
+
+			if (x < 0 || x > 63 || y < 0 || y > 63)
+				continue;
+
+			float dist = std::sqrt(std::pow(x - origin.x, 2) + std::pow(y- origin.y, 2));
+			if (dist <= size)
+			{
+				//setPixel(Vector2(x, y), new Color(0, 1, 0));
+
+				float t = rand() / (float)RAND_MAX;
+				if (t < intensity)
+					setPixel(Vector2(x, y), color, (paintOver ? 1 : 0));
+			}
+
+
+		}
+	}
+
+}
+
 void ArtGenerator::resetPixelArray()
 {
 	for (int i = 0; i < mAssetSize; i++)
@@ -198,6 +245,67 @@ void ArtGenerator::pivotPixelArray()
 		for (int y = 0; y < mAssetSize; y++)
 			mPixelArray[x][y] = newPixelArray[x][y];
 	}
+}
+
+godot::Array ArtGenerator::getLine(Vector2 origin, Vector2 dest)
+{
+	Array pointsOnLine;
+
+	float stepSize = 1.0f / 64;
+
+	Vector2 dir = dest - origin;
+
+	// If a line is more vertical than horizontal, it should not have more than 1 pixel in same y coord. aka jaggies
+	bool isVertical;
+	if (abs(dir.y) >= abs(dir.x))
+		isVertical = true;
+	else
+		isVertical = false;
+
+	Vector2 temp = origin;
+
+	// Holds prev XY coord, depending on if line is horizontal or vertical, which is then used to remove jaggies
+	int lastXY = -1;
+	int thisXY = -1;
+
+	// Coef of line, 0 is first pixel, 1 is last pixel
+	float coef = 0.0f;
+
+	while (coef <= 1.0f)
+	{
+		temp = Vector2(
+			round(origin.x * (1.0f - coef) + dest.x * coef),
+			round(origin.y * (1.0f - coef) + dest.y * coef)
+		);
+
+		coef += stepSize;
+
+		// Early out of we are outside the pixelArray
+		if (temp.x < 0.0f || temp.x >= 64 || temp.y < 0.0f || temp.y >= 64)
+			continue;
+
+		if (isVertical)
+			thisXY = temp.y;
+		else
+			thisXY = temp.x;
+
+		if (thisXY != lastXY)
+		{
+			pointsOnLine.append(temp);
+			lastXY = thisXY;
+		}
+	}
+
+	return pointsOnLine;
+}
+
+bool ArtGenerator::compareColor(Color* color1, Color* color2)
+{
+
+	if (color1->r == color2->r && color1->g == color2->g && color1->b == color2->b && color1->a == color2->a)
+		return true;
+
+	return false;
 }
 
 void ArtGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNeighbours, std::set<Vector2> &toSearch, Color* origColor /*= nullptr*/)
@@ -256,6 +364,8 @@ void ArtGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vecto
 	mAssetSize = numPixels;
 	mScreenSize = Vector2(1280, 720);
 	mPixelSize = std::min(mSize.x, mSize.y) / numPixels;
+
+	mBlack = new Color(0.2, 0.2, 0.2);
 	
 	resetPixelArray();
 
