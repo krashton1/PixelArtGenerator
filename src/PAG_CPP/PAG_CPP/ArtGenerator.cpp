@@ -72,7 +72,7 @@ void ArtGenerator::setPixel(Vector2 pos, Color* color, int flag /*= 0*/)
 	if (flag == 0)
 		mPixelArray[(int)pos.x][(int)pos.y] = color;
 	else if (flag == 1)
-		if (mPixelArray[(int)pos.x][(int)pos.y] != nullptr && !compareColor(mPixelArray[(int)pos.x][(int)pos.y], mBlack))
+		if (mPixelArray[(int)pos.x][(int)pos.y] != nullptr && !compareColor(mPixelArray[(int)pos.x][(int)pos.y], mColorRamp[0]))
 			mPixelArray[(int)pos.x][(int)pos.y] = color;
 	else if (flag == 2)
 		if (mPixelArray[(int)pos.x][(int)pos.y] == nullptr)
@@ -185,12 +185,13 @@ void ArtGenerator::fillColor(Vector2 origin, Color* destColor, Color* origColor 
 		setPixel(*it, destColor);
 }
 
-void ArtGenerator::sprayPixel(Vector2 origin, float size, float intensity, Color* color, bool paintOver /*= false*/)
+void ArtGenerator::sprayPixel(Vector2 origin, float size, float intensity, Color* color /*= nullptr*/, bool paintOver /*= false*/)
 {
 	// Circle of radius size located at origin
 	// intensity 0 means no pixels are colored
 	// intensity of 1 means all pixels are colored
 	// Does pixels closer to center get colored more often? thinking no after gut feeling said yes
+	// If supplied color is null, just brighten the pixel by 1 on ramp
 
 	Vector2 start = origin - Vector2(size, size);
 
@@ -210,7 +211,33 @@ void ArtGenerator::sprayPixel(Vector2 origin, float size, float intensity, Color
 
 				float t = rand() / (float)RAND_MAX;
 				if (t < intensity)
-					setPixel(Vector2(x, y), color, (paintOver ? 1 : 0));
+				{
+					if (color != nullptr)
+					{
+						setPixel(Vector2(x, y), color, (paintOver ? 1 : 0));
+					}
+					else
+					{
+						Color* curColor = mPixelArray[x][y];
+						Color* tempColor = mColorRamp[0];
+						int i = 0;
+
+						while (true)
+						{
+							if (compareColor(curColor, tempColor))
+							{
+								setPixel(Vector2(x, y), mColorRamp[std::min(i + 1, (int)mColorRamp.size() - 1)], (paintOver ? 1 : 0));
+								break;
+							}
+							i++;
+
+							if (i == mColorRamp.size())
+								break;
+
+							tempColor = mColorRamp[i];
+						}
+					}
+				}
 			}
 
 
@@ -301,6 +328,8 @@ godot::Array ArtGenerator::getLine(Vector2 origin, Vector2 dest)
 
 bool ArtGenerator::compareColor(Color* color1, Color* color2)
 {
+	if (color1 == nullptr || color2 == nullptr)
+		return false;
 
 	if (color1->r == color2->r && color1->g == color2->g && color1->b == color2->b && color1->a == color2->a)
 		return true;
@@ -365,7 +394,13 @@ void ArtGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vecto
 	mScreenSize = Vector2(1280, 720);
 	mPixelSize = std::min(mSize.x, mSize.y) / numPixels;
 
-	mBlack = new Color(0.2, 0.2, 0.2);
+	//mBlack = new Color(0.2, 0.2, 0.2);
+	mColorRamp.push_back(new Color(0.20, 0.20, 0.20));
+	mColorRamp.push_back(new Color(0.30, 0.30, 0.30));
+	mColorRamp.push_back(new Color(0.40, 0.40, 0.40));
+	mColorRamp.push_back(new Color(0.45, 0.45, 0.45));
+	mColorRamp.push_back(new Color(0.50, 0.50, 0.50));
+	mColorRamp.push_back(new Color(0.60, 0.60, 0.60));
 	
 	resetPixelArray();
 

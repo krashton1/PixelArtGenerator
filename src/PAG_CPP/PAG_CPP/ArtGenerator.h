@@ -32,13 +32,15 @@ namespace godot
 		void addCircle(Vector2 origin, float radius, int samples, Color* color);
 		void addShape(std::vector<Vector2> points, Color* lineColor, Color* fillColor = nullptr);
 		void fillColor(Vector2 origin, Color* destColor, Color* origColor = nullptr);
-		void sprayPixel(Vector2 origin, float size, float intensity, Color* color, bool paintOver = false);
+		void sprayPixel(Vector2 origin, float size, float intensity, Color* color = nullptr, bool paintOver = false);
 
 		void resetPixelArray();
 		void pivotPixelArray();
 
 		static Array getLine(Vector2 origin, Vector2 dest);
 		static bool compareColor(Color* color1, Color* color2);
+
+		inline void setColorRamp(std::vector<Color*> newRamp) { mColorRamp = newRamp; }
 
 	protected:
 
@@ -67,7 +69,10 @@ namespace godot
 
 		Color* mPixelArray[64][64];
 
-		Color* mBlack;
+		//Color* mBlack;
+
+		//Array mColorRamp;
+		std::vector<Color*> mColorRamp;
 
 
 	};

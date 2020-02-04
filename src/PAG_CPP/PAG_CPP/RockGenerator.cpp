@@ -65,10 +65,10 @@ void RockGenerator::buildRock()
 
 	for (int i = 0; i < mPoints.size() - 1; i++)
 	{
-		addLine(mPoints[i], mPoints[i + 1], mBlack);
+		addLine(mPoints[i], mPoints[i + 1], mColorRamp[0]);
 	}
 
-	fillColor(origin, new Color(.35, .34, .34));
+	fillColor(origin, mColorRamp[1]);
 
 
 	//Array points = rockGen->getPoints();
@@ -77,12 +77,18 @@ void RockGenerator::buildRock()
 		Array pointsOnLine = getLine(mPoints[i - 1], mPoints[i]);
 		for (int j = 1; j < pointsOnLine.size(); j++)
 		{
-			sprayPixel(pointsOnLine[j], 12, .03, new Color(0.49, 0.48, 0.48), true);
-			sprayPixel(pointsOnLine[j], 6, .05, new Color(0.49, 0.48, 0.48), true);
-			sprayPixel(pointsOnLine[j], 3, .08, new Color(0.49, 0.48, 0.48), true);
+			//sprayPixel(pointsOnLine[j], 12, .03, new Color(0.49, 0.48, 0.48), true);
+			//sprayPixel(pointsOnLine[j], 6, .05, new Color(0.49, 0.48, 0.48), true);
+			//sprayPixel(pointsOnLine[j], 3, .08, new Color(0.49, 0.48, 0.48), true);
 
-			sprayPixel(pointsOnLine[j], 4, .08, new Color(0.65, 0.62, 0.60), true);
-			sprayPixel(pointsOnLine[j], 2, .7, new Color(0.65, 0.62, 0.60), true);
+			//sprayPixel(pointsOnLine[j], 4, .08, new Color(0.65, 0.62, 0.60), true);
+			//sprayPixel(pointsOnLine[j], 2, .7, new Color(0.65, 0.62, 0.60), true);
+
+			sprayPixel(pointsOnLine[j], 12, .06, mColorRamp[2], true);
+			sprayPixel(pointsOnLine[j], 6, .4, nullptr, true);
+			sprayPixel(pointsOnLine[j], 3, .4, nullptr, true);
+
+			sprayPixel(pointsOnLine[j], 2, .7, nullptr, true);
 		}
 	}
 
@@ -92,11 +98,10 @@ void RockGenerator::buildRock()
 		Array pointsOnLine = getLine(mPoints[(rand() % (mPoints.size()-2) + 1)], Vector2(rand() % 20 + 21, 63));
 		for (int j = 1; j < pointsOnLine.size(); j++)
 		{
-			sprayPixel(pointsOnLine[j], 4, .03, new Color(0.49, 0.48, 0.48), true);
-			sprayPixel(pointsOnLine[j], 2, .12, new Color(0.49, 0.48, 0.48), true);
-
-			sprayPixel(pointsOnLine[j], 2, .09, new Color(0.65, 0.62, 0.60), true);
-			sprayPixel(pointsOnLine[j], 0, .2, new Color(0.65, 0.62, 0.60), true);
+			sprayPixel(pointsOnLine[j], 6, .04, mColorRamp[2], true);
+			sprayPixel(pointsOnLine[j], 3, .1, nullptr, true);
+			sprayPixel(pointsOnLine[j], 2, .15, nullptr, true);
+			sprayPixel(pointsOnLine[j], 1, .2, nullptr, true);
 		}
 	}
 	
