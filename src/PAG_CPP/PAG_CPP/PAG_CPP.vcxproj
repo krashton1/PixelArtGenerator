@@ -187,12 +187,14 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="RockGenerator.cpp" />
+    <ClCompile Include="TreeGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArtGenerator.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RockGenerator.h" />
+    <ClInclude Include="TreeGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

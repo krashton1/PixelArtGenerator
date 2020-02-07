@@ -23,11 +23,17 @@ _global_script_classes=[ {
 "class": "RockGenerator",
 "language": "NativeScript",
 "path": "res://RockGenerator.gdns"
+}, {
+"base": "",
+"class": "TreeGenerator",
+"language": "NativeScript",
+"path": "res://TreeGenerator.gdns"
 } ]
 _global_script_class_icons={
 "Main": "",
 "Player": "",
-"RockGenerator": ""
+"RockGenerator": "",
+"TreeGenerator": ""
 }
 
 [application]

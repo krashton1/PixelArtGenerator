@@ -90,9 +90,9 @@ void Main::_init()
 	//mGenerators.push_back(rockGen);
 	//rockGen->set_position(Vector2(600, 0));
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 1; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < 1; j++)
 		{
 			RockGenerator* rockGen = Object::cast_to<RockGenerator>(rockGenScene->instance());
 
@@ -118,6 +118,23 @@ void Main::_init()
 	//sprayGen->addLine(Vector2(0, 63), Vector2(63, 63), new Color(0, 0, 0));
 
 	//sprayGen->sprayPixel(Vector2(31, 31), 10.0, 0.2, new Color(0, 0, 1), true);
+
+
+
+
+
+
+
+	Ref<PackedScene> treeGenScene = ResourceLoader::get_singleton()->load("res://TreeGenerator.tscn");
+
+
+	TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+	treeGen->apply_scale(Vector2(0.5, 0.5));
+	treeGen->set_position(Vector2(320, 0));
+	add_child(treeGen, "treeGen");
+	mGenerators.push_back(treeGen);
+
+
 
 }
 

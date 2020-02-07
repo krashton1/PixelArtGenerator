@@ -6,6 +6,8 @@
 #include "ArtGenerator.h"
 #include "RockGenerator.h"
 
+#include "TreeGenerator.h"
+
 #include <vector>
 
 namespace godot
