@@ -291,13 +291,13 @@ bool ArtGenerator::compareColor(Color* color1, Color* color2)
 
 void ArtGenerator::addSmile()
 {
-	mPixelArray[0][1] = mBlack;
-	mPixelArray[0][3] = mBlack;
-	mPixelArray[2][0] = mBlack;
-	mPixelArray[2][4] = mBlack;
-	mPixelArray[3][1] = mBlack;
-	mPixelArray[3][2] = mBlack;
-	mPixelArray[3][3] = mBlack;
+	mPixelArray[0][1] = mDebugColor;
+	mPixelArray[0][3] = mDebugColor;
+	mPixelArray[2][0] = mDebugColor;
+	mPixelArray[2][4] = mDebugColor;
+	mPixelArray[3][1] = mDebugColor;
+	mPixelArray[3][2] = mDebugColor;
+	mPixelArray[3][3] = mDebugColor;
 
 	rotatePixelArray();
 }
@@ -357,7 +357,7 @@ void ArtGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vecto
 	mAssetSize = numPixels;
 	mScreenSize = Vector2(1280, 720);
 	mPixelSize = std::min(mSize.x, mSize.y) / numPixels;
-	mBlack = new Color(0, 0, 0);
+	mDebugColor = new Color(0, 0, 0);
 
 	resetPixelArray();
 }

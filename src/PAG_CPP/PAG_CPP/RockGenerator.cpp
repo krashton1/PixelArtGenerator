@@ -57,8 +57,8 @@ void RockGenerator::buildRock()
 	mPoints.clear();
 
 	// Determine variable of rock
-	int numPoints = rand() % (mMaxPts - mMinPts) + mMinPts;
 	Vector2 origin = Vector2((mAssetSize - 1) / 2, mAssetSize - 1);
+	int numPoints = rand() % (mMaxPts - mMinPts) + mMinPts;
 
 	// Find vertices along edge of rock
 	for (int i = 0; i < numPoints + 1; i++)

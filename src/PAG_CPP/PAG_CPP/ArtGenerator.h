@@ -52,15 +52,18 @@ namespace godot
 
 	protected:
 
+		// Game variables
 		int mAssetSize;
 		float mPixelSize;
 		Vector2 mScreenSize;
 
+		// Sprite Variables
 		Vector2 mPosition;
 		Vector2 mSize;
 
+		// Sprite Colors
 		Color* mPixelArray[64][64];
-		Color* mBlack;
+		Color* mDebugColor;
 		std::vector<Color*> mColorRamp;
 
 	private:

@@ -27,14 +27,14 @@ namespace godot
 		// Points along rock edge where vertices form
 		inline Array getPoints() { return mPoints; }
 
-		int mMinPts;
-		int mMaxPts;
-
-		int mMinRadius;
-		int mMaxRadius;
-
 		// Vertices on rock edge
 		Array mPoints;
+
+		// Rock Variables
+		int mMinPts;
+		int mMaxPts;
+		int mMinRadius;
+		int mMaxRadius;
 	};
 
 }

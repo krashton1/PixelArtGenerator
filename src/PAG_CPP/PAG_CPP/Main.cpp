@@ -47,7 +47,8 @@ void Main::_init()
 
 	ArtGenerator* smileGen = Object::cast_to<ArtGenerator>(artGenScene->instance());
 	smileGen->addSmile();
-	smileGen->set_position(Vector2(600, 100));
+	smileGen->set_position(Vector2(700, 0));
+	smileGen->apply_scale(Vector2(0.2, 0.2));
 	add_child(smileGen, "smileGen");
 	mGenerators.push_back(smileGen);
 
@@ -61,7 +62,7 @@ void Main::_init()
 			RockGenerator* rockGen = Object::cast_to<RockGenerator>(rockGenScene->instance());
 
 			rockGen->apply_scale(Vector2(0.2, 0.2));
-			rockGen->set_position(Vector2(i * 200, j * 200));
+			rockGen->set_position(Vector2(i * 200 + 500, j * 200));
 			add_child(rockGen, "rockGen" + i + j);
 			mGenerators.push_back(rockGen);
 		}
@@ -72,7 +73,7 @@ void Main::_init()
 
 	TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
 	treeGen->apply_scale(Vector2(0.5, 0.5));
-	treeGen->set_position(Vector2(320, 0));
+	treeGen->set_position(Vector2(0, 0));
 	add_child(treeGen, "treeGen");
 	mGenerators.push_back(treeGen);
 
@@ -101,6 +102,12 @@ void Main::_process()
 			{
 				rockGen->buildRock();
 				rockGen->update();
+			}
+
+			if (TreeGenerator* treeGen = dynamic_cast<TreeGenerator*>(artGen))
+			{
+				treeGen->buildTree();
+				treeGen->update();
 			}
 		}
 	}
