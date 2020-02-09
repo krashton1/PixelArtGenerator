@@ -1,7 +1,6 @@
 #define _USE_MATH_DEFINES
 
 #include "RockGenerator.h"
-
 #include <math.h>
 #include <algorithm>
 
@@ -19,7 +18,6 @@ RockGenerator::RockGenerator()
 	buildRock();
 }
 
-
 RockGenerator::~RockGenerator()
 {
 
@@ -27,28 +25,42 @@ RockGenerator::~RockGenerator()
 
 void RockGenerator::_register_methods()
 {
-	register_method((char*)"_draw", &draw);
+	register_method((char*)"_draw", &_draw);
 }
 
 void RockGenerator::_init()
 {
-
+	// Do nothing
 }
 
-void RockGenerator::draw()
+void RockGenerator::_draw()
 {
-	ArtGenerator::draw();
+	ArtGenerator::_draw();
+}
+
+void RockGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vector2(1024, 1024)*/, int numPixels /*= 64*/)
+{
+	ArtGenerator::setup(pos, size, numPixels);
+
+	mColorRamp.push_back(new Color(0.20, 0.20, 0.20));
+	mColorRamp.push_back(new Color(0.30, 0.30, 0.30));
+	mColorRamp.push_back(new Color(0.40, 0.40, 0.40));
+	mColorRamp.push_back(new Color(0.45, 0.45, 0.45));
+	mColorRamp.push_back(new Color(0.50, 0.50, 0.50));
+	mColorRamp.push_back(new Color(0.60, 0.60, 0.60));
 }
 
 void RockGenerator::buildRock()
 {
+	// Reset rock
 	resetPixelArray();
-
 	mPoints.clear();
 
+	// Determine variable of rock
 	int numPoints = rand() % (mMaxPts - mMinPts) + mMinPts;
 	Vector2 origin = Vector2((mAssetSize - 1) / 2, mAssetSize - 1);
 
+	// Find vertices along edge of rock
 	for (int i = 0; i < numPoints + 1; i++)
 	{
 		int thisRadius = rand() % (mMaxRadius - mMinRadius) + mMinRadius;
@@ -63,48 +75,42 @@ void RockGenerator::buildRock()
 
 	}
 
+	// Connect Vertices
 	for (int i = 0; i < mPoints.size() - 1; i++)
 	{
 		addLine(mPoints[i], mPoints[i + 1], mColorRamp[0]);
 	}
 
+	// Fill rock in
 	fillColor(origin, mColorRamp[1]);
 
-
-	//Array points = rockGen->getPoints();
+	// Create faces along edge of rock
 	for (int i = 1; i < mPoints.size(); i++)
 	{
 		Array pointsOnLine = getLine(mPoints[i - 1], mPoints[i]);
 		for (int j = 1; j < pointsOnLine.size(); j++)
 		{
-			//sprayPixel(pointsOnLine[j], 12, .03, new Color(0.49, 0.48, 0.48), true);
-			//sprayPixel(pointsOnLine[j], 6, .05, new Color(0.49, 0.48, 0.48), true);
-			//sprayPixel(pointsOnLine[j], 3, .08, new Color(0.49, 0.48, 0.48), true);
-
-			//sprayPixel(pointsOnLine[j], 4, .08, new Color(0.65, 0.62, 0.60), true);
-			//sprayPixel(pointsOnLine[j], 2, .7, new Color(0.65, 0.62, 0.60), true);
-
 			sprayPixel(pointsOnLine[j], 12, .06, mColorRamp[2], true);
+
 			sprayPixel(pointsOnLine[j], 6, .4, nullptr, true);
 			sprayPixel(pointsOnLine[j], 3, .4, nullptr, true);
-
 			sprayPixel(pointsOnLine[j], 2, .7, nullptr, true);
 		}
 	}
 
-	//Array pointsOnLine = getLine(mPoints[(rand() % 2) == 0 ? floor(mPoints.size() / 2.0) : ceil(mPoints.size() / 2.0)], Vector2(31, 63));
+	// Create faces through body of rock
 	for (int i = 0; i < rand()%2 + 3; i++)
 	{
 		Array pointsOnLine = getLine(mPoints[(rand() % (mPoints.size()-2) + 1)], Vector2(rand() % 20 + 21, 63));
 		for (int j = 1; j < pointsOnLine.size(); j++)
 		{
 			sprayPixel(pointsOnLine[j], 6, .04, mColorRamp[2], true);
+
 			sprayPixel(pointsOnLine[j], 3, .1, nullptr, true);
 			sprayPixel(pointsOnLine[j], 2, .15, nullptr, true);
 			sprayPixel(pointsOnLine[j], 1, .2, nullptr, true);
 		}
 	}
-	
 }
 
 }

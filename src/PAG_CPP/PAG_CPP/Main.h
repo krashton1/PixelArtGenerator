@@ -2,12 +2,9 @@
 
 #include <core/Godot.hpp>
 #include <Node2D.hpp>
-
 #include "ArtGenerator.h"
 #include "RockGenerator.h"
-
 #include "TreeGenerator.h"
-
 #include <vector>
 
 namespace godot
@@ -20,11 +17,12 @@ namespace godot
 		Main();
 		~Main();
 
+		// Godot Functions
 		static void _register_methods();
 		void _init();
-		void ready();
-		void draw();
-		void process();
+		void _ready();
+		void _draw();
+		void _process();
 
 	private:
 

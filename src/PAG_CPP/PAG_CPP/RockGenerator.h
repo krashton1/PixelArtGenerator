@@ -12,17 +12,20 @@ namespace godot
 		RockGenerator();
 		~RockGenerator();
 
+		virtual void setup(Vector2 pos = Vector2(0, 0), Vector2 size = Vector2(1024, 1024), int numPixels = 64);
+
+		// Godot Functions
 		static void _register_methods();
-
 		virtual void _init();
-		void draw();
+		void _draw();
 
+		// Construct Rock
 		void buildRock();
 
-		inline Array getPoints() { return mPoints; }
-
-
 	private:
+
+		// Points along rock edge where vertices form
+		inline Array getPoints() { return mPoints; }
 
 		int mMinPts;
 		int mMaxPts;
@@ -30,13 +33,8 @@ namespace godot
 		int mMinRadius;
 		int mMaxRadius;
 
-		//std::vector<Vector2> mPoints;
-
-		//std::list<Vector2> mPoints;
-
+		// Vertices on rock edge
 		Array mPoints;
-
-
 	};
 
 }

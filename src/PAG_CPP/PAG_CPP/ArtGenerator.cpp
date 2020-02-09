@@ -1,7 +1,6 @@
 #define _USE_MATH_DEFINES
 
 #include "ArtGenerator.h"
-
 #include <cmath>
 #include <algorithm>
 
@@ -14,7 +13,7 @@ ArtGenerator::ArtGenerator(Vector2 size /*= Vector2(1024,1024)*/, int numPixels 
 	, mScreenSize(Vector2(1280, 720)) 
 	, mPixelSize(std::min(size.x, size.y) / numPixels)
 {
-
+	setup();
 }
 
 ArtGenerator::~ArtGenerator()
@@ -24,21 +23,21 @@ ArtGenerator::~ArtGenerator()
 
 void ArtGenerator::_register_methods()
 {
-	register_method((char*)"_ready", &ready);
-	register_method((char*)"_draw", &draw);
+	register_method((char*)"_ready", &_ready);
+	register_method((char*)"_draw", &_draw);
 }
 
 void ArtGenerator::_init()
 {
-	setup();
+	// Do nothing
 }
 
-void ArtGenerator::ready()
+void ArtGenerator::_ready()
 {
-
+	// Do nothing
 }
 
-void ArtGenerator::draw()
+void ArtGenerator::_draw()
 {
 	drawPixelArray();
 }
@@ -77,55 +76,15 @@ void ArtGenerator::setPixel(Vector2 pos, Color* color, int flag /*= 0*/)
 	else if (flag == 2)
 		if (mPixelArray[(int)pos.x][(int)pos.y] == nullptr)
 			mPixelArray[(int)pos.x][(int)pos.y] = color;
-		
-	
 }
 
 void ArtGenerator::addLine(Vector2 origin, Vector2 dest, Color* color)
 {
-	float stepSize = 1.0f / mAssetSize;
+	Array linePoints = getLine(origin, dest);
 
-	Vector2 dir = dest - origin;
-
-	// If a line is more vertical than horizontal, it should not have more than 1 pixel in same y coord. aka jaggies
-	bool isVertical;
-	if (abs(dir.y) >= abs(dir.x))
-		isVertical = true;
-	else
-		isVertical = false;
-
-	Vector2 temp = origin;
-
-	// Holds prev XY coord, depending on if line is horizontal or vertical, which is then used to remove jaggies
-	int lastXY = -1;
-	int thisXY = -1;
-
-	// Coef of line, 0 is first pixel, 1 is last pixel
-	float coef = 0.0f;
-
-	while (coef <= 1.0f) 
+	for (int i = 0; i < linePoints.size(); i++)
 	{
-		temp = Vector2(
-			round(origin.x * (1.0f - coef) + dest.x * coef), 
-			round(origin.y * (1.0f - coef) + dest.y * coef)
-		);
-
-		coef += stepSize;
-
-		// Early out of we are outside the pixelArray
-		if (temp.x < 0.0f || temp.x >= mAssetSize || temp.y < 0.0f || temp.y >= mAssetSize)
-			continue;
-
-		if (isVertical)
-			thisXY = temp.y;
-		else
-			thisXY = temp.x;
-
-		if (thisXY != lastXY)
-		{
-			setPixel(temp, color);
-			lastXY = thisXY;
-		}
+		setPixel(linePoints[i], color);
 	}
 }
 
@@ -190,7 +149,7 @@ void ArtGenerator::sprayPixel(Vector2 origin, float size, float intensity, Color
 	// Circle of radius size located at origin
 	// intensity 0 means no pixels are colored
 	// intensity of 1 means all pixels are colored
-	// Does pixels closer to center get colored more often? thinking no after gut feeling said yes
+
 	// If supplied color is null, just brighten the pixel by 1 on ramp
 
 	Vector2 start = origin - Vector2(size, size);
@@ -199,16 +158,12 @@ void ArtGenerator::sprayPixel(Vector2 origin, float size, float intensity, Color
 	{
 		for (int y = start.y; y <= origin.y + size; y++)
 		{
-			//setPixel(Vector2(x, y), new Color(1, 0, 0));
-
 			if (x < 0 || x > 63 || y < 0 || y > 63)
 				continue;
 
 			float dist = std::sqrt(std::pow(x - origin.x, 2) + std::pow(y- origin.y, 2));
 			if (dist <= size)
 			{
-				//setPixel(Vector2(x, y), new Color(0, 1, 0));
-
 				float t = rand() / (float)RAND_MAX;
 				if (t < intensity)
 				{
@@ -239,11 +194,8 @@ void ArtGenerator::sprayPixel(Vector2 origin, float size, float intensity, Color
 					}
 				}
 			}
-
-
 		}
 	}
-
 }
 
 void ArtGenerator::resetPixelArray()
@@ -257,7 +209,7 @@ void ArtGenerator::resetPixelArray()
 	}
 }
 
-void ArtGenerator::pivotPixelArray()
+void ArtGenerator::rotatePixelArray()
 {
 	Color* newPixelArray[64][64];
 
@@ -274,7 +226,7 @@ void ArtGenerator::pivotPixelArray()
 	}
 }
 
-godot::Array ArtGenerator::getLine(Vector2 origin, Vector2 dest)
+Array ArtGenerator::getLine(Vector2 origin, Vector2 dest)
 {
 	Array pointsOnLine;
 
@@ -337,6 +289,19 @@ bool ArtGenerator::compareColor(Color* color1, Color* color2)
 	return false;
 }
 
+void ArtGenerator::addSmile()
+{
+	mPixelArray[0][1] = mBlack;
+	mPixelArray[0][3] = mBlack;
+	mPixelArray[2][0] = mBlack;
+	mPixelArray[2][4] = mBlack;
+	mPixelArray[3][1] = mBlack;
+	mPixelArray[3][2] = mBlack;
+	mPixelArray[3][3] = mBlack;
+
+	rotatePixelArray();
+}
+
 void ArtGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNeighbours, std::set<Vector2> &toSearch, Color* origColor /*= nullptr*/)
 {
 	int x = origin.x;
@@ -345,7 +310,7 @@ void ArtGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNe
 	if (origColor == nullptr)
 		validNeighbours.insert(origin);
 
-	//up
+	// up
 	if(y != 0)
 		if(mPixelArray[x][y - 1] == origColor)
 			if (validNeighbours.find(Vector2(x, y - 1)) == validNeighbours.end())
@@ -354,7 +319,7 @@ void ArtGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNe
 				toSearch.insert(Vector2(x, y - 1));
 			}
 
-	//down
+	// down
 	if (y != mAssetSize - 1)
 		if (mPixelArray[x][y + 1] == origColor)
 			if (validNeighbours.find(Vector2(x, y + 1)) == validNeighbours.end())
@@ -363,7 +328,7 @@ void ArtGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNe
 				toSearch.insert(Vector2(x, y + 1));
 			}
 
-	//up
+	// left
 	if (x != 0)
 		if (mPixelArray[x - 1][y] == origColor)
 			if (validNeighbours.find(Vector2(x - 1, y)) == validNeighbours.end())
@@ -372,7 +337,7 @@ void ArtGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNe
 				toSearch.insert(Vector2(x - 1, y));
 			}
 
-	//down
+	// right
 	if (x != mAssetSize - 1)
 		if (mPixelArray[x + 1][y] == origColor)
 			if (validNeighbours.find(Vector2(x + 1, y)) == validNeighbours.end())
@@ -383,7 +348,6 @@ void ArtGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNe
 
 	if (toSearch.find(origin) != toSearch.end())
 		toSearch.erase(origin);
-
 }	
 
 void ArtGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vector2(1024, 1024)*/, int numPixels /*= 64*/)
@@ -393,18 +357,9 @@ void ArtGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vecto
 	mAssetSize = numPixels;
 	mScreenSize = Vector2(1280, 720);
 	mPixelSize = std::min(mSize.x, mSize.y) / numPixels;
+	mBlack = new Color(0, 0, 0);
 
-	//mBlack = new Color(0.2, 0.2, 0.2);
-	mColorRamp.push_back(new Color(0.20, 0.20, 0.20));
-	mColorRamp.push_back(new Color(0.30, 0.30, 0.30));
-	mColorRamp.push_back(new Color(0.40, 0.40, 0.40));
-	mColorRamp.push_back(new Color(0.45, 0.45, 0.45));
-	mColorRamp.push_back(new Color(0.50, 0.50, 0.50));
-	mColorRamp.push_back(new Color(0.60, 0.60, 0.60));
-	
 	resetPixelArray();
-
-	//addLine(Vector2(0, 0), Vector2(20, 10), new Color(0.0, 0.0, 0.0, 1.0));
 }
 
 }
