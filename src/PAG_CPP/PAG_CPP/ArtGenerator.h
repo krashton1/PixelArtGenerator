@@ -29,7 +29,7 @@ namespace godot
 
 		// Pixel Array Functions
 		void setPixel(Vector2 pos, Color* color, int flag = 0);
-		void addLine(Vector2 origin, Vector2 dest, Color* color);
+		void addLine(Vector2 origin, Vector2 dest, Color* color, int flag = 0);
 		void addCircle(Vector2 origin, float radius, int samples, Color* color);
 		void addShape(std::vector<Vector2> points, Color* lineColor, Color* fillColor = nullptr);
 		void fillColor(Vector2 origin, Color* destColor, Color* origColor = nullptr);

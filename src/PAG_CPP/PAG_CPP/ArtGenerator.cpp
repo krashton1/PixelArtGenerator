@@ -78,13 +78,17 @@ void ArtGenerator::setPixel(Vector2 pos, Color* color, int flag /*= 0*/)
 			mPixelArray[(int)pos.x][(int)pos.y] = color;
 }
 
-void ArtGenerator::addLine(Vector2 origin, Vector2 dest, Color* color)
+void ArtGenerator::addLine(Vector2 origin, Vector2 dest, Color* color, int flag /*= 0*/)
 {
+	// flag == 0 : force pixel to be colored
+	// flag == 1 : only change pixel if it was previously colored
+	// flag == 2 : only change pixel if it was NOT previously colored
+
 	Array linePoints = getLine(origin, dest);
 
 	for (int i = 0; i < linePoints.size(); i++)
 	{
-		setPixel(linePoints[i], color);
+		setPixel(linePoints[i], color, flag);
 	}
 }
 

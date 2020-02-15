@@ -1,5 +1,5 @@
 start godot --path D:\Code\GitHub\PixelArtGenerator\Godot -waitForDebug
-timeout 2
+timeout 3
 
 rem Get the process ID
 for /f "TOKENS=1,2,*" %%a in ('tasklist /FI "WINDOWTITLE eq PixelArtGenerator"') do set MyPID=%%b
