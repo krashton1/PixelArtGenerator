@@ -6,17 +6,45 @@ namespace godot
 {
 
 
+	// Deciduous
+
+	//  , mMinHeight(32)
+	//	, mMaxHeight(44)
+	//	, mMinNodes(6)
+	//	, mMaxNodes(10)
+	//	, mMinDistBetweenNodes(5)
+	//	, mMaxDistBetweenNodes(7)
+	//	, mMaxOffsetFromCenter(2)
+	//	, mMinBranch(2)
+	//	, mMaxBranch(5)
+	//  , mMirrorBranches(false)
+
+
+	// Coniferous
+
+	//, mMinHeight(32)
+	//	, mMaxHeight(44)
+	//	, mMinNodes(6)
+	//	, mMaxNodes(10)
+	//	, mMinDistBetweenNodes(5)
+	//	, mMaxDistBetweenNodes(7)
+	//	, mMaxOffsetFromCenter(0)
+	//	, mMinBranch(20)
+	//	, mMaxBranch(30)
+	//	, mMirrorBranches(true)
+
 TreeGenerator::TreeGenerator()
 	: ArtGenerator()
-	, mMinHeight(47)
-	, mMaxHeight(48)
+	, mMinHeight(32)
+	, mMaxHeight(44)
 	, mMinNodes(6)
 	, mMaxNodes(10)
 	, mMinDistBetweenNodes(5)
 	, mMaxDistBetweenNodes(7)
 	, mMaxOffsetFromCenter(2)
-	, mMinBranch(1)
-	, mMaxBranch(3)
+	, mMinBranch(2)
+	, mMaxBranch(5)
+	, mMirrorBranches(false)
 {
 	setup();
 	buildTree();
@@ -32,17 +60,24 @@ void TreeGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vect
 	ArtGenerator::setup(pos, size, numPixels);
 
 	mDebugColor = new Color(1, 0, 0);
-
-
 	mColorRamp.push_back(new Color(0.20, 0.20, 0.20));
 
 	mTrunkColorRamp.push_back(new Color(0.275, 0.125, 0.125));
 	mTrunkColorRamp.push_back(new Color(0.450, 0.175, 0.175));
 	mTrunkColorRamp.push_back(new Color(0.600, 0.275, 0.155));
 
-	mLeafColorRamp.push_back(new Color(0.175, 0.410, 0.255));
-	mLeafColorRamp.push_back(new Color(0.315, 0.610, 0.295));
-	mLeafColorRamp.push_back(new Color(0.490, 0.805, 0.355));
+	if (!mMirrorBranches)
+	{
+		mLeafColorRamp.push_back(new Color(0.175, 0.410, 0.255));
+		mLeafColorRamp.push_back(new Color(0.315, 0.610, 0.295));
+		mLeafColorRamp.push_back(new Color(0.490, 0.805, 0.355));
+	}
+	else
+	{
+		mLeafColorRamp.push_back(new Color(0.100, 0.200, 0.120));
+		mLeafColorRamp.push_back(new Color(0.175, 0.410, 0.255));
+		mLeafColorRamp.push_back(new Color(0.250, 0.510, 0.295));
+	}
 }
 
 void TreeGenerator::_register_methods()
@@ -77,7 +112,8 @@ void TreeGenerator::buildTree()
 	int lastHeight = 0;
 	int thisHeight = 0;
 
-	float maxWidth = 6;
+	float maxWidth = 5; // width of base of trunk
+
 
 	for (int i = 0; i < numNodes; i++)
 	{
@@ -91,7 +127,7 @@ void TreeGenerator::buildTree()
 
 		int thisWidth = floor(maxWidth - (float(i) / numNodes) * maxWidth);
 
-		int offsetFromCenter = rand() % (mMaxOffsetFromCenter - (-mMaxOffsetFromCenter)) + (-mMaxOffsetFromCenter);
+		int offsetFromCenter = mMaxOffsetFromCenter == 0 ? mMaxOffsetFromCenter : rand() % (mMaxOffsetFromCenter - (-mMaxOffsetFromCenter)) + (-mMaxOffsetFromCenter);
 		
 		Vector2 leftPt = Vector2((origin.x + offsetFromCenter - thisWidth / 2), (origin.y - thisHeight));
 		Vector2 rightPt = Vector2((origin.x + offsetFromCenter + thisWidth / 2 + 1), (origin.y - thisHeight));
@@ -195,7 +231,22 @@ void TreeGenerator::buildTree()
 		
 		while (buildOffNode == 0) 
 		{
-			int t = rand() % (mNodes.size() - 8) + 4;
+			// need to adjust this for coniferous trees todo
+			if (usedNodes.size() >= mNodes.size() - 8)
+			{
+				goto endBranches;
+			}
+
+			int t;// = rand() % (mNodes.size() - 8) + 4;
+			if (!mMirrorBranches)
+			{
+				t = rand() % (mNodes.size() - 8) + 4;
+			}
+			else 
+			{
+				t = rand() % (mNodes.size() - 6) + 4;
+			}
+			
 			if (usedNodes.find(t) == usedNodes.end())
 			{
 				usedNodes.insert(t);
@@ -204,42 +255,71 @@ void TreeGenerator::buildTree()
 		}
 
 
-		int branchLength = rand() % 4 + 12 - std::min(buildOffNode, 7);
+		
 
-		Vector2 branchEnd = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * branchLength, static_cast<Vector2>(mNodes[buildOffNode]).y - (rand() % 3 + 2));
+		//int branchLength = rand() % 6 + 12 - std::min(buildOffNode % 2 * 2, 7);
+		int branchLength;// = std::max((rand() % 10 + 9) - std::max(buildOffNode, 5), 4);
 
-		Vector2 branchMid = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * (branchLength - 3), static_cast<Vector2>(mNodes[buildOffNode]).y - 1);
+		Vector2 branchEnd;// = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * branchLength, static_cast<Vector2>(mNodes[buildOffNode]).y - (rand() % 5 + 3));
+		Vector2 branchMid;// = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * (branchLength - 3), static_cast<Vector2>(mNodes[buildOffNode]).y - 2);
 
+		if (!mMirrorBranches)
+		{
+
+			branchLength = std::max((rand() % 10 + 9) - std::max(buildOffNode, 5), 4);
+			branchEnd = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * branchLength, static_cast<Vector2>(mNodes[buildOffNode]).y - (rand() % 5 + 3));
+			branchMid = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * (branchLength - 3), static_cast<Vector2>(mNodes[buildOffNode]).y - 2);
+
+		}
+		else
+		{
+
+			branchLength = (mNodes.size() - (buildOffNode / 2 * 2)) * 0.7;
+			
+			branchEnd = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * branchLength, static_cast<Vector2>(mNodes[buildOffNode]).y + 1);
+			branchMid = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * (branchLength - 3), static_cast<Vector2>(mNodes[buildOffNode]).y + 1);
+
+		}
+		
 		setPixel(branchEnd, mTrunkColorRamp[1]);
 		setPixel(branchMid, mTrunkColorRamp[1]);
 
-		addLine(branchEnd, branchMid + Vector2((buildOffNode % 2 == 1 ? 0 : -1), (buildOffNode % 2 == 0 ? -1 : 0)), mTrunkColorRamp[1]);
+		addLine(branchEnd, branchMid + Vector2((buildOffNode % 2 == 1 ? 0 : -1), (buildOffNode % 2 == 0 ? -1 : 0)), mTrunkColorRamp[2]);
 		addLine(branchEnd, branchMid, mTrunkColorRamp[1]);
-		addLine(branchEnd, branchMid + Vector2((buildOffNode % 2 == 0 ? 1 : 0), (buildOffNode % 2 == 0 ? 0 : -1)), mTrunkColorRamp[1]);
+		addLine(branchEnd, branchMid + Vector2((buildOffNode % 2 == 0 ? 1 : 0), (buildOffNode % 2 == 0 ? 0 : -1)), mTrunkColorRamp[0]);
 
-		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? 0 : -1), (buildOffNode % 2 == 0 ? -1 : 0)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 0), mTrunkColorRamp[1]);
-		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? 0 : -1), (buildOffNode % 2 == 0 ? -1 : 0)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 1), mTrunkColorRamp[1]);
+		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? 0 : -1), (buildOffNode % 2 == 0 ? -1 : 0)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 0), mTrunkColorRamp[2]);
+		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? 0 : -1), (buildOffNode % 2 == 0 ? -1 : 0)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 1), mTrunkColorRamp[0]);
 		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? 0 : -1), (buildOffNode % 2 == 0 ? -1 : 0)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 2), mTrunkColorRamp[1]);
-		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? 0 : -1), (buildOffNode % 2 == 0 ? -1 : 0)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 3), mTrunkColorRamp[1]);
-		addLine(branchMid, static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 0), mTrunkColorRamp[1]);
-		addLine(branchMid, static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 1), mTrunkColorRamp[1]);
+		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? 0 : -1), (buildOffNode % 2 == 0 ? -1 : 0)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 3), mTrunkColorRamp[0]);
+		addLine(branchMid, static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 0), mTrunkColorRamp[2]);
+		addLine(branchMid, static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 1), mTrunkColorRamp[0]);
 		addLine(branchMid, static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 2), mTrunkColorRamp[1]);
-		addLine(branchMid, static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 3), mTrunkColorRamp[1]);
-		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? -1 : 0), (buildOffNode % 2 == 0 ? 0 : -1)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 0), mTrunkColorRamp[1]);
-		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? -1 : 0), (buildOffNode % 2 == 0 ? 0 : -1)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 1), mTrunkColorRamp[1]);
+		addLine(branchMid, static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 3), mTrunkColorRamp[0]);
+		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? -1 : 0), (buildOffNode % 2 == 0 ? 0 : -1)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 0), mTrunkColorRamp[2]);
+		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? -1 : 0), (buildOffNode % 2 == 0 ? 0 : -1)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 1), mTrunkColorRamp[0]);
 		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? -1 : 0), (buildOffNode % 2 == 0 ? 0 : -1)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 2), mTrunkColorRamp[1]);
-		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? -1 : 0), (buildOffNode % 2 == 0 ? 0 : -1)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 3), mTrunkColorRamp[1]);
+		addLine(branchMid + Vector2((buildOffNode % 2 == 0 ? -1 : 0), (buildOffNode % 2 == 0 ? 0 : -1)), static_cast<Vector2>(mNodes[buildOffNode]) + Vector2(0, 3), mTrunkColorRamp[0]);
 	
 	
 		mLeaves.append(branchEnd);
+
+		if (mMirrorBranches)
+		{
+
+			mLeaves.append(branchMid);
+			mLeaves.append(static_cast<Vector2>(mNodes[buildOffNode]));
+		}
 	
 	
 	
 	}
 
+endBranches:;
 
 
 
+	//mLeaves.shuffle();
 	
 
 
@@ -248,16 +328,33 @@ void TreeGenerator::buildTree()
 	{
 		Vector2 currentLeaf = static_cast<Vector2>(mLeaves[i]);
 
+
+		//int size = rand() % 5 + 4;
+		//int size = std::max(std::min(rand() % int((63-currentLeaf.y) / 3) + 2, 8), 4);
+
+		int size;// = int(54 - currentLeaf.y) / 5 + 4;
+
+		if (!mMirrorBranches)
+		{
+			size = int(54 - currentLeaf.y) / 5 + 4;
+		}
+		else
+		{
+			size = 2;
+		}
+
 		//addCircle(currentLeaf, 3, 12, debugColor2);
-		sprayPixel(currentLeaf, 12, 0.7, mLeafColorRamp[0]);
-		sprayPixel(currentLeaf, 8, 0.6, mLeafColorRamp[0]);
-		sprayPixel(currentLeaf, 6, 0.6, mLeafColorRamp[0]);
+		sprayPixel(currentLeaf, floor(size * 2.0), 0.7, mLeafColorRamp[0]);
+		sprayPixel(currentLeaf, floor(size * 1.5), 0.6, mLeafColorRamp[0]);
+		sprayPixel(currentLeaf, floor(size * 1.0), 0.6, mLeafColorRamp[0]);
 
-		sprayPixel(currentLeaf + Vector2(0, 0), 12, 0.2, mLeafColorRamp[1], true);
-		sprayPixel(currentLeaf + Vector2(-2, -2), 10, 0.6, mLeafColorRamp[1]);
+		sprayPixel(currentLeaf + Vector2(0, 0), floor(size * 2.0), 0.2, mLeafColorRamp[1], true);
+		sprayPixel(currentLeaf + Vector2(-2, -2), floor(size * 1.7), 0.6, mLeafColorRamp[1]);
 
-		sprayPixel(currentLeaf + Vector2(-4, -4), 10, 0.4, mLeafColorRamp[2], true);
+		sprayPixel(currentLeaf + Vector2(-4, -4), floor(size * 1.7), 0.4, mLeafColorRamp[2], true);
 	}
+
+
 
 	
 

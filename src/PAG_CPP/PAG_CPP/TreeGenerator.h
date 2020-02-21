@@ -49,6 +49,8 @@ namespace godot
 
 		int mMinBranch;
 		int mMaxBranch;
+
+		bool mMirrorBranches;
 };
 
 }

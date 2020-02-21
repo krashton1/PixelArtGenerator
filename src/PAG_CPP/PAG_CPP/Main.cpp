@@ -55,14 +55,14 @@ void Main::_init()
 
 	// ---------------------------------------- Rocks ---------------------------------------- //
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 0; i++)
 	{
-		for (int j = 0; j < 1; j++)
+		for (int j = 0; j < 0; j++)
 		{
 			RockGenerator* rockGen = Object::cast_to<RockGenerator>(rockGenScene->instance());
 
 			rockGen->apply_scale(Vector2(0.2, 0.2));
-			rockGen->set_position(Vector2(i * 200 + 500, j * 200));
+			rockGen->set_position(Vector2(i * 200, j * 200));
 			add_child(rockGen, "rockGen" + i + j);
 			mGenerators.push_back(rockGen);
 		}
@@ -70,12 +70,17 @@ void Main::_init()
 
 
 	// ---------------------------------------- Trees ---------------------------------------- //
-
-	TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-	treeGen->apply_scale(Vector2(0.5, 0.5));
-	treeGen->set_position(Vector2(0, 0));
-	add_child(treeGen, "treeGen");
-	mGenerators.push_back(treeGen);
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+			treeGen->apply_scale(Vector2(0.2, 0.2));
+			treeGen->set_position(Vector2(i * 200, j * 200));
+			add_child(treeGen, "treeGen" + i + j);
+			mGenerators.push_back(treeGen);
+		}
+	}
 
 
 
