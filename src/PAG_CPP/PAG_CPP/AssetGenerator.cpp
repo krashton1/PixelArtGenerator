@@ -1,13 +1,13 @@
 #define _USE_MATH_DEFINES
 
-#include "ArtGenerator.h"
+#include "AssetGenerator.h"
 #include <cmath>
 #include <algorithm>
 
 namespace godot
 {
 
-ArtGenerator::ArtGenerator(Vector2 size /*= Vector2(1024,1024)*/, int numPixels /*= 64*/) 
+AssetGenerator::AssetGenerator(Vector2 size /*= Vector2(1024,1024)*/, int numPixels /*= 64*/) 
 	: mSize(size)
 	, mAssetSize(numPixels)
 	, mScreenSize(Vector2(1280, 720)) 
@@ -16,39 +16,39 @@ ArtGenerator::ArtGenerator(Vector2 size /*= Vector2(1024,1024)*/, int numPixels 
 	setup();
 }
 
-ArtGenerator::~ArtGenerator()
+AssetGenerator::~AssetGenerator()
 {
 
 }
 
-void ArtGenerator::_register_methods()
+void AssetGenerator::_register_methods()
 {
 	register_method((char*)"_ready", &_ready);
 	register_method((char*)"_draw", &_draw);
 }
 
-void ArtGenerator::_init()
+void AssetGenerator::_init()
 {
 	// Do nothing
 }
 
-void ArtGenerator::_ready()
+void AssetGenerator::_ready()
 {
 	// Do nothing
 }
 
-void ArtGenerator::_draw()
+void AssetGenerator::_draw()
 {
 	drawPixelArray();
 }
 
-void ArtGenerator::drawPixel(Vector2 pos, Color* color)
+void AssetGenerator::drawPixel(Vector2 pos, Color* color)
 {
 	Rect2 rect = Rect2(pos.x, pos.y, mPixelSize, mPixelSize);
 	draw_rect(rect, *color);
 }
 
-void ArtGenerator::drawPixelArray()
+void AssetGenerator::drawPixelArray()
 {
 	for (int i = 0; i < mAssetSize; i++) 
 	{
@@ -62,7 +62,7 @@ void ArtGenerator::drawPixelArray()
 	}
 }
 
-void ArtGenerator::setPixel(Vector2 pos, Color* color, int flag /*= 0*/)
+void AssetGenerator::setPixel(Vector2 pos, Color* color, int flag /*= 0*/)
 {
 	// flag == 0 : force pixel to be colored
 	// flag == 1 : only change pixel if it was previously colored
@@ -78,7 +78,7 @@ void ArtGenerator::setPixel(Vector2 pos, Color* color, int flag /*= 0*/)
 			mPixelArray[(int)pos.x][(int)pos.y] = color;
 }
 
-void ArtGenerator::addLine(Vector2 origin, Vector2 dest, Color* color, int flag /*= 0*/)
+void AssetGenerator::addLine(Vector2 origin, Vector2 dest, Color* color, int flag /*= 0*/)
 {
 	// flag == 0 : force pixel to be colored
 	// flag == 1 : only change pixel if it was previously colored
@@ -92,7 +92,7 @@ void ArtGenerator::addLine(Vector2 origin, Vector2 dest, Color* color, int flag 
 	}
 }
 
-void ArtGenerator::addCircle(Vector2 origin, float radius, int samples, Color* color)
+void AssetGenerator::addCircle(Vector2 origin, float radius, int samples, Color* color)
 {
 	Vector2 lastPos = origin;
 	Vector2 thisPos = origin;
@@ -110,7 +110,7 @@ void ArtGenerator::addCircle(Vector2 origin, float radius, int samples, Color* c
 	}
 }
 
-void ArtGenerator::addShape(std::vector<Vector2> points, Color* lineColor, Color* fillColor /*= nullptr*/)
+void AssetGenerator::addShape(std::vector<Vector2> points, Color* lineColor, Color* fillColor /*= nullptr*/)
 {
 	Vector2 origPt = points[0];
 
@@ -126,11 +126,11 @@ void ArtGenerator::addShape(std::vector<Vector2> points, Color* lineColor, Color
 			avgPt += pt;
 		avgPt = avgPt / points.size();
 		avgPt = Vector2(round(avgPt.x), round(avgPt.y));
-		ArtGenerator::fillColor(avgPt, fillColor);
+		AssetGenerator::fillColor(avgPt, fillColor);
 	}
 }
 
-void ArtGenerator::fillColor(Vector2 origin, Color* destColor, Color* origColor /*= nullptr*/)
+void AssetGenerator::fillColor(Vector2 origin, Color* destColor, Color* origColor /*= nullptr*/)
 {
 	if (origColor == nullptr)
 		origColor = mPixelArray[(int)origin.x][(int)origin.y];
@@ -148,7 +148,7 @@ void ArtGenerator::fillColor(Vector2 origin, Color* destColor, Color* origColor 
 		setPixel(*it, destColor);
 }
 
-void ArtGenerator::sprayPixel(Vector2 origin, float size, float intensity, Color* color /*= nullptr*/, bool paintOver /*= false*/)
+void AssetGenerator::sprayPixel(Vector2 origin, float size, float intensity, Color* color /*= nullptr*/, bool paintOver /*= false*/)
 {
 	// Circle of radius size located at origin
 	// intensity 0 means no pixels are colored
@@ -202,7 +202,7 @@ void ArtGenerator::sprayPixel(Vector2 origin, float size, float intensity, Color
 	}
 }
 
-void ArtGenerator::resetPixelArray()
+void AssetGenerator::resetPixelArray()
 {
 	for (int i = 0; i < mAssetSize; i++)
 	{
@@ -213,7 +213,7 @@ void ArtGenerator::resetPixelArray()
 	}
 }
 
-void ArtGenerator::rotatePixelArray()
+void AssetGenerator::rotatePixelArray()
 {
 	Color* newPixelArray[64][64];
 
@@ -230,11 +230,11 @@ void ArtGenerator::rotatePixelArray()
 	}
 }
 
-Array ArtGenerator::getLine(Vector2 origin, Vector2 dest)
+Array AssetGenerator::getLine(Vector2 origin, Vector2 dest)
 {
 	Array pointsOnLine;
 
-	float stepSize = 1.0f / 64;
+	float stepSize = 1.0f / 64; // todo fix this
 
 	Vector2 dir = dest - origin;
 
@@ -264,7 +264,7 @@ Array ArtGenerator::getLine(Vector2 origin, Vector2 dest)
 		coef += stepSize;
 
 		// Early out of we are outside the pixelArray
-		if (temp.x < 0.0f || temp.x >= 64 || temp.y < 0.0f || temp.y >= 64)
+		if (temp.x < 0.0f || temp.x >= 64 || temp.y < 0.0f || temp.y >= 64) // todo fix this
 			continue;
 
 		if (isVertical)
@@ -282,7 +282,7 @@ Array ArtGenerator::getLine(Vector2 origin, Vector2 dest)
 	return pointsOnLine;
 }
 
-bool ArtGenerator::compareColor(Color* color1, Color* color2)
+bool AssetGenerator::compareColor(Color* color1, Color* color2)
 {
 	if (color1 == nullptr || color2 == nullptr)
 		return false;
@@ -293,7 +293,7 @@ bool ArtGenerator::compareColor(Color* color1, Color* color2)
 	return false;
 }
 
-void ArtGenerator::addSmile()
+void AssetGenerator::addSmile()
 {
 	mPixelArray[0][1] = mDebugColor;
 	mPixelArray[0][3] = mDebugColor;
@@ -306,7 +306,7 @@ void ArtGenerator::addSmile()
 	rotatePixelArray();
 }
 
-void ArtGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNeighbours, std::set<Vector2> &toSearch, Color* origColor /*= nullptr*/)
+void AssetGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNeighbours, std::set<Vector2> &toSearch, Color* origColor /*= nullptr*/)
 {
 	int x = origin.x;
 	int y = origin.y;
@@ -354,7 +354,7 @@ void ArtGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNe
 		toSearch.erase(origin);
 }	
 
-void ArtGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vector2(1024, 1024)*/, int numPixels /*= 64*/)
+void AssetGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vector2(1024, 1024)*/, int numPixels /*= 64*/)
 {
 	mPosition = pos;
 	mSize = size;

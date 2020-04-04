@@ -34,7 +34,7 @@ namespace godot
 	//	, mMirrorBranches(true)
 
 TreeGenerator::TreeGenerator()
-	: ArtGenerator()
+	: AssetGenerator()
 	, mMinHeight(32)
 	, mMaxHeight(44)
 	, mMinNodes(6)
@@ -46,6 +46,7 @@ TreeGenerator::TreeGenerator()
 	, mMaxBranch(5)
 	, mMirrorBranches(false)
 {
+	//setup(Vector2(0, 0), Vector2(1024,1024), 32);
 	setup();
 	buildTree();
 }
@@ -57,7 +58,7 @@ TreeGenerator::~TreeGenerator()
 
 void TreeGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vector2(1024, 1024)*/, int numPixels /*= 64*/)
 {
-	ArtGenerator::setup(pos, size, numPixels);
+	AssetGenerator::setup(pos, size, numPixels);
 
 	mDebugColor = new Color(1, 0, 0);
 	mColorRamp.push_back(new Color(0.20, 0.20, 0.20));
@@ -92,7 +93,7 @@ void TreeGenerator::_init()
 
 void TreeGenerator::_draw()
 {
-	ArtGenerator::_draw();
+	AssetGenerator::_draw();
 }
 
 void TreeGenerator::buildTree()
@@ -112,7 +113,7 @@ void TreeGenerator::buildTree()
 	int lastHeight = 0;
 	int thisHeight = 0;
 
-	float maxWidth = 5; // width of base of trunk
+	float maxWidth = mAssetSize/12.8; // width of base of trunk
 
 
 	for (int i = 0; i < numNodes; i++)
@@ -217,8 +218,8 @@ void TreeGenerator::buildTree()
 
 
 
-	sprayPixel(Vector2(31, 31), 32, 0.1, mTrunkColorRamp[2], true);
-	sprayPixel(Vector2(31, 31), 32, 0.1, mTrunkColorRamp[0], true);
+	sprayPixel(Vector2(mAssetSize / 2 - 1, mAssetSize / 2 - 1), mAssetSize / 2, 0.1, mTrunkColorRamp[2], true);
+	sprayPixel(Vector2(mAssetSize / 2 - 1, mAssetSize / 2 - 1), mAssetSize / 2, 0.1, mTrunkColorRamp[0], true);
 
 
 
@@ -336,7 +337,7 @@ endBranches:;
 
 		if (!mMirrorBranches)
 		{
-			size = int(54 - currentLeaf.y) / 5 + 4;
+			size = int(mAssetSize * 0.84 - currentLeaf.y) / 5 + mAssetSize / 16;
 		}
 		else
 		{

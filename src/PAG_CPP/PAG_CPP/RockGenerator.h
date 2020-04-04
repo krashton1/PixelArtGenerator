@@ -1,10 +1,10 @@
 #pragma once
-#include "ArtGenerator.h"
+#include "AssetGenerator.h"
 
 namespace godot
 {
 
-	class RockGenerator : public ArtGenerator
+	class RockGenerator : public AssetGenerator
 	{
 		GODOT_CLASS(RockGenerator, Node2D)
 

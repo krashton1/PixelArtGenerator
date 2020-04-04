@@ -24,7 +24,12 @@ _global_script_classes=[ {
 "language": "NativeScript",
 "path": "res://RockGenerator.gdns"
 }, {
-"base": "",
+"base": "Node2D",
+"class": "SceneGenerator",
+"language": "NativeScript",
+"path": "res://SceneGenerator.gdns"
+}, {
+"base": "Node2D",
 "class": "TreeGenerator",
 "language": "NativeScript",
 "path": "res://TreeGenerator.gdns"
@@ -33,6 +38,7 @@ _global_script_class_icons={
 "Main": "",
 "Player": "",
 "RockGenerator": "",
+"SceneGenerator": "",
 "TreeGenerator": ""
 }
 
@@ -49,5 +55,4 @@ window/size/height=720
 
 [rendering]
 
-environment/default_clear_color=Color( 1, 0.784314, 0.65098, 1 )
 environment/default_environment="res://default_env.tres"

@@ -8,7 +8,7 @@ namespace godot
 {
 
 RockGenerator::RockGenerator()
-	: ArtGenerator()
+	: AssetGenerator()
 	, mMinPts(8)
 	, mMaxPts(12)
 	, mMinRadius(18)
@@ -35,12 +35,12 @@ void RockGenerator::_init()
 
 void RockGenerator::_draw()
 {
-	ArtGenerator::_draw();
+	AssetGenerator::_draw();
 }
 
 void RockGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vector2(1024, 1024)*/, int numPixels /*= 64*/)
 {
-	ArtGenerator::setup(pos, size, numPixels);
+	AssetGenerator::setup(pos, size, numPixels);
 
 	mColorRamp.push_back(new Color(0.20, 0.20, 0.20));
 	mColorRamp.push_back(new Color(0.30, 0.30, 0.30));

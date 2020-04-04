@@ -11,13 +11,13 @@
 namespace godot
 {
 
-	class ArtGenerator : public Node2D
+	class AssetGenerator : public Node2D
 	{
-		GODOT_CLASS(ArtGenerator, Node2D)
+		GODOT_CLASS(AssetGenerator, Node2D)
 
 	public:
-		ArtGenerator(Vector2 size = Vector2(1024,1024), int numPixels = 64);
-		~ArtGenerator();
+		AssetGenerator(Vector2 size = Vector2(1024,1024), int numPixels = 64);
+		~AssetGenerator();
 
 		virtual void setup(Vector2 pos = Vector2(0, 0), Vector2 size = Vector2(1024, 1024), int numPixels = 64);
 

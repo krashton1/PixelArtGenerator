@@ -182,18 +182,20 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ArtGenerator.cpp" />
+    <ClCompile Include="AssetGenerator.cpp" />
     <ClCompile Include="GodotLibrary.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="RockGenerator.cpp" />
+    <ClCompile Include="SceneGenerator.cpp" />
     <ClCompile Include="TreeGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ArtGenerator.h" />
+    <ClInclude Include="AssetGenerator.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RockGenerator.h" />
+    <ClInclude Include="SceneGenerator.h" />
     <ClInclude Include="TreeGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

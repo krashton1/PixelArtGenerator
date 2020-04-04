@@ -17,7 +17,7 @@ func _ready():
 	randomize()
 	buildColorPalette()
 	
-	var artGenerator = preload("res://ArtGenerator.tscn")
+	var assetGenerator = preload("res://AssetGenerator.tscn")
 	var playerScene = preload("res://Player.tscn")
 	var player = playerScene.instance()
 	add_child(player)
@@ -54,10 +54,10 @@ func _ready():
 #
 #
 #
-#
-	var lineGenerator = artGenerator.instance()
-	add_child(lineGenerator)
-	lineGenerator.set_name("lineGen")
+##
+#	var lineGenerator = artGenerator.instance()
+#	add_child(lineGenerator)
+#	lineGenerator.set_name("lineGen")
 ##	lineGenerator.setup(0, Vector2(1280,720), 3.5, 64, colorPalette)
 #	lineGenerator.position = Vector2(1000,0)
 #	lineGenerator.addLine(Vector2(0,0),Vector2(63,63))

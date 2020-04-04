@@ -38,14 +38,17 @@ void Main::_register_methods()
 
 void Main::_init()
 {
-	Ref<PackedScene> artGenScene = ResourceLoader::get_singleton()->load("res://ArtGenerator.tscn");
+	Ref<PackedScene> artGenScene = ResourceLoader::get_singleton()->load("res://AssetGenerator.tscn");
 	Ref<PackedScene> rockGenScene = ResourceLoader::get_singleton()->load("res://RockGenerator.tscn");
 	Ref<PackedScene> treeGenScene = ResourceLoader::get_singleton()->load("res://TreeGenerator.tscn");
 
 
+
+
+
 	// ---------------------------------------- Art ---------------------------------------- //
 
-	ArtGenerator* smileGen = Object::cast_to<ArtGenerator>(artGenScene->instance());
+	AssetGenerator* smileGen = Object::cast_to<AssetGenerator>(artGenScene->instance());
 	smileGen->addSmile();
 	smileGen->set_position(Vector2(700, 0));
 	smileGen->apply_scale(Vector2(0.2, 0.2));
@@ -70,9 +73,9 @@ void Main::_init()
 
 
 	// ---------------------------------------- Trees ---------------------------------------- //
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; 0 < 0; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < 0; j++)
 		{
 			TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
 			treeGen->apply_scale(Vector2(0.2, 0.2));
@@ -81,6 +84,24 @@ void Main::_init()
 			mGenerators.push_back(treeGen);
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+	Ref<PackedScene> sceneGenScene = ResourceLoader::get_singleton()->load("res://SceneGenerator.tscn");
+
+	SceneGenerator* sceneGen = Object::cast_to<SceneGenerator>(sceneGenScene->instance());
+	add_child(sceneGen, "sceneGen");
+	mSceneGenerator = sceneGen;
+
+
 
 
 
@@ -101,20 +122,26 @@ void Main::_process()
 	// Rebuild all rocks whenever 'right' is pressed
 	if (Input::get_singleton()->is_action_just_pressed("ui_right"))
 	{
-		for (ArtGenerator* artGen : mGenerators)
-		{
-			if (RockGenerator* rockGen = dynamic_cast<RockGenerator*>(artGen))
-			{
-				rockGen->buildRock();
-				rockGen->update();
-			}
+		//for (AssetGenerator* artGen : mGenerators)
+		//{
+		//	if (RockGenerator* rockGen = dynamic_cast<RockGenerator*>(artGen))
+		//	{
+		//		rockGen->buildRock();
+		//		rockGen->update();
+		//	}
 
-			if (TreeGenerator* treeGen = dynamic_cast<TreeGenerator*>(artGen))
-			{
-				treeGen->buildTree();
-				treeGen->update();
-			}
-		}
+		//	if (TreeGenerator* treeGen = dynamic_cast<TreeGenerator*>(artGen))
+		//	{
+		//		treeGen->buildTree();
+		//		treeGen->update();
+		//	}
+		//}
+
+
+		mSceneGenerator->setDistance(mSceneGenerator->getDistance() + 0.01);
+		mSceneGenerator->updateDistance();
+		mSceneGenerator->update();
+
 	}
 }
 

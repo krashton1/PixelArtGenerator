@@ -2,9 +2,12 @@
 
 #include <core/Godot.hpp>
 #include <Node2D.hpp>
-#include "ArtGenerator.h"
+#include "AssetGenerator.h"
 #include "RockGenerator.h"
 #include "TreeGenerator.h"
+
+#include "SceneGenerator.h"
+
 #include <vector>
 
 namespace godot
@@ -26,7 +29,8 @@ namespace godot
 
 	private:
 
-		std::vector<ArtGenerator*> mGenerators;
+		std::vector<AssetGenerator*> mGenerators;
+		SceneGenerator* mSceneGenerator;
 
 	};
 
