@@ -162,7 +162,7 @@ void AssetGenerator::sprayPixel(Vector2 origin, float size, float intensity, Col
 	{
 		for (int y = start.y; y <= origin.y + size; y++)
 		{
-			if (x < 0 || x > 63 || y < 0 || y > 63)
+			if (x < 0 || x > mAssetSize || y < 0 || y > mAssetSize)
 				continue;
 
 			float dist = std::sqrt(std::pow(x - origin.x, 2) + std::pow(y- origin.y, 2));
@@ -234,7 +234,7 @@ Array AssetGenerator::getLine(Vector2 origin, Vector2 dest)
 {
 	Array pointsOnLine;
 
-	float stepSize = 1.0f / 64; // todo fix this
+	float stepSize = 1.0f / mAssetSize; // todo fix this
 
 	Vector2 dir = dest - origin;
 
@@ -264,7 +264,7 @@ Array AssetGenerator::getLine(Vector2 origin, Vector2 dest)
 		coef += stepSize;
 
 		// Early out of we are outside the pixelArray
-		if (temp.x < 0.0f || temp.x >= 64 || temp.y < 0.0f || temp.y >= 64) // todo fix this
+		if (temp.x < 0.0f || temp.x >= mAssetSize || temp.y < 0.0f || temp.y >= mAssetSize) // todo fix this
 			continue;
 
 		if (isVertical)

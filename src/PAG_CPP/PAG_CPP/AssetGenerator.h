@@ -40,8 +40,8 @@ namespace godot
 		void rotatePixelArray();
 
 		// Helper Functions
-		static Array getLine(Vector2 origin, Vector2 dest);
-		static bool compareColor(Color* color1, Color* color2);
+		Array getLine(Vector2 origin, Vector2 dest);
+		bool compareColor(Color* color1, Color* color2);
 
 		// Debug Pixel Array Functions
 		void addSmile();

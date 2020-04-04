@@ -3,6 +3,8 @@
 #include <PackedScene.hpp>
 #include "TreeGenerator.h"
 
+#include <cmath>
+
 namespace godot
 {
 
@@ -11,10 +13,53 @@ namespace godot
 		, mPixelSize(pixelSize)
 		, mDistance(0.0f)
 	{
+		// Screen size in pixels
 		mScreenSizePixel = Vector2(mScreenSize.x / mPixelSize, mScreenSize.y / mPixelSize);
+		
+		// The y position between bands
+		mBandPos[0]  = (mScreenSizePixel.y / 10.0f * 2.50f * mPixelSize) - mPixelSize;
+		mBandPos[1]  = (mScreenSizePixel.y / 10.0f * 2.50f * mPixelSize) - mPixelSize;
+		mBandPos[2]  = (mScreenSizePixel.y / 10.0f * 2.75f * mPixelSize) - mPixelSize;
+		mBandPos[3]  = (mScreenSizePixel.y / 10.0f * 3.00f * mPixelSize) - mPixelSize;
+		mBandPos[4]  = (mScreenSizePixel.y / 10.0f * 3.25f * mPixelSize) - mPixelSize;
+		mBandPos[5]  = (mScreenSizePixel.y / 10.0f * 3.60f * mPixelSize) - mPixelSize;
+		mBandPos[6]  = (mScreenSizePixel.y / 10.0f * 4.10f * mPixelSize) - mPixelSize;
+		mBandPos[7]  = (mScreenSizePixel.y / 10.0f * 4.80f * mPixelSize) - mPixelSize;
+		mBandPos[8]  = (mScreenSizePixel.y / 10.0f * 5.70f * mPixelSize) - mPixelSize;
+		mBandPos[9]  = (mScreenSizePixel.y / 10.0f * 6.80f * mPixelSize) - mPixelSize;
+		mBandPos[10]  = (mScreenSizePixel.y / 10.0f * 8.10f * mPixelSize) - mPixelSize;
+		mBandPos[11] = (mScreenSizePixel.y / 10.0f * 10.0f * mPixelSize) - mPixelSize;
+
+		// Make boundary between bands not interupt pixels
+		for (int i = 0; i < 12; i++)
+		{
+			mBandPos[i] = mBandPos[i] - (fmod(mBandPos[i], mPixelSize));
+		}
+
+
+
+		// Scroll speed of each band in order to create parralax effect
+		mBandScrollSpeed[0] = 0.00f; 
+		mBandScrollSpeed[1] = 1.0f;
+		mBandScrollSpeed[2] = 1.5f;
+		mBandScrollSpeed[3] = 1.65f;
+		mBandScrollSpeed[4] = 1.8f;
+		mBandScrollSpeed[5] = 2.0f;
+		mBandScrollSpeed[6] = 2.3f; 
+		mBandScrollSpeed[7] = 2.8f; 
+		mBandScrollSpeed[8] = 3.4f;
+		mBandScrollSpeed[9] = 4.2f; 
+		mBandScrollSpeed[10] = 5.0f; 
+		mBandScrollSpeed[11] = 6.4f; 
+
+		// Current position of each band, since we recycle the bands
+		for (int i = 0; i < 12; i++)
+		{
+			mBandCurPos[i] = 0.0f;
+		}
+		
+
 		setup();
-
-
 
 	}
 
@@ -31,7 +76,139 @@ namespace godot
 
 	void SceneGenerator::_init()
 	{
-		// Do nothing
+		Ref<PackedScene> treeGenScene = ResourceLoader::get_singleton()->load("res://TreeGenerator.tscn");
+
+
+
+
+
+
+
+
+		TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		treeGen->apply_scale(Vector2(0.03, 0.03));
+		add_child(treeGen);
+
+		Asset newAsset;
+		newAsset.band = 2;
+		newAsset.bandPos = 160;
+		newAsset.asset = treeGen;
+
+		mAssets.push_back(newAsset);
+
+
+		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		treeGen->apply_scale(Vector2(0.05, 0.05));
+		add_child(treeGen);
+
+		newAsset;
+		newAsset.band = 3;
+		newAsset.bandPos = 160;
+		newAsset.asset = treeGen;
+
+		mAssets.push_back(newAsset);
+
+
+		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		treeGen->apply_scale(Vector2(0.05, 0.05));
+		add_child(treeGen);
+
+		newAsset;
+		newAsset.band = 4;
+		newAsset.bandPos = 160;
+		newAsset.asset = treeGen;
+
+		mAssets.push_back(newAsset);
+
+
+		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		treeGen->apply_scale(Vector2(0.08, 0.08));
+		add_child(treeGen);
+
+		newAsset;
+		newAsset.band = 5;
+		newAsset.bandPos = 160;
+		newAsset.asset = treeGen;
+
+		mAssets.push_back(newAsset);
+
+
+		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		treeGen->apply_scale(Vector2(0.12, 0.12));
+		add_child(treeGen);
+
+		newAsset;
+		newAsset.band = 6;
+		newAsset.bandPos = 160;
+		newAsset.asset = treeGen;
+
+		mAssets.push_back(newAsset);
+
+
+		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		treeGen->apply_scale(Vector2(0.17, 0.17));
+		add_child(treeGen);
+
+		newAsset;
+		newAsset.band = 7;
+		newAsset.bandPos = 160;
+		newAsset.asset = treeGen;
+
+		mAssets.push_back(newAsset);
+
+
+		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		treeGen->apply_scale(Vector2(0.23, 0.23));
+		add_child(treeGen);
+
+		newAsset;
+		newAsset.band = 8;
+		newAsset.bandPos = 160;
+		newAsset.asset = treeGen;
+
+		mAssets.push_back(newAsset);
+
+
+		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		treeGen->apply_scale(Vector2(0.30, 0.30));
+		add_child(treeGen);
+
+		newAsset;
+		newAsset.band = 9;
+		newAsset.bandPos = 160;
+		newAsset.asset = treeGen;
+
+		mAssets.push_back(newAsset);
+
+
+		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		treeGen->apply_scale(Vector2(0.38, 0.38));
+		add_child(treeGen);
+
+		newAsset;
+		newAsset.band = 10;
+		newAsset.bandPos = 160;
+		newAsset.asset = treeGen;
+
+		mAssets.push_back(newAsset);
+
+
+
+
+
+		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		treeGen->apply_scale(Vector2(0.45, 0.45));
+		add_child(treeGen);
+
+		newAsset.band = 11;
+		newAsset.bandPos = 160;
+		newAsset.asset = treeGen;
+
+		mAssets.push_back(newAsset);
+
+
+
+		
 	}
 
 	void SceneGenerator::_ready()
@@ -42,225 +219,53 @@ namespace godot
 	void SceneGenerator::_draw()
 	{
 		//drawPixel(Vector2(30, 30), new Color(1, 0, 0));
-		Ref<PackedScene> treeGenScene = ResourceLoader::get_singleton()->load("res://TreeGenerator.tscn");
-
-
-
-		float bandPos[11] = {
-			0,
-			mScreenSizePixel.y / 10 * 2.5,
-			mScreenSizePixel.y / 10 * 2.75,
-			mScreenSizePixel.y / 10 * 3,
-			mScreenSizePixel.y / 10 * 3.25,
-			mScreenSizePixel.y / 10 * 3.6,
-			mScreenSizePixel.y / 10 * 4.1,
-			mScreenSizePixel.y / 10 * 4.8,
-			mScreenSizePixel.y / 10 * 5.7,
-			mScreenSizePixel.y / 10 * 6.8,
-			mScreenSizePixel.y / 10 * 8.1,
-		};
+		
 
 		// Draw bands from each layer (so objects from each layer overlap)
 
-		int i = 0;
-		for (std::vector<std::vector<Color*>> band : mLayerGrounds)
+		for (int i = 0; i < mBands.size(); i++)
 		{
-			for (int x = 0; x < band.size(); x++)
+			for (int x = 0; x < mBands[i].size(); x++)
 			{
-				for (int y = 0; y < band[x].size(); y++)
+				//int shiftX = (x + int(mBandCurPos[i])) % mBands[i].size();
+				int newX = (x - int(mBandCurPos[i]));
+				while (newX < 0)
+					newX += mBands[i].size();
+				newX = newX % mBands[i].size();
+
+				for (int y = 0; y < mBands[i][x].size(); y++)
 				{
-					drawPixel(Vector2(x, y + bandPos[i]), band[x][y]);
+					drawPixel(Vector2(newX, y + (i == 0 ? 0 : mBandPos[i-1]) / mPixelSize), mBands[i][x][y]);
 				}
 			}
-			i++;
+		}
+
+		
+		for (Asset curAsset : mAssets)
+		{
+
+			//int x = int(((curAsset.bandPos - int(mBandCurPos[curAsset.band]))) * mPixelSize);
+			int x = (curAsset.bandPos - int(mBandCurPos[curAsset.band])) * mPixelSize - (curAsset.asset->get_scale().x * 1024 / 2.0);
+			int y = (mBandPos[curAsset.band] + mBandPos[curAsset.band - 1]) / 2 - (curAsset.asset->get_scale().y * 1024);
+
+			curAsset.asset->set_position(Vector2(
+				x - (x % mPixelSize),
+				y - (y % mPixelSize)
+			));
 		}
 
 
-		//// Draw Layer 10 (Sky)
 
-		//int skyBound = mScreenSizePixel.y / 4;
-
-		//for (int y = 0; y < skyBound; y++)
-		//{
-		//	for (int x = 0; x < mScreenSizePixel.x; x++)
-		//	{
-		//		//drawPixel(Vector2(x, y), new Color(0, 0.5, 1.0));
-		//	}
-		//}
-
-		//// Add Sun
-		//// Add Clouds
-
-		//// Draw Layer 9 (Background)
-
-		//for (int i = 0; i < 10; i++)
-		//{
-		//	drawLine(Vector2(mScreenSizePixel.x / 10 * (i), skyBound), Vector2(mScreenSizePixel.x / 10 * (i + 0.5), skyBound / 2), new Color(1.0, 0.3, 0.3), 0);
-		//	drawLine(Vector2(mScreenSizePixel.x / 10 * (i + 0.5), skyBound / 2), Vector2(mScreenSizePixel.x / 10 * (i + 1), skyBound), new Color(1.0, 0.3, 0.3), 0);
-
-		//}
-
-
-
-		//
-
-		//// Draw Layer 8 (Object Layer)
-
-		//for (int i = 0; i < 1; i++)
-		//{
-		//	TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//	treeGen->apply_scale(Vector2(0.03, 0.03));
-		//	treeGen->set_position(Vector2(mScreenSizePixel.x / 10 * 0 * mPixelSize, mScreenSizePixel.y / 10 * 2.75 * mPixelSize - treeGen->get_scale().y * 1024));
-		//	add_child(treeGen);
-		//}
-
-		//// Draw Layer 7 (Object Layer)
-
-		//for (int i = 0; i < 1; i++)
-		//{
-		//	TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//	treeGen->apply_scale(Vector2(0.05, 0.05));
-		//	treeGen->set_position(Vector2(mScreenSizePixel.x / 10 * 0.5 * mPixelSize, mScreenSizePixel.y / 10 * 3 * mPixelSize - treeGen->get_scale().y * 1024));
-		//	add_child(treeGen);
-		//}
-
-		//// Draw Layer 6 (Object Layer)
-
-		//for (int i = 0; i < 1; i++)
-		//{
-		//	TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//	treeGen->apply_scale(Vector2(0.08, 0.08));
-		//	treeGen->set_position(Vector2(mScreenSizePixel.x / 10 * 1 * mPixelSize, mScreenSizePixel.y / 10 * 3.25 * mPixelSize - treeGen->get_scale().y * 1024));
-		//	add_child(treeGen);
-		//}
-
-		//// Draw Layer 5 (Object Layer)
-
-		//for (int i = 0; i < 1; i++)
-		//{
-		//	TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//	treeGen->apply_scale(Vector2(0.12, 0.12));
-		//	treeGen->set_position(Vector2(mScreenSizePixel.x / 10 * 1.5 * mPixelSize, mScreenSizePixel.y / 10 * 3.6 * mPixelSize - treeGen->get_scale().y * 1024));
-		//	add_child(treeGen);
-		//}
-
-		//// Draw Layer 4 (Object Layer)
-
-		//for (int i = 0; i < 1; i++)
-		//{
-		//	TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//	treeGen->apply_scale(Vector2(0.17, 0.17));
-		//	treeGen->set_position(Vector2(mScreenSizePixel.x / 10 * 2 * mPixelSize, mScreenSizePixel.y / 10 * 4.1 * mPixelSize - treeGen->get_scale().y * 1024));
-		//	add_child(treeGen);
-		//}
-
-		//// Draw Layer 3 (Object Layer)
-
-		//for (int i = 0; i < 1; i++)
-		//{
-		//	TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//	treeGen->apply_scale(Vector2(0.23, 0.23));
-		//	treeGen->set_position(Vector2(mScreenSizePixel.x / 10 * 2.8 * mPixelSize, mScreenSizePixel.y / 10 * 4.8 * mPixelSize - treeGen->get_scale().y * 1024));
-		//	add_child(treeGen);
-		//}
-
-		//// Draw Layer 2 (Object Layer)
-
-		//for (int i = 0; i < 1; i++)
-		//{
-		//	TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//	treeGen->apply_scale(Vector2(0.30, 0.30));
-		//	treeGen->set_position(Vector2(mScreenSizePixel.x / 10 * 4 * mPixelSize, mScreenSizePixel.y / 10 * 5.7 * mPixelSize - treeGen->get_scale().y * 1024));
-		//	add_child(treeGen);
-		//}
-
-		//// Draw Layer 1 (Object Layer)
-
-		//for (int i = 0; i < 1; i++)
-		//{
-		//	TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//	treeGen->apply_scale(Vector2(0.38, 0.38));
-		//	treeGen->set_position(Vector2(mScreenSizePixel.x / 10 * 5 * mPixelSize, mScreenSizePixel.y / 10 * 6.8 * mPixelSize - treeGen->get_scale().y * 1024));
-		//	add_child(treeGen);
-		//}
-
-		//// Draw Layer 0 (Foreground)
-
-		//for (int i = 0; i < 1; i++)
-		//{
-		//	TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//	treeGen->apply_scale(Vector2(0.45, 0.45));
-		//	treeGen->set_position(Vector2(mScreenSizePixel.x / 10 * 6.5 * mPixelSize, mScreenSizePixel.y / 10 * 8.1 * mPixelSize - treeGen->get_scale().y * 1024));
-		//	add_child(treeGen);
-		//}
 	}
 
 	void SceneGenerator::updateDistance()
 	{
 
-
-
-		float bandPos[11] = {
-			mScreenSizePixel.y / 10 * 2.5 * mPixelSize,
-			mScreenSizePixel.y / 10 * 2.75 * mPixelSize,
-			mScreenSizePixel.y / 10 * 3 * mPixelSize,
-			mScreenSizePixel.y / 10 * 3.25 * mPixelSize,
-			mScreenSizePixel.y / 10 * 3.6 * mPixelSize,
-			mScreenSizePixel.y / 10 * 4.1 * mPixelSize,
-			mScreenSizePixel.y / 10 * 4.8 * mPixelSize,
-			mScreenSizePixel.y / 10 * 5.7 * mPixelSize,
-			mScreenSizePixel.y / 10 * 6.8 * mPixelSize,
-			mScreenSizePixel.y / 10 * 8.1 * mPixelSize,
-			mScreenSizePixel.y / 10 * 10 * mPixelSize
-		};
-
-
-
-
 		if (mDistance != 0.0)
 		{
-			for (int x = 1; x < mLayerGrounds[0].size(); x++)
+			for (int i = 0; i < 12; i++)
 			{
-				mLayerGrounds[0][x - 1] = mLayerGrounds[0][x];
-			}
-
-			std::vector<Color*> tempCol;
-			for (int y = 0; y < bandPos[0]; y++)
-			{
-				int r = rand() % 2;
-
-				if (r == 0)
-					tempCol.push_back(new Color(0, 0.5, 1));
-				else
-					tempCol.push_back(new Color(0, 0.3, 0.9));
-			}
-
-			mLayerGrounds[0][mLayerGrounds[0].size()-1] = tempCol;
-			
-
-
-
-
-			for (int i = 1; i < mLayerGrounds.size(); i++)
-			{
-				for (int x = 1; x < mLayerGrounds[i].size(); x++)
-				{
-					mLayerGrounds[i][x - 1] = mLayerGrounds[i][x];
-				}
-				
-
-				std::vector<Color*> tempCol;
-				for (int y = bandPos[i]; y < bandPos[i + 1]; y++)
-				{
-					int r = rand() % 2;
-
-					if (r == 0)
-						tempCol.push_back(new Color(0, 0.5, 0));
-					else
-						tempCol.push_back(new Color(0, 0.3, 0));
-				}
-
-				mLayerGrounds[i][mLayerGrounds[i].size()-1] = tempCol;
+				mBandCurPos[i] += 1 * mBandScrollSpeed[i];
 			}
 		}
 
@@ -269,72 +274,84 @@ namespace godot
 
 	void SceneGenerator::setup()
 	{
+
+		Ref<PackedScene> treeGenScene = ResourceLoader::get_singleton()->load("res://TreeGenerator.tscn");
+
+
 		// Create sky tex
-
-
-		float bandPos[11] = {
-			mScreenSizePixel.y / 10 * 2.5 * mPixelSize,
-			mScreenSizePixel.y / 10 * 2.75 * mPixelSize,
-			mScreenSizePixel.y / 10 * 3 * mPixelSize,
-			mScreenSizePixel.y / 10 * 3.25 * mPixelSize,
-			mScreenSizePixel.y / 10 * 3.6 * mPixelSize,
-			mScreenSizePixel.y / 10 * 4.1 * mPixelSize,
-			mScreenSizePixel.y / 10 * 4.8 * mPixelSize,
-			mScreenSizePixel.y / 10 * 5.7 * mPixelSize,
-			mScreenSizePixel.y / 10 * 6.8 * mPixelSize,
-			mScreenSizePixel.y / 10 * 8.1 * mPixelSize,
-			mScreenSizePixel.y / 10 * 10 * mPixelSize
-		};
 
 		std::vector<std::vector<Color*>> skyTex;
 
 		for (int x = 0; x < mScreenSizePixel.x; x++)
 		{
 			std::vector<Color*> tempCol;
-			for (int y = 0; y < bandPos[0] / 4; y++)
+			for (int y = 0; y < mBandPos[0] / 4; y++)
 			{
 				int r = rand() % 2;
 
 				if (r == 0)
-					tempCol.push_back(new Color(0, 0.5, 1));
+					tempCol.push_back(new Color(.075, 0.705, 0.940));
 				else
-					tempCol.push_back(new Color(0, 0.3, 0.9));
+					tempCol.push_back(new Color(.075, 0.685, 0.910));
 			}
 
 			skyTex.push_back(tempCol);
 		}
 
-		mLayerGrounds.push_back(skyTex);
+		mBands.push_back(skyTex);
+
+
+		// Create background tex (this will be empty, bc sky tex meets ground tex. But background objects will be held in this band instead of sky band, since they scroll at a diff speed
+
+		std::vector<std::vector<Color*>> backgroundTex;
+		mBands.push_back(backgroundTex);
+
+
 
 
 
 		// Create ground textures
 
-
-		for (int i = 1; i < 10; i++)
+		for (int i = 2; i < 12; i++)
 		{
-
-
 			std::vector<std::vector<Color*>> bandTex;
 
 			for (int x = 0; x < mScreenSizePixel.x; x++)
 			{
 				std::vector<Color*> tempCol;
-				for (int y = bandPos[i-1]; y < bandPos[i]; y++)
+				for (int y = mBandPos[i-1]; y < mBandPos[i]; y++)
 				{
 					int r = rand() % 2;
 
 					if (r == 0)
-						tempCol.push_back(new Color(0, 0.5, 0));
+						tempCol.push_back(new Color(0.2, 0.6, 0.2));
 					else
-						tempCol.push_back(new Color(0, 0.3, 0));
+						tempCol.push_back(new Color(0.2, 0.5, 0.2));
 				}
 
 				bandTex.push_back(tempCol);
 			}
 
-			mLayerGrounds.push_back(bandTex);
+			mBands.push_back(bandTex);
 		}
+
+
+
+		// Create Objects
+
+		// Draw Layer 10 (Sky)
+
+		// Add Sun
+		// Add Clouds
+
+		// Draw Layer 9 (Background)
+
+		//for (int i = 0; i < 10; i++)
+		//{
+		//	drawLine(Vector2(mScreenSizePixel.x / 10 * (i), skyBound), Vector2(mScreenSizePixel.x / 10 * (i + 0.5), skyBound / 2), new Color(1.0, 0.3, 0.3), 0);
+		//	drawLine(Vector2(mScreenSizePixel.x / 10 * (i + 0.5), skyBound / 2), Vector2(mScreenSizePixel.x / 10 * (i + 1), skyBound), new Color(1.0, 0.3, 0.3), 0);
+		//}
+
 	}
 
 	void SceneGenerator::drawPixel(Vector2 pos, Color* color)

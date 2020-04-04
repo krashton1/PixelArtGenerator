@@ -6,6 +6,8 @@
 #include <list>
 #include <set>
 
+#include "AssetGenerator.h"
+
 
 
 namespace godot
@@ -40,7 +42,8 @@ namespace godot
 
 	private:
 
-		struct mBiomeBlend
+
+		struct BiomeBlend
 		{
 			float grass = 1.0;
 			float darkGrass = 0.0f;
@@ -49,27 +52,28 @@ namespace godot
 			float rocky = 0.0f;
 		};
 
-		struct mLayerScrollSpeed
-		{
-			float layer0 = 1.0; //foreground
-			float layer1 = 0.9;
-			float layer2 = 0.8;
-			float layer3 = 0.7;
-			float layer4 = 0.6;
-			float layer5 = 0.5; 
-			float layer6 = 0.4; 
-			float layer7 = 0.3;
-			float layer8 = 0.2; 
-			float layer9 = 0.1; //background
-			float layer10 = 0.0; //sky
 
+		struct Asset
+		{
+			int band;
+			int bandPos;
+			AssetGenerator* asset;
 		};
 
-		std::vector<std::vector<std::vector<Color*>>> mLayerGrounds;
+
+		float mBandPos[12]; // the y pos on screen of layer boundaries
+
+		float mBandScrollSpeed[12];
+		float mBandCurPos[12]; // the current left side of a band
+
+		std::vector<std::vector<std::vector<Color*>>> mBands;
 
 		Vector2 mScreenSize;
 		Vector2 mScreenSizePixel;
+
 		int mPixelSize;
+
+		std::vector<Asset> mAssets;
 
 
 

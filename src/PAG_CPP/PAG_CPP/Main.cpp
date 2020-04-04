@@ -1,3 +1,5 @@
+
+
 #include "Main.h"
 #include <windows.h>
 #include <OS.hpp>
@@ -120,7 +122,7 @@ void Main::_draw()
 void Main::_process()
 {
 	// Rebuild all rocks whenever 'right' is pressed
-	if (Input::get_singleton()->is_action_just_pressed("ui_right"))
+	if (Input::get_singleton()->is_action_pressed("ui_right"))
 	{
 		//for (AssetGenerator* artGen : mGenerators)
 		//{

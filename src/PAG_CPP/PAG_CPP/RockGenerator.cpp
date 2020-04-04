@@ -101,7 +101,7 @@ void RockGenerator::buildRock()
 	// Create faces through body of rock
 	for (int i = 0; i < rand()%2 + 3; i++)
 	{
-		Array pointsOnLine = getLine(mPoints[(rand() % (mPoints.size()-2) + 1)], Vector2(rand() % 20 + 21, 63));
+		Array pointsOnLine = getLine(mPoints[(rand() % (mPoints.size()-2) + 1)], Vector2(rand() % 20 + 21, mAssetSize));
 		for (int j = 1; j < pointsOnLine.size(); j++)
 		{
 			sprayPixel(pointsOnLine[j], 6, .04, mColorRamp[2], true);
