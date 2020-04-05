@@ -1,7 +1,9 @@
 #include "SceneGenerator.h"
 #include <ResourceLoader.hpp>
 #include <PackedScene.hpp>
+#include "AssetGenerator.h"
 #include "TreeGenerator.h"
+#include "RockGenerator.h"
 
 #include <cmath>
 
@@ -41,16 +43,16 @@ namespace godot
 		// Scroll speed of each band in order to create parralax effect
 		mBandScrollSpeed[0] = 0.00f; 
 		mBandScrollSpeed[1] = 1.0f;
-		mBandScrollSpeed[2] = 1.5f;
-		mBandScrollSpeed[3] = 1.65f;
-		mBandScrollSpeed[4] = 1.8f;
-		mBandScrollSpeed[5] = 2.0f;
-		mBandScrollSpeed[6] = 2.3f; 
-		mBandScrollSpeed[7] = 2.8f; 
-		mBandScrollSpeed[8] = 3.4f;
-		mBandScrollSpeed[9] = 4.2f; 
-		mBandScrollSpeed[10] = 5.0f; 
-		mBandScrollSpeed[11] = 6.4f; 
+		mBandScrollSpeed[2] = 3.0f;
+		mBandScrollSpeed[3] = 3.3f;
+		mBandScrollSpeed[4] = 3.6f;
+		mBandScrollSpeed[5] = 4.0f;
+		mBandScrollSpeed[6] = 4.6f; 
+		mBandScrollSpeed[7] = 5.6f; 
+		mBandScrollSpeed[8] = 6.8f;
+		mBandScrollSpeed[9] = 8.4f; 
+		mBandScrollSpeed[10] = 10.0f; 
+		mBandScrollSpeed[11] = 12.8f; 
 
 		// Current position of each band, since we recycle the bands
 		for (int i = 0; i < 12; i++)
@@ -77,134 +79,192 @@ namespace godot
 	void SceneGenerator::_init()
 	{
 		Ref<PackedScene> treeGenScene = ResourceLoader::get_singleton()->load("res://TreeGenerator.tscn");
+		Ref<PackedScene> rockGenScene = ResourceLoader::get_singleton()->load("res://RockGenerator.tscn");
 
 
 
-
-
-
-
-
-		TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		treeGen->apply_scale(Vector2(0.03, 0.03));
-		add_child(treeGen);
-
+		AssetGenerator* assetGen;
 		Asset newAsset;
-		newAsset.band = 2;
-		newAsset.bandPos = 160;
-		newAsset.asset = treeGen;
 
-		mAssets.push_back(newAsset);
+		float scalings[12] = { 0,0,0.03,0.05,0.05,0.08,0.12,0.17,0.23,0.30,0.38,0.45 };
 
+		for (int i = 2; i < 7; i++)
+		{
+			for (int j = 0; j < 8; j++)
+			{
+				if (rand() % 2 == 0)
+					assetGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+				else
+					assetGen = Object::cast_to<RockGenerator>(rockGenScene->instance());
+				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
+				
+				newAsset.band = i;
+				newAsset.bandPos = rand() % 320;
+				newAsset.asset = assetGen;
 
-		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		treeGen->apply_scale(Vector2(0.05, 0.05));
-		add_child(treeGen);
+				add_child(assetGen);
+				mAssets.push_back(newAsset);
+				mNumAssets++;
+			}
+		}
 
-		newAsset;
-		newAsset.band = 3;
-		newAsset.bandPos = 160;
-		newAsset.asset = treeGen;
+		for (int i = 7; i < 10; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				assetGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
 
-		mAssets.push_back(newAsset);
+				newAsset.band = i;
+				newAsset.bandPos = rand() % 320;
+				newAsset.asset = assetGen;
 
+				add_child(assetGen);
+				mAssets.push_back(newAsset);
+				mNumAssets++;
+			}
+		}
 
-		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		treeGen->apply_scale(Vector2(0.05, 0.05));
-		add_child(treeGen);
+		for (int i = 10; i < 12; i++)
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				assetGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
 
-		newAsset;
-		newAsset.band = 4;
-		newAsset.bandPos = 160;
-		newAsset.asset = treeGen;
+				newAsset.band = i;
+				newAsset.bandPos = rand() % 320;
+				newAsset.asset = assetGen;
 
-		mAssets.push_back(newAsset);
-
-
-		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		treeGen->apply_scale(Vector2(0.08, 0.08));
-		add_child(treeGen);
-
-		newAsset;
-		newAsset.band = 5;
-		newAsset.bandPos = 160;
-		newAsset.asset = treeGen;
-
-		mAssets.push_back(newAsset);
-
-
-		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		treeGen->apply_scale(Vector2(0.12, 0.12));
-		add_child(treeGen);
-
-		newAsset;
-		newAsset.band = 6;
-		newAsset.bandPos = 160;
-		newAsset.asset = treeGen;
-
-		mAssets.push_back(newAsset);
-
-
-		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		treeGen->apply_scale(Vector2(0.17, 0.17));
-		add_child(treeGen);
-
-		newAsset;
-		newAsset.band = 7;
-		newAsset.bandPos = 160;
-		newAsset.asset = treeGen;
-
-		mAssets.push_back(newAsset);
-
-
-		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		treeGen->apply_scale(Vector2(0.23, 0.23));
-		add_child(treeGen);
-
-		newAsset;
-		newAsset.band = 8;
-		newAsset.bandPos = 160;
-		newAsset.asset = treeGen;
-
-		mAssets.push_back(newAsset);
-
-
-		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		treeGen->apply_scale(Vector2(0.30, 0.30));
-		add_child(treeGen);
-
-		newAsset;
-		newAsset.band = 9;
-		newAsset.bandPos = 160;
-		newAsset.asset = treeGen;
-
-		mAssets.push_back(newAsset);
-
-
-		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		treeGen->apply_scale(Vector2(0.38, 0.38));
-		add_child(treeGen);
-
-		newAsset;
-		newAsset.band = 10;
-		newAsset.bandPos = 160;
-		newAsset.asset = treeGen;
-
-		mAssets.push_back(newAsset);
+				add_child(assetGen);
+				mAssets.push_back(newAsset);
+				mNumAssets++;
+			}
+		}
 
 
 
 
+		//TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		//treeGen->apply_scale(Vector2(0.03, 0.03));
+		//add_child(treeGen);
 
-		treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		treeGen->apply_scale(Vector2(0.45, 0.45));
-		add_child(treeGen);
+		//Asset newAsset;
+		//newAsset.band = 2;
+		//newAsset.bandPos = 160;
+		//newAsset.asset = treeGen;
 
-		newAsset.band = 11;
-		newAsset.bandPos = 160;
-		newAsset.asset = treeGen;
+		//mAssets.push_back(newAsset);
 
-		mAssets.push_back(newAsset);
+
+		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		//treeGen->apply_scale(Vector2(0.05, 0.05));
+		//add_child(treeGen);
+
+		//newAsset;
+		//newAsset.band = 3;
+		//newAsset.bandPos = 160;
+		//newAsset.asset = treeGen;
+
+		//mAssets.push_back(newAsset);
+
+
+		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		//treeGen->apply_scale(Vector2(0.05, 0.05));
+		//add_child(treeGen);
+
+		//newAsset;
+		//newAsset.band = 4;
+		//newAsset.bandPos = 160;
+		//newAsset.asset = treeGen;
+
+		//mAssets.push_back(newAsset);
+
+
+		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		//treeGen->apply_scale(Vector2(0.08, 0.08));
+		//add_child(treeGen);
+
+		//newAsset;
+		//newAsset.band = 5;
+		//newAsset.bandPos = 160;
+		//newAsset.asset = treeGen;
+
+		//mAssets.push_back(newAsset);
+
+
+		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		//treeGen->apply_scale(Vector2(0.12, 0.12));
+		//add_child(treeGen);
+
+		//newAsset;
+		//newAsset.band = 6;
+		//newAsset.bandPos = 160;
+		//newAsset.asset = treeGen;
+
+		//mAssets.push_back(newAsset);
+
+
+		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		//treeGen->apply_scale(Vector2(0.17, 0.17));
+		//add_child(treeGen);
+
+		//newAsset;
+		//newAsset.band = 7;
+		//newAsset.bandPos = 160;
+		//newAsset.asset = treeGen;
+
+		//mAssets.push_back(newAsset);
+
+
+		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		//treeGen->apply_scale(Vector2(0.23, 0.23));
+		//add_child(treeGen);
+
+		//newAsset;
+		//newAsset.band = 8;
+		//newAsset.bandPos = 160;
+		//newAsset.asset = treeGen;
+
+		//mAssets.push_back(newAsset);
+
+
+		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		//treeGen->apply_scale(Vector2(0.30, 0.30));
+		//add_child(treeGen);
+
+		//newAsset;
+		//newAsset.band = 9;
+		//newAsset.bandPos = 160;
+		//newAsset.asset = treeGen;
+
+		//mAssets.push_back(newAsset);
+
+
+		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		//treeGen->apply_scale(Vector2(0.38, 0.38));
+		//add_child(treeGen);
+
+		//newAsset;
+		//newAsset.band = 10;
+		//newAsset.bandPos = 160;
+		//newAsset.asset = treeGen;
+
+		//mAssets.push_back(newAsset);
+
+
+
+
+
+		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+		//treeGen->apply_scale(Vector2(0.45, 0.45));
+		//add_child(treeGen);
+
+		//newAsset.band = 11;
+		//newAsset.bandPos = 160;
+		//newAsset.asset = treeGen;
+
+		//mAssets.push_back(newAsset);
 
 
 
@@ -241,14 +301,16 @@ namespace godot
 		}
 
 		
-		for (Asset curAsset : mAssets)
+		for (int i = 0; i < mNumAssets; i++)
 		{
-
 			//int x = int(((curAsset.bandPos - int(mBandCurPos[curAsset.band]))) * mPixelSize);
-			int x = (curAsset.bandPos - int(mBandCurPos[curAsset.band])) * mPixelSize - (curAsset.asset->get_scale().x * 1024 / 2.0);
-			int y = (mBandPos[curAsset.band] + mBandPos[curAsset.band - 1]) / 2 - (curAsset.asset->get_scale().y * 1024);
+			int x = (mAssets[i].bandPos - int(mBandCurPos[mAssets[i].band])) * mPixelSize - (mAssets[i].asset->get_scale().x * 1024 / 2.0);
+			while (x < mAssets[i].asset->get_scale().x * -1024)
+				x += mScreenSizePixel.x * mPixelSize + mAssets[i].asset->get_scale().x * 1024;
 
-			curAsset.asset->set_position(Vector2(
+			int y = (mBandPos[mAssets[i].band] + mBandPos[mAssets[i].band - 1]) / 2 - (mAssets[i].asset->get_scale().y * 1024);
+
+			mAssets[i].asset->set_position(Vector2(
 				x - (x % mPixelSize),
 				y - (y % mPixelSize)
 			));
@@ -256,16 +318,17 @@ namespace godot
 
 
 
+
 	}
 
-	void SceneGenerator::updateDistance()
-	{
+	void SceneGenerator::updateDistance(float deltaTime)
+{
 
 		if (mDistance != 0.0)
 		{
 			for (int i = 0; i < 12; i++)
 			{
-				mBandCurPos[i] += 1 * mBandScrollSpeed[i];
+				mBandCurPos[i] += deltaTime/1000.0 * mBandScrollSpeed[i];
 			}
 		}
 

@@ -30,7 +30,7 @@ namespace godot
 		void _draw();
 
 
-		void updateDistance();
+		void updateDistance(float deltaTime);
 		void drawPixel(Vector2 pos, Color* color);
 
 		void drawLine(Vector2 origin, Vector2 dest, Color* color, int flag /*= 0*/);
@@ -78,6 +78,8 @@ namespace godot
 
 
 		float mDistance;
+
+		int mNumAssets;
 
 	};
 

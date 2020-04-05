@@ -121,6 +121,11 @@ void Main::_draw()
 
 void Main::_process()
 {
+	float lastTime = mTime;
+	float currentTime = float(clock());
+	float deltaTime = currentTime - lastTime;
+	mTime = currentTime;
+
 	// Rebuild all rocks whenever 'right' is pressed
 	if (Input::get_singleton()->is_action_pressed("ui_right"))
 	{
@@ -141,7 +146,7 @@ void Main::_process()
 
 
 		mSceneGenerator->setDistance(mSceneGenerator->getDistance() + 0.01);
-		mSceneGenerator->updateDistance();
+		mSceneGenerator->updateDistance(deltaTime);
 		mSceneGenerator->update();
 
 	}

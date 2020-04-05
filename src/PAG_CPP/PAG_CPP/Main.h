@@ -32,6 +32,8 @@ namespace godot
 		std::vector<AssetGenerator*> mGenerators;
 		SceneGenerator* mSceneGenerator;
 
+		int mTime;
+
 	};
 
 }
