@@ -3,11 +3,17 @@
 #include <core/Godot.hpp>
 #include <Node2D.hpp>
 #include <vector>
+#include <deque>
 #include <list>
 #include <set>
 
 #include "AssetGenerator.h"
+#include <ResourceLoader.hpp>
+#include <PackedScene.hpp>
 
+#include <Image.hpp>
+
+#include <ImageTexture.hpp>
 
 
 namespace godot
@@ -42,7 +48,6 @@ namespace godot
 
 	private:
 
-
 		struct BiomeBlend
 		{
 			float grass = 1.0;
@@ -52,34 +57,40 @@ namespace godot
 			float rocky = 0.0f;
 		};
 
-
 		struct Asset
 		{
 			int band;
 			int bandPos;
 			AssetGenerator* asset;
+			bool toUpdate = false;
 		};
 
-
-		float mBandPos[12]; // the y pos on screen of layer boundaries
-
-		float mBandScrollSpeed[12];
-		float mBandCurPos[12]; // the current left side of a band
-
-		std::vector<std::vector<std::vector<Color*>>> mBands;
-
-		Vector2 mScreenSize;
-		Vector2 mScreenSizePixel;
-
-		int mPixelSize;
-
-		std::vector<Asset> mAssets;
-
-
+		BiomeBlend mBiomeBlend;
 
 		float mDistance;
 
+		std::vector<std::vector<std::vector<Color*>>> mBands;
+
+		float mBandInterupt[12]; // the y pos on screen of layer boundaries
+		float mBandScrollSpeed[12];
+		float mBandCurPos[12]; // the current left side of a band
+
+		std::vector<std::deque<Ref<ImageTexture>>> mBandImages;
+		int mBandImageCount[12];
+
+		Vector2 mScreenSize;
+		Vector2 mScreenSizePixel;
+		int mPixelSize;
+
+
 		int mNumAssets;
+		std::vector<Asset> mAssets;
+
+		Ref<PackedScene> mTreeGenScene;
+
+
+
+
 
 	};
 

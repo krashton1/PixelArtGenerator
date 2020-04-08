@@ -6,6 +6,9 @@
 #include <list>
 #include <set>
 
+#include <Image.hpp>
+#include <ImageTexture.hpp>
+
 
 
 namespace godot
@@ -49,6 +52,7 @@ namespace godot
 		// Accessors / Processors
 		inline void setColorRamp(std::vector<Color*> newRamp) { mColorRamp = newRamp; }
 		inline std::vector<Color*> getColorRamp() { return mColorRamp; }
+		inline Ref<ImageTexture> getImage() { return mImageTexture; }
 
 	protected:
 
@@ -72,6 +76,9 @@ namespace godot
 		void drawPixelArray();
 
 		void findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNeighbours, std::set<Vector2> &toSearch, Color* origColor = nullptr);
+
+		Ref<Image> mImage;
+		Ref<ImageTexture> mImageTexture;
 	};
 
 

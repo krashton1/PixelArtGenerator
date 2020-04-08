@@ -48,7 +48,7 @@ TreeGenerator::TreeGenerator()
 {
 	//setup(Vector2(0, 0), Vector2(1024,1024), 32);
 	setup();
-	buildTree();
+	//buildTree();
 }
 
 TreeGenerator::~TreeGenerator()
@@ -368,6 +368,77 @@ endBranches:;
 	// Color Trunk and branches
 
 	// Color Leaves
+}
+
+void TreeGenerator::setType(int type)
+{
+
+	// Deciduous
+
+	//  , mMinHeight(32)
+	//	, mMaxHeight(44)
+	//	, mMinNodes(6)
+	//	, mMaxNodes(10)
+	//	, mMinDistBetweenNodes(5)
+	//	, mMaxDistBetweenNodes(7)
+	//	, mMaxOffsetFromCenter(2)
+	//	, mMinBranch(2)
+	//	, mMaxBranch(5)
+	//  , mMirrorBranches(false)
+
+
+	// Coniferous
+
+	//, mMinHeight(32)
+	//	, mMaxHeight(44)
+	//	, mMinNodes(6)
+	//	, mMaxNodes(10)
+	//	, mMinDistBetweenNodes(5)
+	//	, mMaxDistBetweenNodes(7)
+	//	, mMaxOffsetFromCenter(0)
+	//	, mMinBranch(20)
+	//	, mMaxBranch(30)
+	//	, mMirrorBranches(true)
+
+
+	if (type == 1)
+	{
+		mMinHeight = 32;
+		mMaxHeight = 44;
+		mMinNodes = 6;
+		mMaxNodes = 10;
+		mMinDistBetweenNodes = 5;
+		mMaxDistBetweenNodes = 7;
+		mMaxOffsetFromCenter = 2;
+		mMinBranch = 2;
+		mMaxBranch = 5;
+		mMirrorBranches = false;
+
+
+		mLeafColorRamp[0] = new Color(0.175, 0.410, 0.255);
+		mLeafColorRamp[1] = new Color(0.315, 0.610, 0.295);
+		mLeafColorRamp[2] = new Color(0.490, 0.805, 0.355);
+
+	}
+	else if (type == 2)
+	{
+		mMinHeight = 32;
+		mMaxHeight = 44;
+		mMinNodes = 6;
+		mMaxNodes = 10;
+		mMinDistBetweenNodes = 5;
+		mMaxDistBetweenNodes = 7;
+		mMaxOffsetFromCenter = 0;
+		mMinBranch = 20;
+		mMaxBranch = 30;
+		mMirrorBranches = true;
+
+		mLeafColorRamp[0] = new Color(0.100, 0.200, 0.120);
+		mLeafColorRamp[1] = new Color(0.175, 0.410, 0.255);
+		mLeafColorRamp[2] = new Color(0.250, 0.510, 0.295);
+	}
+
+	buildTree();
 }
 
 }

@@ -39,7 +39,15 @@ void AssetGenerator::_ready()
 
 void AssetGenerator::_draw()
 {
-	drawPixelArray();
+	//drawPixelArray();
+
+	//int newX = -(mBandCurPos[i] * mPixelSize) + prevX;
+	//Rect2 rect = Rect2(newX - mPixelSize, (i == 0 ? 0 : mBandPos[i - 1]) - mPixelSize, (mBandImages[i][x]->get_width() * mPixelSize) + mPixelSize, mBandPos[i] - (i == 0 ? 0 : mBandPos[i - 1]) + mPixelSize);
+	
+	mImageTexture->create_from_image(mImage, 0);
+	Rect2 rect = Rect2(0, 0, mSize.x, mSize.y);
+
+	draw_texture_rect(mImageTexture, rect, false);
 }
 
 void AssetGenerator::drawPixel(Vector2 pos, Color* color)
@@ -68,14 +76,33 @@ void AssetGenerator::setPixel(Vector2 pos, Color* color, int flag /*= 0*/)
 	// flag == 1 : only change pixel if it was previously colored
 	// flag == 2 : only change pixel if it was NOT previously colored
 
+	mImage->lock();
+
 	if (flag == 0)
+	{
 		mPixelArray[(int)pos.x][(int)pos.y] = color;
+		mImage->set_pixel(int(pos.x), int(pos.y), *color);
+	}
 	else if (flag == 1)
+	{
 		if (mPixelArray[(int)pos.x][(int)pos.y] != nullptr && !compareColor(mPixelArray[(int)pos.x][(int)pos.y], mColorRamp[0]))
+		{
 			mPixelArray[(int)pos.x][(int)pos.y] = color;
+			mImage->set_pixel(int(pos.x), int(pos.y), *color);
+		}
+	}
+		
 	else if (flag == 2)
+	{
 		if (mPixelArray[(int)pos.x][(int)pos.y] == nullptr)
+		{
 			mPixelArray[(int)pos.x][(int)pos.y] = color;
+			mImage->set_pixel(int(pos.x), int(pos.y), *color);
+
+		}
+	}
+
+	mImage->unlock();
 }
 
 void AssetGenerator::addLine(Vector2 origin, Vector2 dest, Color* color, int flag /*= 0*/)
@@ -364,6 +391,12 @@ void AssetGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vec
 	mDebugColor = new Color(0, 0, 0);
 
 	resetPixelArray();
+
+
+	mImage.instance();
+	mImage->create(mAssetSize, mAssetSize, false, Image::Format::FORMAT_RGBA8);
+
+	mImageTexture.instance();
 }
 
 }

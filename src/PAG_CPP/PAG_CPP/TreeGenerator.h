@@ -23,6 +23,8 @@ namespace godot
 		// Construct Tree
 		void buildTree();
 
+		void setType(int type);
+
 	private:
 
 		// Anchor points on trunk (in pairs eg. [0] = left point [1] = right point)

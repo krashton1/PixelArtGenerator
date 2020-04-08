@@ -1,11 +1,13 @@
 #include "SceneGenerator.h"
-#include <ResourceLoader.hpp>
-#include <PackedScene.hpp>
 #include "AssetGenerator.h"
 #include "TreeGenerator.h"
 #include "RockGenerator.h"
 
 #include <cmath>
+#include <algorithm> 
+
+#include <string>
+
 
 namespace godot
 {
@@ -19,25 +21,18 @@ namespace godot
 		mScreenSizePixel = Vector2(mScreenSize.x / mPixelSize, mScreenSize.y / mPixelSize);
 		
 		// The y position between bands
-		mBandPos[0]  = (mScreenSizePixel.y / 10.0f * 2.50f * mPixelSize) - mPixelSize;
-		mBandPos[1]  = (mScreenSizePixel.y / 10.0f * 2.50f * mPixelSize) - mPixelSize;
-		mBandPos[2]  = (mScreenSizePixel.y / 10.0f * 2.75f * mPixelSize) - mPixelSize;
-		mBandPos[3]  = (mScreenSizePixel.y / 10.0f * 3.00f * mPixelSize) - mPixelSize;
-		mBandPos[4]  = (mScreenSizePixel.y / 10.0f * 3.25f * mPixelSize) - mPixelSize;
-		mBandPos[5]  = (mScreenSizePixel.y / 10.0f * 3.60f * mPixelSize) - mPixelSize;
-		mBandPos[6]  = (mScreenSizePixel.y / 10.0f * 4.10f * mPixelSize) - mPixelSize;
-		mBandPos[7]  = (mScreenSizePixel.y / 10.0f * 4.80f * mPixelSize) - mPixelSize;
-		mBandPos[8]  = (mScreenSizePixel.y / 10.0f * 5.70f * mPixelSize) - mPixelSize;
-		mBandPos[9]  = (mScreenSizePixel.y / 10.0f * 6.80f * mPixelSize) - mPixelSize;
-		mBandPos[10]  = (mScreenSizePixel.y / 10.0f * 8.10f * mPixelSize) - mPixelSize;
-		mBandPos[11] = (mScreenSizePixel.y / 10.0f * 10.0f * mPixelSize) - mPixelSize;
-
-		// Make boundary between bands not interupt pixels
-		for (int i = 0; i < 12; i++)
-		{
-			mBandPos[i] = mBandPos[i] - (fmod(mBandPos[i], mPixelSize));
-		}
-
+		mBandInterupt[0]  = (mScreenSizePixel.y / 10.0f * 2.50f * mPixelSize) - mPixelSize;
+		mBandInterupt[1]  = (mScreenSizePixel.y / 10.0f * 2.50f * mPixelSize) - mPixelSize;
+		mBandInterupt[2]  = (mScreenSizePixel.y / 10.0f * 2.75f * mPixelSize) - mPixelSize;
+		mBandInterupt[3]  = (mScreenSizePixel.y / 10.0f * 3.00f * mPixelSize) - mPixelSize;
+		mBandInterupt[4]  = (mScreenSizePixel.y / 10.0f * 3.25f * mPixelSize) - mPixelSize;
+		mBandInterupt[5]  = (mScreenSizePixel.y / 10.0f * 3.60f * mPixelSize) - mPixelSize;
+		mBandInterupt[6]  = (mScreenSizePixel.y / 10.0f * 4.10f * mPixelSize) - mPixelSize;
+		mBandInterupt[7]  = (mScreenSizePixel.y / 10.0f * 4.80f * mPixelSize) - mPixelSize;
+		mBandInterupt[8]  = (mScreenSizePixel.y / 10.0f * 5.70f * mPixelSize) - mPixelSize;
+		mBandInterupt[9]  = (mScreenSizePixel.y / 10.0f * 6.80f * mPixelSize) - mPixelSize;
+		mBandInterupt[10]  = (mScreenSizePixel.y / 10.0f * 8.10f * mPixelSize) - mPixelSize;
+		mBandInterupt[11] = (mScreenSizePixel.y / 10.0f * 10.0f * mPixelSize);
 
 
 		// Scroll speed of each band in order to create parralax effect
@@ -54,15 +49,14 @@ namespace godot
 		mBandScrollSpeed[10] = 10.0f; 
 		mBandScrollSpeed[11] = 12.8f; 
 
-		// Current position of each band, since we recycle the bands
 		for (int i = 0; i < 12; i++)
 		{
+			mBandInterupt[i] = mBandInterupt[i] - (fmod(mBandInterupt[i], mPixelSize));
 			mBandCurPos[i] = 0.0f;
+			mBandImageCount[i] = 1;
 		}
 		
-
 		setup();
-
 	}
 
 	SceneGenerator::~SceneGenerator()
@@ -78,28 +72,25 @@ namespace godot
 
 	void SceneGenerator::_init()
 	{
-		Ref<PackedScene> treeGenScene = ResourceLoader::get_singleton()->load("res://TreeGenerator.tscn");
-		Ref<PackedScene> rockGenScene = ResourceLoader::get_singleton()->load("res://RockGenerator.tscn");
-
-
-
-		AssetGenerator* assetGen;
-		Asset newAsset;
+		// Load the Generators
+		mTreeGenScene = ResourceLoader::get_singleton()->load("res://TreeGenerator.tscn");
 
 		float scalings[12] = { 0,0,0.03,0.05,0.05,0.08,0.12,0.17,0.23,0.30,0.38,0.45 };
 
+		TreeGenerator* assetGen;
+		Asset newAsset;
+
+		// Populate the layers
 		for (int i = 2; i < 7; i++)
 		{
 			for (int j = 0; j < 8; j++)
 			{
-				if (rand() % 2 == 0)
-					assetGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-				else
-					assetGen = Object::cast_to<RockGenerator>(rockGenScene->instance());
+				assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
 				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
+				assetGen->setType(1);
 				
 				newAsset.band = i;
-				newAsset.bandPos = rand() % 320;
+				newAsset.bandPos = rand() % 360 - 20;
 				newAsset.asset = assetGen;
 
 				add_child(assetGen);
@@ -110,13 +101,14 @@ namespace godot
 
 		for (int i = 7; i < 10; i++)
 		{
-			for (int j = 0; j < 3; j++)
+			for (int j = 0; j < 6; j++)
 			{
-				assetGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+				assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
 				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
+				assetGen->setType(1);
 
 				newAsset.band = i;
-				newAsset.bandPos = rand() % 320;
+				newAsset.bandPos = rand() % 360 - 20;
 				newAsset.asset = assetGen;
 
 				add_child(assetGen);
@@ -127,13 +119,14 @@ namespace godot
 
 		for (int i = 10; i < 12; i++)
 		{
-			for (int j = 0; j < 2; j++)
+			for (int j = 0; j < 3; j++)
 			{
-				assetGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+				assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
 				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
+				assetGen->setType(1);
 
 				newAsset.band = i;
-				newAsset.bandPos = rand() % 320;
+				newAsset.bandPos = rand() % 360 - 20;
 				newAsset.asset = assetGen;
 
 				add_child(assetGen);
@@ -141,134 +134,136 @@ namespace godot
 				mNumAssets++;
 			}
 		}
+	}
+
+	void SceneGenerator::setup()
+	{
+		// Create sky tex
+		std::vector<std::vector<Color*>> skyTex;
+		for (int x = 0; x < mScreenSizePixel.x; x++)
+		{
+			std::vector<Color*> tempCol;
+			for (int y = 0; y < mBandInterupt[0] / mPixelSize; y++)
+			{
+				int r = rand() % 2;
+
+				if (r == 0)
+					tempCol.push_back(new Color(.075, 0.705, 0.940));
+				else
+					tempCol.push_back(new Color(.075, 0.685, 0.910));
+			}
+			skyTex.push_back(tempCol);
+		}
+		mBands.push_back(skyTex);
 
 
+		// Create background tex (this will be empty, bc sky tex meets ground tex. But background objects will be held in this band instead of sky band, since they scroll at a diff speed
+		std::vector<std::vector<Color*>> backgroundTex;
+		mBands.push_back(backgroundTex);
 
 
-		//TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//treeGen->apply_scale(Vector2(0.03, 0.03));
-		//add_child(treeGen);
+		// Create ground base textures
+		for (int i = 2; i < 12; i++)
+		{
+			std::vector<std::vector<Color*>> bandTex;
+			for (int x = 0; x < mScreenSizePixel.x; x++)
+			{
+				std::vector<Color*> tempCol;
+				for (int y = mBandInterupt[i-1]; y < mBandInterupt[i]; y+=mPixelSize)
+				{
+					if (rand() % 2 == 0)
+						tempCol.push_back(new Color(0.2, 0.6, 0.2));
+					else
+						tempCol.push_back(new Color(0.2, 0.5, 0.2));
+				}
+				bandTex.push_back(tempCol);
+			}
+			mBands.push_back(bandTex);
+			
+		}
 
-		//Asset newAsset;
-		//newAsset.band = 2;
-		//newAsset.bandPos = 160;
-		//newAsset.asset = treeGen;
+		// Create blended ground sprites
+		for (int i = 0; i < 12; i++)
+		{
+			Ref<Image> bandImage;
+			bandImage.instance();
+			bandImage->create(mScreenSizePixel.x + 1, (mBandInterupt[i] - mBandInterupt[i - 1]) / mPixelSize + 1, false, Image::Format::FORMAT_RGBA8);
+			bandImage->lock();
 
-		//mAssets.push_back(newAsset);
+			int stupidVariableForStupidReasonX = mBands[i].size(); // if (-1 < mBands[i].size()) evals to false for some stupid reason. This is not a bug that should exist in 2020, but it do.
+			for (int x = -1; x < stupidVariableForStupidReasonX; x++)
+			{
+				int stupidVariableForStupidReasonY = (i != 1 ? mBands[i][(x != -1 ? x : 0)].size() : -1); // if (-1 < mBands[i][x].size()) evals to false for some stupid reason. This is not a bug that should exist in 2020, but it do.
+				for (int y = -1; y < stupidVariableForStupidReasonY; y++)
+				{
+					float avgR = 1.0;
+					float avgG = 0.0;
+					float avgB = 0.0;
 
+					if (x == -1)
+					{
+						if (y != -1)
+						{
+							avgR = (mBands[i][x + 1][y]->r);
+							avgG = (mBands[i][x + 1][y]->g);
+							avgB = (mBands[i][x + 1][y]->b);
+						}
 
-		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//treeGen->apply_scale(Vector2(0.05, 0.05));
-		//add_child(treeGen);
+					}
+					else if (y == -1)
+					{
+						avgR = (mBands[i][x][y + 1]->r);
+						avgG = (mBands[i][x][y + 1]->g);
+						avgB = (mBands[i][x][y + 1]->b);
 
-		//newAsset;
-		//newAsset.band = 3;
-		//newAsset.bandPos = 160;
-		//newAsset.asset = treeGen;
+					}
+					else if (y == 0)
+					{
 
-		//mAssets.push_back(newAsset);
+						avgR = (mBands[i][x][y]->r + mBands[i][x][y + 1]->r + mBands[i][((x - 1) < 0 ? int(mScreenSizePixel.x) - 1 : x - 1)][y]->r + mBands[i][((x + 1) % int(mScreenSizePixel.x))][y]->r) / 4.0;
+						avgG = (mBands[i][x][y]->g + mBands[i][x][y + 1]->g + mBands[i][((x - 1) < 0 ? int(mScreenSizePixel.x) - 1 : x - 1)][y]->g + mBands[i][((x + 1) % int(mScreenSizePixel.x))][y]->g) / 4.0;
+						avgB = (mBands[i][x][y]->b + mBands[i][x][y + 1]->b + mBands[i][((x - 1) < 0 ? int(mScreenSizePixel.x) - 1 : x - 1)][y]->b + mBands[i][((x + 1) % int(mScreenSizePixel.x))][y]->b) / 4.0;
+					}
+					
+					else if (y == mBands[i][x].size() - 1)
+					{
+						avgR = (mBands[i][x][y]->r + mBands[i][x][y - 1]->r + mBands[i][((x - 1) < 0 ? int(mScreenSizePixel.x) - 1 : x - 1)][y]->r + mBands[i][((x + 1) % int(mScreenSizePixel.x))][y]->r) / 4.0;
+						avgG = (mBands[i][x][y]->g + mBands[i][x][y - 1]->g + mBands[i][((x - 1) < 0 ? int(mScreenSizePixel.x) - 1 : x - 1)][y]->g + mBands[i][((x + 1) % int(mScreenSizePixel.x))][y]->g) / 4.0;
+						avgB = (mBands[i][x][y]->b + mBands[i][x][y - 1]->b + mBands[i][((x - 1) < 0 ? int(mScreenSizePixel.x) - 1 : x - 1)][y]->b + mBands[i][((x + 1) % int(mScreenSizePixel.x))][y]->b) / 4.0;
 
+					}
+					else
+					{
+						avgR = (mBands[i][x][y]->r + mBands[i][x][y - 1]->r + mBands[i][x][y + 1]->r + mBands[i][((x - 1) < 0 ? int(mScreenSizePixel.x) - 1 : x - 1)][y]->r + mBands[i][((x + 1) % int(mScreenSizePixel.x))][y]->r) / 5.0;
+						avgG = (mBands[i][x][y]->g + mBands[i][x][y - 1]->g + mBands[i][x][y + 1]->g + mBands[i][((x - 1) < 0 ? int(mScreenSizePixel.x) - 1 : x - 1)][y]->g + mBands[i][((x + 1) % int(mScreenSizePixel.x))][y]->g) / 5.0;
+						avgB = (mBands[i][x][y]->b + mBands[i][x][y - 1]->b + mBands[i][x][y + 1]->b + mBands[i][((x - 1) < 0 ? int(mScreenSizePixel.x) - 1 : x - 1)][y]->b + mBands[i][((x + 1) % int(mScreenSizePixel.x))][y]->b) / 5.0;
+					}
 
-		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//treeGen->apply_scale(Vector2(0.05, 0.05));
-		//add_child(treeGen);
+					float a = 1.0;
 
-		//newAsset;
-		//newAsset.band = 4;
-		//newAsset.bandPos = 160;
-		//newAsset.asset = treeGen;
+					if (x == -1)
+						a -= 0.5;
+					if (y == -1)
+						a -= 0.5;
+					if (i == 2 && y == -1)
+						a = 0.0;
 
-		//mAssets.push_back(newAsset);
+					bandImage->set_pixel(x + 1, y + 1, Color(avgR, avgG, avgB, a));
+				}
+			}
 
+			bandImage->unlock();
+			//bandImage->save_png(("res://Assets/BandImages/bandImage" + std::to_string(i) + ".png").c_str());
 
-		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//treeGen->apply_scale(Vector2(0.08, 0.08));
-		//add_child(treeGen);
+			Ref<ImageTexture> tex;
+			tex.instance();
+			tex->create_from_image(bandImage, 0);
 
-		//newAsset;
-		//newAsset.band = 5;
-		//newAsset.bandPos = 160;
-		//newAsset.asset = treeGen;
-
-		//mAssets.push_back(newAsset);
-
-
-		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//treeGen->apply_scale(Vector2(0.12, 0.12));
-		//add_child(treeGen);
-
-		//newAsset;
-		//newAsset.band = 6;
-		//newAsset.bandPos = 160;
-		//newAsset.asset = treeGen;
-
-		//mAssets.push_back(newAsset);
-
-
-		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//treeGen->apply_scale(Vector2(0.17, 0.17));
-		//add_child(treeGen);
-
-		//newAsset;
-		//newAsset.band = 7;
-		//newAsset.bandPos = 160;
-		//newAsset.asset = treeGen;
-
-		//mAssets.push_back(newAsset);
-
-
-		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//treeGen->apply_scale(Vector2(0.23, 0.23));
-		//add_child(treeGen);
-
-		//newAsset;
-		//newAsset.band = 8;
-		//newAsset.bandPos = 160;
-		//newAsset.asset = treeGen;
-
-		//mAssets.push_back(newAsset);
-
-
-		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//treeGen->apply_scale(Vector2(0.30, 0.30));
-		//add_child(treeGen);
-
-		//newAsset;
-		//newAsset.band = 9;
-		//newAsset.bandPos = 160;
-		//newAsset.asset = treeGen;
-
-		//mAssets.push_back(newAsset);
-
-
-		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//treeGen->apply_scale(Vector2(0.38, 0.38));
-		//add_child(treeGen);
-
-		//newAsset;
-		//newAsset.band = 10;
-		//newAsset.bandPos = 160;
-		//newAsset.asset = treeGen;
-
-		//mAssets.push_back(newAsset);
-
-
-
-
-
-		//treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-		//treeGen->apply_scale(Vector2(0.45, 0.45));
-		//add_child(treeGen);
-
-		//newAsset.band = 11;
-		//newAsset.bandPos = 160;
-		//newAsset.asset = treeGen;
-
-		//mAssets.push_back(newAsset);
-
-
-
-		
+			std::deque<Ref<ImageTexture>> tempVec;
+			tempVec.push_back(tex);
+			mBandImages.push_back(tempVec);
+			mBandImageCount[i]++;
+		}
 	}
 
 	void SceneGenerator::_ready()
@@ -278,143 +273,196 @@ namespace godot
 
 	void SceneGenerator::_draw()
 	{
-		//drawPixel(Vector2(30, 30), new Color(1, 0, 0));
-		
-
 		// Draw bands from each layer (so objects from each layer overlap)
-
-		for (int i = 0; i < mBands.size(); i++)
+		for (int i = 0; i < 12; i++)
 		{
-			for (int x = 0; x < mBands[i].size(); x++)
-			{
-				//int shiftX = (x + int(mBandCurPos[i])) % mBands[i].size();
-				int newX = (x - int(mBandCurPos[i]));
-				while (newX < 0)
-					newX += mBands[i].size();
-				newX = newX % mBands[i].size();
+			if (i == 1)
+				continue;
 
-				for (int y = 0; y < mBands[i][x].size(); y++)
-				{
-					drawPixel(Vector2(newX, y + (i == 0 ? 0 : mBandPos[i-1]) / mPixelSize), mBands[i][x][y]);
-				}
+			for (int x = 0; x < mBandImages[i].size(); x++)
+			{
+				int prevX = 0;
+				for (int j = 0; j < x; j++)
+					prevX += mBandImages[i][j]->get_width() * mPixelSize;
+
+				int newX = -(mBandCurPos[i] * mPixelSize) + prevX;
+				Rect2 rect = Rect2(newX - mPixelSize, (i == 0 ? 0 : mBandInterupt[i - 1]) - mPixelSize, (mBandImages[i][x]->get_width() * mPixelSize) + mPixelSize, mBandInterupt[i] - (i == 0 ? 0 : mBandInterupt[i - 1]) + mPixelSize);
+				
+				if (rect.get_position().x + rect.get_size().x > 0)
+					draw_texture_rect(mBandImages[i][x], rect, false);
 			}
 		}
 
-		
+		// Draw assets in each layer
 		for (int i = 0; i < mNumAssets; i++)
 		{
-			//int x = int(((curAsset.bandPos - int(mBandCurPos[curAsset.band]))) * mPixelSize);
-			int x = (mAssets[i].bandPos - int(mBandCurPos[mAssets[i].band])) * mPixelSize - (mAssets[i].asset->get_scale().x * 1024 / 2.0);
+			int x = (mAssets[i].bandPos - mBandCurPos[mAssets[i].band]) * mPixelSize - (mAssets[i].asset->get_scale().x * 1024 / 2.0);
 			while (x < mAssets[i].asset->get_scale().x * -1024)
-				x += mScreenSizePixel.x * mPixelSize + mAssets[i].asset->get_scale().x * 1024;
+				x += mScreenSizePixel.x * mPixelSize + mAssets[i].asset->get_scale().x * 1024 * 1.5;
 
-			int y = (mBandPos[mAssets[i].band] + mBandPos[mAssets[i].band - 1]) / 2 - (mAssets[i].asset->get_scale().y * 1024);
+			int y = (mBandInterupt[mAssets[i].band] + mBandInterupt[mAssets[i].band - 1]) / 2 - (mAssets[i].asset->get_scale().y * 1024);
 
-			mAssets[i].asset->set_position(Vector2(
-				x - (x % mPixelSize),
-				y - (y % mPixelSize)
-			));
+			mAssets[i].asset->set_position(Vector2(x,y));
 		}
-
-
-
-
 	}
 
 	void SceneGenerator::updateDistance(float deltaTime)
-{
-
-		if (mDistance != 0.0)
-		{
-			for (int i = 0; i < 12; i++)
-			{
-				mBandCurPos[i] += deltaTime/1000.0 * mBandScrollSpeed[i];
-			}
-		}
-
-		mDistance = 0.0f;
-	}
-
-	void SceneGenerator::setup()
 	{
+		mDistance = mDistance + 0.01 * deltaTime;
 
-		Ref<PackedScene> treeGenScene = ResourceLoader::get_singleton()->load("res://TreeGenerator.tscn");
-
-
-		// Create sky tex
-
-		std::vector<std::vector<Color*>> skyTex;
-
-		for (int x = 0; x < mScreenSizePixel.x; x++)
+		float oldBandPos[12];
+		for (int i = 0; i < 12; i++)
 		{
-			std::vector<Color*> tempCol;
-			for (int y = 0; y < mBandPos[0] / 4; y++)
-			{
-				int r = rand() % 2;
-
-				if (r == 0)
-					tempCol.push_back(new Color(.075, 0.705, 0.940));
-				else
-					tempCol.push_back(new Color(.075, 0.685, 0.910));
-			}
-
-			skyTex.push_back(tempCol);
+			oldBandPos[i] = mBandCurPos[i];
+			mBandCurPos[i] = (mDistance * mScreenSizePixel.x) * mBandScrollSpeed[i];
 		}
 
-		mBands.push_back(skyTex);
+		mBiomeBlend.grass = 1.0 - mDistance;
+		mBiomeBlend.darkGrass = mDistance;
 
-
-		// Create background tex (this will be empty, bc sky tex meets ground tex. But background objects will be held in this band instead of sky band, since they scroll at a diff speed
-
-		std::vector<std::vector<Color*>> backgroundTex;
-		mBands.push_back(backgroundTex);
-
-
-
-
-
-		// Create ground textures
-
-		for (int i = 2; i < 12; i++)
+		for (int i = 0; i < 12; i++)
 		{
-			std::vector<std::vector<Color*>> bandTex;
+			float transitionChance = mBiomeBlend.darkGrass * (mBandScrollSpeed[11] / mBandScrollSpeed[i]);
 
-			for (int x = 0; x < mScreenSizePixel.x; x++)
+			// Calculate the base colours of each pixel
+			if (mBandCurPos[i] > (mBandScrollSpeed[i] * ((mBandImages[i].size() - 1) * 4)))//- i*5) // todo turn on distributed loading for optimization "
 			{
-				std::vector<Color*> tempCol;
-				for (int y = mBandPos[i-1]; y < mBandPos[i]; y++)
-				{
-					int r = rand() % 2;
+				if (i == 1)
+					continue;
 
-					if (r == 0)
-						tempCol.push_back(new Color(0.2, 0.6, 0.2));
-					else
-						tempCol.push_back(new Color(0.2, 0.5, 0.2));
+				std::vector<std::vector<Color*>> newBand;
+				for (int x = 0; x < int(mBandScrollSpeed[i] * 4); x++)
+				{
+					std::vector<Color* > newVec;
+					for (int y = 0; y < (i != 1 ? mBands[i][(x != -1 ? x : 0)].size() : -1); y++)
+					{
+						float r = float(rand()) / float(RAND_MAX);
+						if (r < transitionChance)
+						{
+							if (rand() % 2 == 0)
+								newVec.push_back(new Color(0, 0.3, 0));
+							else
+								newVec.push_back(new Color(0, 0.4, 0));
+						}
+						else
+						{
+							if (rand() % 2 == 0)
+								newVec.push_back(new Color(0.2, 0.6, 0.2));
+							else
+								newVec.push_back(new Color(0.2, 0.5, 0.2));
+						}
+					}
+					newBand.push_back(newVec);
 				}
 
-				bandTex.push_back(tempCol);
-			}
+				// Calculate the blended texture
+				Ref<Image> newImage;
+				newImage.instance();
+				newImage->create(int(mBandScrollSpeed[i]*4 + 1), (mBandInterupt[i] - mBandInterupt[i - 1]) / mPixelSize + 1, false, Image::Format::FORMAT_RGBA8);
+				newImage->lock();
 
-			mBands.push_back(bandTex);
+				int stupidVariableForStupidReasonX = int(mBandScrollSpeed[i] * 4); // if (-1 < mBands[i].size()) evals to false for some stupid reason. This is not a bug that should exist in 2020, but it do.
+				for (int x = -1; x < stupidVariableForStupidReasonX; x++)
+				{
+					int stupidVariableForStupidReasonY = (x != -1 ? newBand[x].size() : -1); // if (-1 < mBands[i][x].size()) evals to false for some stupid reason. This is not a bug that should exist in 2020, but it do.
+					for (int y = -1; y < stupidVariableForStupidReasonY; y++)
+					{
+						float avgR = 1.0;
+						float avgG = 0.0;
+						float avgB = 0.0;
+
+						if (y == -1)
+						{
+							if (x != -1)
+							{
+								avgR = (newBand[x][y + 1]->r);
+								avgG = (newBand[x][y + 1]->g);
+								avgB = (newBand[x][y + 1]->b);
+
+							}
+						}
+						else if (x == -1)
+						{
+							avgR = (newBand[x + 1][y]->r);
+							avgG = (newBand[x + 1][y]->g);
+							avgB = (newBand[x + 1][y]->b);
+
+						}
+						else if (y == 0)
+						{
+
+							avgR = (newBand[x][y]->r + newBand[x][y + 1]->r + newBand[((x - 1) < 0 ? newBand.size() - 1 : x - 1)][y]->r + newBand[((x + 1) % newBand.size())][y]->r) / 4.0;
+							avgG = (newBand[x][y]->g + newBand[x][y + 1]->g + newBand[((x - 1) < 0 ? newBand.size() - 1 : x - 1)][y]->g + newBand[((x + 1) % newBand.size())][y]->g) / 4.0;
+							avgB = (newBand[x][y]->b + newBand[x][y + 1]->b + newBand[((x - 1) < 0 ? newBand.size() - 1 : x - 1)][y]->b + newBand[((x + 1) % newBand.size())][y]->b) / 4.0;
+						}
+						else if (y == newBand[x].size() - 1)
+						{
+							avgR = (newBand[x][y]->r + newBand[x][y - 1]->r + newBand[((x - 1) < 0 ? newBand.size() - 1:x - 1)][y]->r + newBand[((x + 1) % newBand.size())][y]->r) / 4.0;
+							avgG = (newBand[x][y]->g + newBand[x][y - 1]->g + newBand[((x - 1) < 0 ? newBand.size() - 1:x - 1)][y]->g + newBand[((x + 1) % newBand.size())][y]->g) / 4.0;
+							avgB = (newBand[x][y]->b + newBand[x][y - 1]->b + newBand[((x - 1) < 0 ? newBand.size() - 1:x - 1)][y]->b + newBand[((x + 1) % newBand.size())][y]->b) / 4.0;
+
+						}
+						else
+						{
+							avgR = (newBand[x][y]->r + newBand[x][y - 1]->r + newBand[x][y + 1]->r + newBand[((x - 1) < 0 ? newBand.size() - 1:x - 1)][y]->r + newBand[((x + 1) % newBand.size())][y]->r) / 5.0;
+							avgG = (newBand[x][y]->g + newBand[x][y - 1]->g + newBand[x][y + 1]->g + newBand[((x - 1) < 0 ? newBand.size() - 1:x - 1)][y]->g + newBand[((x + 1) % newBand.size())][y]->g) / 5.0;
+							avgB = (newBand[x][y]->b + newBand[x][y - 1]->b + newBand[x][y + 1]->b + newBand[((x - 1) < 0 ? newBand.size() - 1:x - 1)][y]->b + newBand[((x + 1) % newBand.size())][y]->b) / 5.0;
+						}
+
+						float a = 1.0;
+
+						if (x == -1)
+							a -= 0.5;
+						if (y == -1)
+							a -= 0.5;
+						if (i == 2 && y == -1)
+							a = 0.0;
+
+						newImage->set_pixel(x + 1, y + 1, Color(avgR, avgG, avgB, a));
+						//newImage->set_pixel(x, y, *newBand[x][y]);
+					}
+				}
+
+				newImage->unlock();
+				//newImage->save_png(("res://Assets/BandImages/bandImage" + std::to_string(i) + "_"+ std::to_string(mBandImages[i].size()) + ".png").c_str());
+
+				Ref<ImageTexture> newTex;
+				newTex.instance();
+				newTex->create_from_image(newImage, 0);
+
+				mBandImages[i].push_back(newTex);
+				mBandImageCount[i]++;
+			}
 		}
 
+		// Refresh any assets that are ready to be refreshed
+		for(int i = 0; i < mNumAssets ; i++)
+		{
+			int x = mAssets[i].asset->get_position().x;
+			
+			if (mAssets[i].toUpdate && x > mScreenSize.x)
+			{
+				mAssets[i].toUpdate = false;
+				mAssets[i].asset->queue_free();
 
+				TreeGenerator* assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+				
+				float r = float(rand()) / float(RAND_MAX);
+				float transitionChance = mBiomeBlend.darkGrass * (mBandScrollSpeed[11] / mBandScrollSpeed[mAssets[i].band]);
 
-		// Create Objects
+				assetGen->apply_scale(mAssets[i].asset->get_scale());
+				assetGen->set_z_index(mAssets[i].band);
+				assetGen->setType(r > transitionChance ? 1 : 2);
 
-		// Draw Layer 10 (Sky)
+				add_child(assetGen);
+				mAssets[i].asset = assetGen;
+			}
 
-		// Add Sun
-		// Add Clouds
-
-		// Draw Layer 9 (Background)
-
-		//for (int i = 0; i < 10; i++)
-		//{
-		//	drawLine(Vector2(mScreenSizePixel.x / 10 * (i), skyBound), Vector2(mScreenSizePixel.x / 10 * (i + 0.5), skyBound / 2), new Color(1.0, 0.3, 0.3), 0);
-		//	drawLine(Vector2(mScreenSizePixel.x / 10 * (i + 0.5), skyBound / 2), Vector2(mScreenSizePixel.x / 10 * (i + 1), skyBound), new Color(1.0, 0.3, 0.3), 0);
-		//}
-
+			if (!mAssets[i].toUpdate && x < -mAssets[i].asset->get_scale().x * 1024 / 2.0)
+			{
+				mAssets[i].toUpdate = true;
+			}
+		}
 	}
 
 	void SceneGenerator::drawPixel(Vector2 pos, Color* color)

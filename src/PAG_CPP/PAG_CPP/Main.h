@@ -33,6 +33,7 @@ namespace godot
 		SceneGenerator* mSceneGenerator;
 
 		int mTime;
+		bool mPan = false;
 
 	};
 

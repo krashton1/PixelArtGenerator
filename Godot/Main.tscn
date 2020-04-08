@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
 [sub_resource type="GDNativeLibrary" id=1]
-entry/Windows.64 = "res://LibPAG_CPP-x64-Debug.dll"
+entry/Windows.64 = "res://LibPAG_CPP-x64-Release.dll"
 dependency/Windows.64 = [  ]
 
 [sub_resource type="NativeScript" id=2]
