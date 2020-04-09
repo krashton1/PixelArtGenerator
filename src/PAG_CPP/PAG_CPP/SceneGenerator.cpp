@@ -449,7 +449,8 @@ namespace godot
 				TreeGenerator* assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
 				
 				float r = float(rand()) / float(RAND_MAX);
-				float transitionChance = mBiomeBlend.darkGrass * (mBandScrollSpeed[11] / mBandScrollSpeed[mAssets[i].band]);
+				//float transitionChance = mBiomeBlend.darkGrass * (mBandScrollSpeed[11] / mBandScrollSpeed[i]);
+				float transitionChance = ((1 / mBandScrollSpeed[i]) * (mBandCurPos[i] / mScreenSizePixel.x)) - (mBandScrollSpeed[i] * 1.5 / 100.0);
 
 				assetGen->apply_scale(mAssets[i].asset->get_scale());
 				assetGen->set_z_index(mAssets[i].band);
