@@ -83,7 +83,7 @@ namespace godot
 		// Populate the layers
 		for (int i = 2; i < 7; i++)
 		{
-			for (int j = 0; j < 8; j++)
+			for (int j = 0; j < 0; j++)
 			{
 				assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
 				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
@@ -101,7 +101,7 @@ namespace godot
 
 		for (int i = 7; i < 10; i++)
 		{
-			for (int j = 0; j < 6; j++)
+			for (int j = 0; j < 0; j++)
 			{
 				assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
 				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
@@ -119,7 +119,7 @@ namespace godot
 
 		for (int i = 10; i < 12; i++)
 		{
-			for (int j = 0; j < 3; j++)
+			for (int j = 0; j < 0; j++)
 			{
 				assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
 				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
@@ -308,7 +308,7 @@ namespace godot
 
 	void SceneGenerator::updateDistance(float deltaTime)
 	{
-		mDistance = mDistance + 0.01 * deltaTime;
+		mDistance = mDistance + 0.02 * deltaTime;
 
 		float oldBandPos[12];
 		for (int i = 0; i < 12; i++)
@@ -322,10 +322,11 @@ namespace godot
 
 		for (int i = 0; i < 12; i++)
 		{
-			float transitionChance = mBiomeBlend.darkGrass * (mBandScrollSpeed[11] / mBandScrollSpeed[i]);
+			//float transitionChance = mBiomeBlend.darkGrass * (mBandScrollSpeed[11] / mBandScrollSpeed[i]);
+			float transitionChance = ((1 / mBandScrollSpeed[i]) * (mBandCurPos[i] / mScreenSizePixel.x)) - (mBandScrollSpeed[i] * 1.5 / 100.0);
 
 			// Calculate the base colours of each pixel
-			if (mBandCurPos[i] > (mBandScrollSpeed[i] * ((mBandImages[i].size() - 1) * 4)))//- i*5) // todo turn on distributed loading for optimization "
+			if (mBandCurPos[i] > (mBandScrollSpeed[i] * ((mBandImages[i].size() - 1) * 4))- i*5) // todo turn on distributed loading for optimization "
 			{
 				if (i == 1)
 					continue;

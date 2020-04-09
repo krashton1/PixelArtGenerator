@@ -116,6 +116,10 @@ void Main::_process()
 	{
 		mPan = true;
 	}
+	if (Input::get_singleton()->is_action_pressed("ui_left"))
+	{
+		mPan = false;
+	}
 
 	if(mPan)
 	{
