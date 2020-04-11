@@ -58,14 +58,14 @@ void Main::_init()
 	mGenerators.push_back(smileGen);
 
 
-	//// ---------------------------------------- Rocks ---------------------------------------- //
+	////// ---------------------------------------- Rocks ---------------------------------------- //
 
 	//for (int i = 0; i < 6; i++)
 	//{
 	//	for (int j = 0; j < 3; j++)
 	//	{
 	//		RockGenerator* rockGen = Object::cast_to<RockGenerator>(rockGenScene->instance());
-	//		rockGen->setType(RockGenerator::RockTypeBush);
+	//		rockGen->setType(RockGenerator::RockTypeCloud);
 
 	//		rockGen->apply_scale(Vector2(0.2, 0.2));
 	//		rockGen->set_position(Vector2(i * 200, j * 200));
@@ -75,24 +75,24 @@ void Main::_init()
 	//}
 
 
-	// ---------------------------------------- Trees ---------------------------------------- //
-	for (int i = 0; i < 6; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-			treeGen->setType(TreeGenerator::TreeTypeSnowConiferous);
-			treeGen->apply_scale(Vector2(0.2, 0.2));
-			treeGen->set_position(Vector2(i * 200, j * 200));
-			add_child(treeGen, "treeGen" + i + j);
-			mGenerators.push_back(treeGen);
-		}
-	}
+	//// ---------------------------------------- Trees ---------------------------------------- //
+	//for (int i = 0; i < 6; i++)
+	//{
+	//	for (int j = 0; j < 3; j++)
+	//	{
+	//		TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
+	//		treeGen->setType(TreeGenerator::TreeTypeCactus);
+	//		treeGen->apply_scale(Vector2(0.2, 0.2));
+	//		treeGen->set_position(Vector2(i * 200, j * 200));
+	//		add_child(treeGen, "treeGen" + i + j);
+	//		mGenerators.push_back(treeGen);
+	//	}
+	//}
 
-	//Ref<PackedScene> sceneGenScene = ResourceLoader::get_singleton()->load("res://SceneGenerator.tscn");
-	//SceneGenerator* sceneGen = Object::cast_to<SceneGenerator>(sceneGenScene->instance());
-	//add_child(sceneGen, "sceneGen");
-	//mSceneGenerator = sceneGen;
+	Ref<PackedScene> sceneGenScene = ResourceLoader::get_singleton()->load("res://SceneGenerator.tscn");
+	SceneGenerator* sceneGen = Object::cast_to<SceneGenerator>(sceneGenScene->instance());
+	add_child(sceneGen, "sceneGen");
+	mSceneGenerator = sceneGen;
 
 }
 

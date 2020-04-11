@@ -23,7 +23,8 @@ namespace godot
 		enum RockType
 		{
 			RockTypeGraphite = 1,
-			RockTypeBush = 2
+			RockTypeBush = 2,
+			RockTypeCloud = 3
 		};
 
 

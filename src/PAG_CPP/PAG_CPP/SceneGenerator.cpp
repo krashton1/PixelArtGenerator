@@ -7,6 +7,8 @@
 #include <algorithm> 
 
 #include <string>
+#include <functional>
+#include <optional>
 
 
 namespace godot
@@ -36,7 +38,7 @@ namespace godot
 
 
 		// Scroll speed of each band in order to create parallax effect
-		mBandScrollSpeed[0] = 0.00f; 
+		mBandScrollSpeed[0] = 0.50f; 
 		mBandScrollSpeed[1] = 1.0f;
 		mBandScrollSpeed[2] = 3.0f;
 		mBandScrollSpeed[3] = 3.3f;
@@ -57,13 +59,14 @@ namespace godot
 		}
 		
 		// Ground colors
+		mGroundColors.insert({ BiomeCloud, std::vector<Color*> { new Color(.075, 0.705, 0.940), new Color(.075, 0.685, 0.910) } });
 		mGroundColors.insert({ BiomeGrass, std::vector<Color*> { new Color(0.2, 0.6, 0.2), new Color(0.2, 0.5, 0.2) } });
 		mGroundColors.insert({ BiomeBoreal, std::vector<Color*> { new Color(0.1, 0.2, 0.1), new Color(0.2, 0.3, 0.1) } });
 		mGroundColors.insert({ BiomeSand, std::vector<Color*> { new Color(0.8, 0.7, 0.6), new Color(0.95, 0.85, 0.75) } });
 		mGroundColors.insert({ BiomeSnow, std::vector<Color*> { new Color(0.95, 0.95, 1), new Color(0.85, 0.85, 0.95) } });
 		mGroundColors.insert({ BiomeRock, std::vector<Color*> { new Color(0.6, 0.6, 0.6), new Color(0.60, 0.55, 0.55) } });
 
-		mInitBiome = BiomeBoreal;
+		mInitBiome = BiomeRock;
 		mDestBiome = BiomeSnow;
 		
 		setup();
@@ -86,7 +89,7 @@ namespace godot
 		mTreeGenScene = ResourceLoader::get_singleton()->load("res://TreeGenerator.tscn");
 		mRockGenScene = ResourceLoader::get_singleton()->load("res://RockGenerator.tscn");
 
-		float scalings[12] = { 0,0,0.03,0.05,0.05,0.08,0.12,0.17,0.23,0.30,0.38,0.45 };
+		float scalings[12] = { 0.2,0,0.03,0.05,0.05,0.08,0.12,0.17,0.23,0.30,0.38,0.45 };
 
 		RockGenerator* assetGen;
 		Asset newAsset;
@@ -96,10 +99,8 @@ namespace godot
 		{
 			for (int j = 0; j < 2; j++)
 			{
-				//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
-				assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
+				AssetGenerator* assetGen = createAsset(mInitBiome, (i > 8 ? true : false));
 				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
-				assetGen->setType(RockGenerator::RockTypeBush);
 				
 				newAsset.band = i;
 				newAsset.bandPos = rand() % 360 - 20;
@@ -115,10 +116,8 @@ namespace godot
 		{
 			for (int j = 0; j < 2; j++)
 			{
-				//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
-				assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
+				AssetGenerator* assetGen = createAsset(mInitBiome, (i > 8 ? true : false));
 				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
-				assetGen->setType(RockGenerator::RockTypeBush);
 
 				newAsset.band = i;
 				newAsset.bandPos = rand() % 360 - 20;
@@ -135,9 +134,8 @@ namespace godot
 			for (int j = 0; j < 2; j++)
 			{
 				//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
-				assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
+				AssetGenerator* assetGen = createAsset(mInitBiome, (i > 8 ? true : false));
 				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
-				assetGen->setType(RockGenerator::RockTypeBush);
 
 				newAsset.band = i;
 				newAsset.bandPos = rand() % 360 - 20;
@@ -148,6 +146,28 @@ namespace godot
 				mNumAssets++;
 			}
 		}
+
+
+
+		// Clouds
+
+
+		for (int j = 0; j < 6; j++)
+		{
+			//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+			assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
+			assetGen->apply_scale(Vector2(scalings[0], scalings[0]));
+			assetGen->setType(RockGenerator::RockTypeCloud);
+
+			newAsset.band = 0;
+			newAsset.bandPos = rand() % 360 - 20;
+			newAsset.asset = assetGen;
+
+			add_child(assetGen);
+			mAssets.push_back(newAsset);
+			mNumAssets++;
+		}
+		
 	}
 
 	void SceneGenerator::setup()
@@ -159,12 +179,7 @@ namespace godot
 			std::vector<Color*> tempCol;
 			for (int y = 0; y < mBandInterupt[0] / mPixelSize; y++)
 			{
-				int r = rand() % 2;
-
-				if (r == 0)
-					tempCol.push_back(new Color(.075, 0.705, 0.940));
-				else
-					tempCol.push_back(new Color(.075, 0.685, 0.910));
+				tempCol.push_back(mGroundColors[BiomeCloud][rand() % 2]);
 			}
 			skyTex.push_back(tempCol);
 		}
@@ -295,11 +310,13 @@ namespace godot
 			for (int x = 0; x < mBandImages[i].size(); x++)
 			{
 				int prevX = (mBandImages[i][x]->get_width() == mScreenSizePixel.x + 1 ? 0: (mScreenSizePixel.x * mPixelSize) + (mBandImageCount[i] - mBandImages[i].size() + x - 2) * mBandImages[i][x]->get_width() * mPixelSize);
+				
 				//for (int j = 0; j < x; j++)
 				//	prevX += mBandImages[i][j]->get_width() * mPixelSize;
 
 				int newX = -(mBandCurPos[i] * mPixelSize) + prevX;
-				Rect2 rect = Rect2(newX - mPixelSize, (i == 0 ? 0 : mBandInterupt[i - 1]) - mPixelSize, (mBandImages[i][x]->get_width() * mPixelSize) + mPixelSize, mBandInterupt[i] - (i == 0 ? 0 : mBandInterupt[i - 1]) + mPixelSize);
+
+				Rect2 rect = Rect2(newX - mPixelSize, (i == 0 ? 0 : mBandInterupt[i - 1]) - mPixelSize, (mBandImages[i][x]->get_width() * mPixelSize) + mPixelSize * (i==0?4:1), mBandInterupt[i] - (i == 0 ? 0 : mBandInterupt[i - 1]) + mPixelSize);
 				
 				if (rect.get_position().x + rect.get_size().x > 0)
 					draw_texture_rect(mBandImages[i][x], rect, false);
@@ -318,7 +335,11 @@ namespace godot
 			while (x < mAssets[i].asset->get_scale().x * -1024)
 				x += mScreenSizePixel.x * mPixelSize + mAssets[i].asset->get_scale().x * 1024 * 1.5;
 
-			int y = (mBandInterupt[mAssets[i].band] + mBandInterupt[mAssets[i].band - 1]) / 2 - (mAssets[i].asset->get_scale().y * 1024);
+			int y;
+			if(mAssets[i].band != 0)
+				y = (mBandInterupt[mAssets[i].band] + mBandInterupt[mAssets[i].band - 1]) / 2 - (mAssets[i].asset->get_scale().y * 1024);
+			else
+				y = mBandInterupt[mAssets[i].band + 1] / 2 - (mAssets[i].asset->get_scale().y * 1024) * 0.7;
 
 			mAssets[i].asset->set_position(Vector2(x,y));
 		}
@@ -358,9 +379,9 @@ namespace godot
 					for (int y = 0; y < (i != 1 ? mBands[i][(x != -1 ? x : 0)].size() : -1); y++)
 					{
 						if (float(rand()) / float(RAND_MAX) < transitionChance)
-							newVec.push_back(mGroundColors[mDestBiome][rand() % 2]);
+							newVec.push_back(mGroundColors[(i == 0 ? BiomeCloud : mDestBiome)][rand() % 2]);
 						else
-							newVec.push_back(mGroundColors[mInitBiome][rand() % 2]);
+							newVec.push_back(mGroundColors[(i == 0 ? BiomeCloud : mInitBiome)][rand() % 2]);
 					}
 					newBand.push_back(newVec);
 				}
@@ -455,15 +476,25 @@ namespace godot
 				mAssets[i].toUpdate = false;
 				mAssets[i].asset->queue_free();
 
-				TreeGenerator* assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
-				
+				bool isTreeType = false;
+				bool isInitBiome = true;
+
+
 				float r = float(rand()) / float(RAND_MAX);
 				//float transitionChance = mBiomeBlend.darkGrass * (mBandScrollSpeed[11] / mBandScrollSpeed[i]);
-				float transitionChance = ((1 / mBandScrollSpeed[i]) * (mBandCurPos[i] / mScreenSizePixel.x)) - (mBandScrollSpeed[i] * 1.5 / 100.0);
+				float transitionChance = ((1 / mBandScrollSpeed[mAssets[i].band]) * (mBandCurPos[mAssets[i].band] / mScreenSizePixel.x)) - (mBandScrollSpeed[mAssets[i].band] * 1.5 / 100.0);
+
+				if (r < transitionChance)
+					isInitBiome = false;
+
+				Biome biomeType = (isInitBiome ? mInitBiome : mDestBiome);
+				if (mAssets[i].band == 0)
+					biomeType = BiomeCloud;
+
+				AssetGenerator* assetGen = createAsset(biomeType, (mAssets[i].band > 8 ? true : false));
 
 				assetGen->apply_scale(mAssets[i].asset->get_scale());
 				assetGen->set_z_index(mAssets[i].band);
-				assetGen->setType(r > transitionChance ? TreeGenerator::TreeTypeConiferous : TreeGenerator::TreeTypeConiferous);
 
 				add_child(assetGen);
 				mAssets[i].asset = assetGen;
@@ -546,6 +577,74 @@ namespace godot
 		}
 
 		return pointsOnLine;
+	}
+
+	godot::AssetGenerator* SceneGenerator::createAsset(Biome biomeType, bool forcePrimary /*= false*/)
+	{
+		AssetGenerator* assetGen;
+
+		if (biomeType == BiomeCloud)
+		{
+			RockGenerator* rockGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
+			rockGen->setType(RockGenerator::RockTypeCloud);
+			assetGen = rockGen;
+		}
+		else if (biomeType == BiomeGrass)
+		{
+			if (!forcePrimary && rand() % 5 == 0)
+			{
+				RockGenerator* rockGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
+				rockGen->setType(RockGenerator::RockTypeBush);
+				assetGen = rockGen;
+			}
+			else
+			{
+				TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+				treeGen->setType(TreeGenerator::TreeTypeDeciduous);
+				assetGen = treeGen;
+			}
+		}
+		else if (biomeType == BiomeBoreal)
+		{
+			TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+			treeGen->setType(TreeGenerator::TreeTypeConiferous);
+			assetGen = treeGen;
+		}
+		else if (biomeType == BiomeSnow)
+		{
+			TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+			treeGen->setType(TreeGenerator::TreeTypeSnowConiferous);
+			assetGen = treeGen;
+		}
+		else if (biomeType == BiomeSand)
+		{
+			if (!forcePrimary && rand() % 5 == 0)
+			{
+				RockGenerator* rockGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
+				rockGen->setType(RockGenerator::RockTypeGraphite);
+				assetGen = rockGen;
+			}
+			else
+			{
+				TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+				treeGen->setType(TreeGenerator::TreeTypeCactus);
+				assetGen = treeGen;
+			}
+		}
+		else if (biomeType == BiomeRock)
+		{
+			RockGenerator* rockGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
+			rockGen->setType(RockGenerator::RockTypeGraphite);
+			assetGen = rockGen;
+		}
+		else
+		{
+			RockGenerator* rockGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
+			rockGen->setType(RockGenerator::RockTypeGraphite);
+			assetGen = rockGen;
+		}
+
+		return assetGen;
 	}
 
 }

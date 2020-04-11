@@ -67,6 +67,14 @@ void RockGenerator::setType(RockType rockType)
 		mColorRamp.push_back(new Color(0.315, 0.610, 0.295));
 		mColorRamp.push_back(new Color(0.490, 0.805, 0.355));
 	}
+	else if (mRockType == RockTypeCloud)
+	{
+		mColorRamp.push_back(new Color(0.7, 0.7, 0.7, 0.5));
+		mColorRamp.push_back(new Color(0.8, 0.8, 0.8, 0.6));
+		mColorRamp.push_back(new Color(0.85, 0.85, 0.85, 0.7));
+		mColorRamp.push_back(new Color(0.9, 0.9, 0.9, 0.8));
+		mColorRamp.push_back(new Color(0.95, 0.95, 0.95, 0.9));
+	}
 
 	buildRock();
 }
@@ -139,11 +147,9 @@ void RockGenerator::buildRock()
 		}
 
 	}
-
-
-	if (mRockType == RockTypeBush)
+	else if (mRockType == RockTypeBush)
 	{
-		for (int i = 1; i < mPoints.size()-1; i++)
+		for (int i = 1; i < mPoints.size() - 1; i++)
 		{
 			Array pointsOnLine = getLine(mPoints[(rand() % (mPoints.size() - 2) + 1)], Vector2(rand() % 20 + 21, mAssetSize));
 			for (int j = 1; j < pointsOnLine.size(); j++)
@@ -191,6 +197,21 @@ void RockGenerator::buildRock()
 
 				sprayPixel(Vector2(-2, -2) + pointsOnLine[j], floor(size * 1.2), 0.2, mColorRamp[4], true);
 			}
+		}
+	}
+	else if (mRockType == RockTypeCloud)
+	{
+		for (int i = 0; i < 12; i++)
+		{
+			int x = rand() % 30 + 15;
+			int y = rand() % 15 + 30;
+
+			sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.75, mColorRamp[1], false);
+			sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.5, nullptr, true);
+			sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.5, nullptr, true);
+			sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.5, nullptr, true);
+			sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.5, nullptr, true);
+
 		}
 	}
 	

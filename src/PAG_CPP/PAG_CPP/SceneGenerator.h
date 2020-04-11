@@ -51,6 +51,7 @@ namespace godot
 
 		enum Biome
 		{
+			BiomeCloud = -1,
 			BiomeGrass = 0,
 			BiomeBoreal = 1,
 			BiomeSand = 2,
@@ -58,6 +59,8 @@ namespace godot
 			BiomeRock = 4
 
 		};
+
+		AssetGenerator* createAsset(Biome biomeType, bool forcePrimary = false);
 
 		struct Asset
 		{
