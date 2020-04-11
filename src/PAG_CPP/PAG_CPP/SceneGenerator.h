@@ -6,6 +6,7 @@
 #include <deque>
 #include <list>
 #include <set>
+#include <map>
 
 #include "AssetGenerator.h"
 #include <ResourceLoader.hpp>
@@ -48,13 +49,14 @@ namespace godot
 
 	private:
 
-		struct BiomeBlend
+		enum Biome
 		{
-			float grass = 1.0;
-			float darkGrass = 0.0f;
-			float sand = 0.0;
-			float snow = 0.0f;
-			float rocky = 0.0f;
+			BiomeGrass = 0,
+			BiomeBoreal = 1,
+			BiomeSand = 2,
+			BiomeSnow = 3,
+			BiomeRock = 4
+
 		};
 
 		struct Asset
@@ -65,7 +67,6 @@ namespace godot
 			bool toUpdate = false;
 		};
 
-		BiomeBlend mBiomeBlend;
 
 		float mDistance;
 
@@ -87,8 +88,12 @@ namespace godot
 		std::vector<Asset> mAssets;
 
 		Ref<PackedScene> mTreeGenScene;
+		Ref<PackedScene> mRockGenScene;
 
+		std::map<int, std::vector<Color*>> mGroundColors;
 
+		Biome mInitBiome;
+		Biome mDestBiome;
 
 
 

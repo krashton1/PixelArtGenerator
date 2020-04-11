@@ -61,24 +61,7 @@ void TreeGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vect
 	AssetGenerator::setup(pos, size, numPixels);
 
 	mDebugColor = new Color(1, 0, 0);
-	mColorRamp.push_back(new Color(0.20, 0.20, 0.20));
-
-	mTrunkColorRamp.push_back(new Color(0.275, 0.125, 0.125));
-	mTrunkColorRamp.push_back(new Color(0.450, 0.175, 0.175));
-	mTrunkColorRamp.push_back(new Color(0.600, 0.275, 0.155));
-
-	if (!mMirrorBranches)
-	{
-		mLeafColorRamp.push_back(new Color(0.175, 0.410, 0.255));
-		mLeafColorRamp.push_back(new Color(0.315, 0.610, 0.295));
-		mLeafColorRamp.push_back(new Color(0.490, 0.805, 0.355));
-	}
-	else
-	{
-		mLeafColorRamp.push_back(new Color(0.100, 0.200, 0.120));
-		mLeafColorRamp.push_back(new Color(0.175, 0.410, 0.255));
-		mLeafColorRamp.push_back(new Color(0.250, 0.510, 0.295));
-	}
+	
 }
 
 void TreeGenerator::_register_methods()
@@ -345,6 +328,7 @@ endBranches:;
 		}
 
 		//addCircle(currentLeaf, 3, 12, debugColor2);
+		
 		sprayPixel(currentLeaf, floor(size * 2.0), 0.7, mLeafColorRamp[0]);
 		sprayPixel(currentLeaf, floor(size * 1.5), 0.6, mLeafColorRamp[0]);
 		sprayPixel(currentLeaf, floor(size * 1.0), 0.6, mLeafColorRamp[0]);
@@ -353,8 +337,26 @@ endBranches:;
 		sprayPixel(currentLeaf + Vector2(-2, -2), floor(size * 1.7), 0.6, mLeafColorRamp[1]);
 
 		sprayPixel(currentLeaf + Vector2(-4, -4), floor(size * 1.7), 0.4, mLeafColorRamp[2], true);
+
+
+		if (mTreeType == TreeTypeSnowConiferous)
+			findSnow();
 	}
 
+
+	if (mTreeType == TreeTypeSnowConiferous)
+	{
+		for (int x = 0; x < mAssetSize; x++)
+		{
+			for (int y = 0; y < mAssetSize; y++)
+			{
+				if (mSnowPixels[x][y] != nullptr)
+				{
+					setPixel(Vector2(x, y), mSnowPixels[x][y], true);
+				}
+			}
+		}
+	}
 
 
 	
@@ -370,38 +372,18 @@ endBranches:;
 	// Color Leaves
 }
 
-void TreeGenerator::setType(int type)
+void TreeGenerator::setType(TreeType treeType)
 {
 
-	// Deciduous
-
-	//  , mMinHeight(32)
-	//	, mMaxHeight(44)
-	//	, mMinNodes(6)
-	//	, mMaxNodes(10)
-	//	, mMinDistBetweenNodes(5)
-	//	, mMaxDistBetweenNodes(7)
-	//	, mMaxOffsetFromCenter(2)
-	//	, mMinBranch(2)
-	//	, mMaxBranch(5)
-	//  , mMirrorBranches(false)
+	mTreeType = treeType;
 
 
-	// Coniferous
-
-	//, mMinHeight(32)
-	//	, mMaxHeight(44)
-	//	, mMinNodes(6)
-	//	, mMaxNodes(10)
-	//	, mMinDistBetweenNodes(5)
-	//	, mMaxDistBetweenNodes(7)
-	//	, mMaxOffsetFromCenter(0)
-	//	, mMinBranch(20)
-	//	, mMaxBranch(30)
-	//	, mMirrorBranches(true)
+	mColorRamp.push_back(new Color(0.20, 0.20, 0.20));
 
 
-	if (type == 1)
+	// Bark
+
+	if (mTreeType==TreeTypeDeciduous)
 	{
 		mMinHeight = 32;
 		mMaxHeight = 44;
@@ -415,12 +397,15 @@ void TreeGenerator::setType(int type)
 		mMirrorBranches = false;
 
 
-		mLeafColorRamp[0] = new Color(0.175, 0.410, 0.255);
-		mLeafColorRamp[1] = new Color(0.315, 0.610, 0.295);
-		mLeafColorRamp[2] = new Color(0.490, 0.805, 0.355);
+		mTrunkColorRamp.push_back(new Color(0.275, 0.125, 0.125));
+		mTrunkColorRamp.push_back(new Color(0.450, 0.175, 0.175));
+		mTrunkColorRamp.push_back(new Color(0.600, 0.275, 0.155));
 
+		mLeafColorRamp.push_back(new Color(0.175, 0.410, 0.255));
+		mLeafColorRamp.push_back(new Color(0.315, 0.610, 0.295));
+		mLeafColorRamp.push_back(new Color(0.490, 0.805, 0.355));
 	}
-	else if (type == 2)
+	else if(mTreeType == TreeTypeConiferous || mTreeType==TreeTypeSnowConiferous)
 	{
 		mMinHeight = 32;
 		mMaxHeight = 44;
@@ -433,12 +418,38 @@ void TreeGenerator::setType(int type)
 		mMaxBranch = 30;
 		mMirrorBranches = true;
 
-		mLeafColorRamp[0] = new Color(0.100, 0.200, 0.120);
-		mLeafColorRamp[1] = new Color(0.175, 0.410, 0.255);
-		mLeafColorRamp[2] = new Color(0.250, 0.510, 0.295);
+		mTrunkColorRamp.push_back(new Color(0.275, 0.125, 0.125));
+		mTrunkColorRamp.push_back(new Color(0.450, 0.175, 0.175));
+		mTrunkColorRamp.push_back(new Color(0.600, 0.275, 0.155));
+
+		mLeafColorRamp.push_back(new Color(0.100, 0.200, 0.120));
+		mLeafColorRamp.push_back(new Color(0.175, 0.410, 0.255));
+		mLeafColorRamp.push_back(new Color(0.250, 0.510, 0.295));
 	}
 
+
 	buildTree();
+}
+
+void TreeGenerator::findSnow()
+{
+	for (int x = 0; x < mAssetSize; x++)
+	{
+		for (int y = 0; y < mAssetSize-2; y++)
+		{
+			if (mPixelArray[x][y] == nullptr)
+			{
+				if (mPixelArray[x][y + 1] != nullptr && rand() % 10 == 0)
+				{
+					mSnowPixels[x][y+1] = new Color(0.9, 0.9, 0.9);
+					if (mPixelArray[x][y + 2] != nullptr && rand() % 2 == 0)
+					{
+						mSnowPixels[x][y + 2] = new Color(0.9, 0.9, 0.9);
+					}
+				}
+			}
+		}
+	}
 }
 
 }

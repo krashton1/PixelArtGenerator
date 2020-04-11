@@ -76,6 +76,9 @@ void AssetGenerator::setPixel(Vector2 pos, Color* color, int flag /*= 0*/)
 	// flag == 1 : only change pixel if it was previously colored
 	// flag == 2 : only change pixel if it was NOT previously colored
 
+	if (pos.x >= mAssetSize || pos.x < 0 || pos.y >= mAssetSize || pos.y < 0)
+		return;
+
 	mImage->lock();
 
 	if (flag == 0)
@@ -189,7 +192,7 @@ void AssetGenerator::sprayPixel(Vector2 origin, float size, float intensity, Col
 	{
 		for (int y = start.y; y <= origin.y + size; y++)
 		{
-			if (x < 0 || x > mAssetSize || y < 0 || y > mAssetSize)
+			if (x < 0 || x >= mAssetSize || y < 0 || y >= mAssetSize)
 				continue;
 
 			float dist = std::sqrt(std::pow(x - origin.x, 2) + std::pow(y- origin.y, 2));
@@ -322,13 +325,13 @@ bool AssetGenerator::compareColor(Color* color1, Color* color2)
 
 void AssetGenerator::addSmile()
 {
-	mPixelArray[0][1] = mDebugColor;
-	mPixelArray[0][3] = mDebugColor;
-	mPixelArray[2][0] = mDebugColor;
-	mPixelArray[2][4] = mDebugColor;
-	mPixelArray[3][1] = mDebugColor;
-	mPixelArray[3][2] = mDebugColor;
-	mPixelArray[3][3] = mDebugColor;
+	setPixel(Vector2(0, 1), mDebugColor);
+	setPixel(Vector2(0, 3), mDebugColor);
+	setPixel(Vector2(2, 0), mDebugColor);
+	setPixel(Vector2(2, 4), mDebugColor);
+	setPixel(Vector2(3, 1), mDebugColor);
+	setPixel(Vector2(3, 2), mDebugColor);
+	setPixel(Vector2(3, 3), mDebugColor);
 
 	rotatePixelArray();
 }

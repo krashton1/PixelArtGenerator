@@ -70,7 +70,7 @@ namespace godot
 		Color* mDebugColor;
 		std::vector<Color*> mColorRamp;
 
-	private:
+	protected:
 
 		void drawPixel(Vector2 pos, Color* color);
 		void drawPixelArray();

@@ -35,7 +35,7 @@ namespace godot
 		mBandInterupt[11] = (mScreenSizePixel.y / 10.0f * 10.0f * mPixelSize);
 
 
-		// Scroll speed of each band in order to create parralax effect
+		// Scroll speed of each band in order to create parallax effect
 		mBandScrollSpeed[0] = 0.00f; 
 		mBandScrollSpeed[1] = 1.0f;
 		mBandScrollSpeed[2] = 3.0f;
@@ -56,6 +56,16 @@ namespace godot
 			mBandImageCount[i] = 1;
 		}
 		
+		// Ground colors
+		mGroundColors.insert({ BiomeGrass, std::vector<Color*> { new Color(0.2, 0.6, 0.2), new Color(0.2, 0.5, 0.2) } });
+		mGroundColors.insert({ BiomeBoreal, std::vector<Color*> { new Color(0.1, 0.2, 0.1), new Color(0.2, 0.3, 0.1) } });
+		mGroundColors.insert({ BiomeSand, std::vector<Color*> { new Color(0.8, 0.7, 0.6), new Color(0.95, 0.85, 0.75) } });
+		mGroundColors.insert({ BiomeSnow, std::vector<Color*> { new Color(0.95, 0.95, 1), new Color(0.85, 0.85, 0.95) } });
+		mGroundColors.insert({ BiomeRock, std::vector<Color*> { new Color(0.6, 0.6, 0.6), new Color(0.60, 0.55, 0.55) } });
+
+		mInitBiome = BiomeBoreal;
+		mDestBiome = BiomeSnow;
+		
 		setup();
 	}
 
@@ -74,20 +84,22 @@ namespace godot
 	{
 		// Load the Generators
 		mTreeGenScene = ResourceLoader::get_singleton()->load("res://TreeGenerator.tscn");
+		mRockGenScene = ResourceLoader::get_singleton()->load("res://RockGenerator.tscn");
 
 		float scalings[12] = { 0,0,0.03,0.05,0.05,0.08,0.12,0.17,0.23,0.30,0.38,0.45 };
 
-		TreeGenerator* assetGen;
+		RockGenerator* assetGen;
 		Asset newAsset;
 
 		// Populate the layers
 		for (int i = 2; i < 7; i++)
 		{
-			for (int j = 0; j < 0; j++)
+			for (int j = 0; j < 2; j++)
 			{
-				assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+				//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+				assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
 				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
-				assetGen->setType(1);
+				assetGen->setType(RockGenerator::RockTypeBush);
 				
 				newAsset.band = i;
 				newAsset.bandPos = rand() % 360 - 20;
@@ -101,11 +113,12 @@ namespace godot
 
 		for (int i = 7; i < 10; i++)
 		{
-			for (int j = 0; j < 0; j++)
+			for (int j = 0; j < 2; j++)
 			{
-				assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+				//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+				assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
 				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
-				assetGen->setType(1);
+				assetGen->setType(RockGenerator::RockTypeBush);
 
 				newAsset.band = i;
 				newAsset.bandPos = rand() % 360 - 20;
@@ -119,11 +132,12 @@ namespace godot
 
 		for (int i = 10; i < 12; i++)
 		{
-			for (int j = 0; j < 0; j++)
+			for (int j = 0; j < 2; j++)
 			{
-				assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+				//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+				assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
 				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
-				assetGen->setType(1);
+				assetGen->setType(RockGenerator::RockTypeBush);
 
 				newAsset.band = i;
 				newAsset.bandPos = rand() % 360 - 20;
@@ -171,10 +185,7 @@ namespace godot
 				std::vector<Color*> tempCol;
 				for (int y = mBandInterupt[i-1]; y < mBandInterupt[i]; y+=mPixelSize)
 				{
-					if (rand() % 2 == 0)
-						tempCol.push_back(new Color(0.2, 0.6, 0.2));
-					else
-						tempCol.push_back(new Color(0.2, 0.5, 0.2));
+					tempCol.push_back(mGroundColors[mInitBiome][rand() % 2]);
 				}
 				bandTex.push_back(tempCol);
 			}
@@ -279,18 +290,25 @@ namespace godot
 			if (i == 1)
 				continue;
 
+			int toDelete = -1;
+
 			for (int x = 0; x < mBandImages[i].size(); x++)
 			{
-				int prevX = 0;
-				for (int j = 0; j < x; j++)
-					prevX += mBandImages[i][j]->get_width() * mPixelSize;
+				int prevX = (mBandImages[i][x]->get_width() == mScreenSizePixel.x + 1 ? 0: (mScreenSizePixel.x * mPixelSize) + (mBandImageCount[i] - mBandImages[i].size() + x - 2) * mBandImages[i][x]->get_width() * mPixelSize);
+				//for (int j = 0; j < x; j++)
+				//	prevX += mBandImages[i][j]->get_width() * mPixelSize;
 
 				int newX = -(mBandCurPos[i] * mPixelSize) + prevX;
 				Rect2 rect = Rect2(newX - mPixelSize, (i == 0 ? 0 : mBandInterupt[i - 1]) - mPixelSize, (mBandImages[i][x]->get_width() * mPixelSize) + mPixelSize, mBandInterupt[i] - (i == 0 ? 0 : mBandInterupt[i - 1]) + mPixelSize);
 				
 				if (rect.get_position().x + rect.get_size().x > 0)
 					draw_texture_rect(mBandImages[i][x], rect, false);
+				else
+					toDelete = x;
 			}
+
+			if (toDelete != -1)
+				mBandImages[i].pop_front();
 		}
 
 		// Draw assets in each layer
@@ -317,16 +335,18 @@ namespace godot
 			mBandCurPos[i] = (mDistance * mScreenSizePixel.x) * mBandScrollSpeed[i];
 		}
 
-		mBiomeBlend.grass = 1.0 - mDistance;
-		mBiomeBlend.darkGrass = mDistance;
+		
+		
+		//float initBiomeDensity = 1.0 - mDistance;
+		//float initDestDensity = mDistance;
 
 		for (int i = 0; i < 12; i++)
 		{
 			//float transitionChance = mBiomeBlend.darkGrass * (mBandScrollSpeed[11] / mBandScrollSpeed[i]);
 			float transitionChance = ((1 / mBandScrollSpeed[i]) * (mBandCurPos[i] / mScreenSizePixel.x)) - (mBandScrollSpeed[i] * 1.5 / 100.0);
 
-			// Calculate the base colours of each pixel
-			if (mBandCurPos[i] > (mBandScrollSpeed[i] * ((mBandImages[i].size() - 1) * 4))- i*5) // todo turn on distributed loading for optimization "
+			// Calculate the base colors of each pixel
+			if (mBandCurPos[i] > (mBandScrollSpeed[i] * ((mBandImageCount[i] - 1) * 4))- i*5) // todo turn on distributed loading for optimization "
 			{
 				if (i == 1)
 					continue;
@@ -337,21 +357,10 @@ namespace godot
 					std::vector<Color* > newVec;
 					for (int y = 0; y < (i != 1 ? mBands[i][(x != -1 ? x : 0)].size() : -1); y++)
 					{
-						float r = float(rand()) / float(RAND_MAX);
-						if (r < transitionChance)
-						{
-							if (rand() % 2 == 0)
-								newVec.push_back(new Color(0, 0.3, 0));
-							else
-								newVec.push_back(new Color(0, 0.4, 0));
-						}
+						if (float(rand()) / float(RAND_MAX) < transitionChance)
+							newVec.push_back(mGroundColors[mDestBiome][rand() % 2]);
 						else
-						{
-							if (rand() % 2 == 0)
-								newVec.push_back(new Color(0.2, 0.6, 0.2));
-							else
-								newVec.push_back(new Color(0.2, 0.5, 0.2));
-						}
+							newVec.push_back(mGroundColors[mInitBiome][rand() % 2]);
 					}
 					newBand.push_back(newVec);
 				}
@@ -454,7 +463,7 @@ namespace godot
 
 				assetGen->apply_scale(mAssets[i].asset->get_scale());
 				assetGen->set_z_index(mAssets[i].band);
-				assetGen->setType(r > transitionChance ? 1 : 2);
+				assetGen->setType(r > transitionChance ? TreeGenerator::TreeTypeConiferous : TreeGenerator::TreeTypeConiferous);
 
 				add_child(assetGen);
 				mAssets[i].asset = assetGen;

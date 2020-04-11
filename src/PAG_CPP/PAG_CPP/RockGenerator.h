@@ -19,10 +19,26 @@ namespace godot
 		virtual void _init();
 		void _draw();
 
+
+		enum RockType
+		{
+			RockTypeGraphite = 1,
+			RockTypeBush = 2
+		};
+
+
+
+		void setType(RockType rockType);
 		// Construct Rock
 		void buildRock();
 
 	private:
+
+		RockType mRockType;
+
+
+
+
 
 		// Points along rock edge where vertices form
 		inline Array getPoints() { return mPoints; }

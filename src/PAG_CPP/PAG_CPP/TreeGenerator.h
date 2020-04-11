@@ -20,12 +20,25 @@ namespace godot
 		virtual void _init();
 		void _draw();
 
+
+		enum TreeType
+		{
+			TreeTypeDeciduous = 1,
+			TreeTypeConiferous = 2,
+			TreeTypeSnowConiferous = 3,
+			TreeTypeCactus = 4
+		};
+
 		// Construct Tree
 		void buildTree();
 
-		void setType(int type);
+		void setType(TreeType treeType);
 
 	private:
+
+
+		Color* mSnowPixels[64][64];
+		void findSnow();
 
 		// Anchor points on trunk (in pairs eg. [0] = left point [1] = right point)
 		Array mNodes;
@@ -53,6 +66,8 @@ namespace godot
 		int mMaxBranch;
 
 		bool mMirrorBranches;
+
+		TreeType mTreeType;
 };
 
 }
