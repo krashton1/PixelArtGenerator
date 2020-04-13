@@ -79,7 +79,8 @@ namespace godot
 		mInitBiome = BiomeRock;
 		mDestBiome = BiomeSnow;
 
-		mBackgroundBiome = mInitBiome;
+		mBackgroundInitBiome = mInitBiome;
+		mBackgroundDestBiome = mDestBiome;
 		mCurrentMountainHeight = mBiomeMountainHeights[mInitBiome];
 
 		//setup();
@@ -292,6 +293,7 @@ namespace godot
 		}
 
 
+		mCurrentMountainHeight = mBiomeMountainHeights[mBackgroundInitBiome];
 
 		int numMountains = 20;
 		for (int j = 0; j < numMountains; j++)
@@ -299,7 +301,7 @@ namespace godot
 			//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
 			assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
 			assetGen->apply_scale(Vector2(.175, .175));
-			assetGen->addMountain(mCurrentMountainHeight * 1.2, mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mInitBiome)][0], mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mInitBiome)][mGroundColors[mInitBiome].size() - 1]);
+			assetGen->addMountain(mCurrentMountainHeight * 1.2, mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mBackgroundInitBiome)][0], mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mBackgroundInitBiome)][mGroundColors[mBackgroundInitBiome].size() - 1]);
 
 			newAsset.band = 0;
 			newAsset.bandPos = (mScreenSizePixel.x + 80) / numMountains * j + (mScreenSizePixel.x + 80) / (2 * numMountains) - 40;
@@ -340,7 +342,7 @@ namespace godot
 			//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
 			assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
 			assetGen->apply_scale(Vector2(.175, .175));
-			assetGen->addMountain(mCurrentMountainHeight * 1.2, mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mInitBiome)][0], mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mInitBiome)][mGroundColors[mInitBiome].size() - 1]);
+			assetGen->addMountain(mCurrentMountainHeight * 1.2, mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mBackgroundInitBiome)][0], mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mBackgroundInitBiome)][mGroundColors[mBackgroundInitBiome].size() - 1]);
 
 			newAsset.band = 1;
 			newAsset.bandPos = (mScreenSizePixel.x + 80) / numMountains * j - 40;
@@ -441,7 +443,7 @@ namespace godot
 
 	void SceneGenerator::updateDistance(float deltaTime)
 	{
-		mDistance = mDistance + 0.04 * deltaTime;
+		mDistance = mDistance + 0.02 * deltaTime;
 
 		float oldBandPos[12];
 		for (int i = 0; i < 12; i++)
@@ -690,8 +692,7 @@ namespace godot
 
 		return new Color(avgR, avgG, avgB, avgA);
 	}
-
-	void SceneGenerator::setBiomes(String initBiome, String destBiome, String backBiome /*= String()*/)
+	void SceneGenerator::setBiomes(String initBiome, String destBiome, String backInitBiome /*= String()*/, String backDestBiome /*= String()*/)
 	{
 		mBiomeIndex++;
 
@@ -718,27 +719,48 @@ namespace godot
 			mDestBiome = BiomeRock;
 
 
-		if (backBiome != "")
+		if (backInitBiome != "")
 		{
-			if (backBiome == "BiomeGrass")
-				mBackgroundBiome = BiomeGrass;
-			else if (backBiome == "BiomeBoreal")
-				mBackgroundBiome = BiomeBoreal;
-			else if (backBiome == "BiomeSand")
-				mBackgroundBiome = BiomeSand;
-			else if (backBiome == "BiomeSnow")
-				mBackgroundBiome = BiomeSnow;
-			else if (backBiome == "BiomeRock")
-				mBackgroundBiome = BiomeRock;
-			else if (backBiome == "BiomeMountain")
-				mBackgroundBiome = BiomeMountain;
+			if (backInitBiome == "BiomeGrass")
+				mBackgroundInitBiome = BiomeGrass;
+			else if (backInitBiome == "BiomeBoreal")
+				mBackgroundInitBiome = BiomeBoreal;
+			else if (backInitBiome == "BiomeSand")
+				mBackgroundInitBiome = BiomeSand;
+			else if (backInitBiome == "BiomeSnow")
+				mBackgroundInitBiome = BiomeSnow;
+			else if (backInitBiome == "BiomeRock")
+				mBackgroundInitBiome = BiomeRock;
+			else if (backInitBiome == "BiomeMountain")
+				mBackgroundInitBiome = BiomeMountain;
 
 
-			mCurrentMountainHeight = mBiomeMountainHeights[mBackgroundBiome];
+			mCurrentMountainHeight = mBiomeMountainHeights[mBackgroundInitBiome];
 		}
 		else
 		{
-			mCurrentMountainHeight = mBiomeMountainHeights[mInitBiome];
+			mBackgroundInitBiome = mInitBiome;
+		}
+
+		if (backDestBiome != "")
+		{
+			if (backDestBiome == "BiomeGrass")
+				mBackgroundDestBiome = BiomeGrass;
+			else if (backDestBiome == "BiomeBoreal")
+				mBackgroundDestBiome = BiomeBoreal;
+			else if (backDestBiome == "BiomeSand")
+				mBackgroundDestBiome = BiomeSand;
+			else if (backDestBiome == "BiomeSnow")
+				mBackgroundDestBiome = BiomeSnow;
+			else if (backDestBiome == "BiomeRock")
+				mBackgroundDestBiome = BiomeRock;
+			else if (backDestBiome == "BiomeMountain")
+				mBackgroundDestBiome = BiomeMountain;
+
+		}
+		else
+		{
+			mBackgroundDestBiome = mDestBiome;
 		}
 	}
 
@@ -756,7 +778,7 @@ namespace godot
 		{
 			float ratio = 1 - std::min(mDistance - (mBiomeIndex * 1.5), 1.0);
 
-			mCurrentMountainHeight = int(mBiomeMountainHeights[mInitBiome] * ratio + mBiomeMountainHeights[mDestBiome] * (1.0-ratio));
+			mCurrentMountainHeight = int(mBiomeMountainHeights[mBackgroundInitBiome] * ratio + mBiomeMountainHeights[mBackgroundDestBiome] * (1.0 - ratio));
 
 			Color* c0 = getAvgColor(mGroundColors[mInitBiome][0], mGroundColors[mDestBiome][0], ratio);
 			Color* c1 = getAvgColor(mGroundColors[mInitBiome][mGroundColors[mInitBiome].size() - 1], mGroundColors[mDestBiome][mGroundColors[mDestBiome].size() - 1], ratio);

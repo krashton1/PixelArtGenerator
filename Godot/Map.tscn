@@ -35,12 +35,27 @@ margin_left = 190.983
 margin_top = 441.785
 margin_right = 392.983
 margin_bottom = 546.785
+rect_pivot_offset = Vector2( 144.398, -71.785 )
 text = " 
 Ashton Woollard - 101011084
 
              Honours Project
 			
           Pixel Art Generator"
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+modulate = Color( 0, 0, 0, 1 )
+margin_left = 189.0
+margin_top = 298.0
+margin_right = 391.0
+margin_bottom = 406.0
+rect_pivot_offset = Vector2( 144.398, -71.785 )
+text = "          ***Instructions ***
+- Place Path pins on map
+- Press space to start 
+- Press right to pan                (and to pan faster)
+- Press left to slow/stop panning"
+scroll_active = false
 
 [node name="Biomes" type="Area2D" parent="."]
 visible = false

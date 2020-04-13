@@ -127,17 +127,19 @@ void Main::_process()
 			initSceneGenerator(mLoader);
 	}
 
-	if (Input::get_singleton()->is_action_pressed("ui_right"))
+	if (Input::get_singleton()->is_action_just_pressed("ui_right"))
 	{
-		mPan = true;
+		//if(mPan<5)
+			mPan++;
 	}
 
-	if (Input::get_singleton()->is_action_pressed("ui_left"))
+	if (Input::get_singleton()->is_action_just_pressed("ui_left"))
 	{
-		mPan = false;
+		if(mPan>0)
+			mPan--;
 	}
 
-	if (Input::get_singleton()->is_action_pressed("ui_accept") && mSceneGenerator == nullptr)
+	if (Input::get_singleton()->is_action_just_pressed("ui_accept") && mSceneGenerator == nullptr)
 	{
 
 		Array visits = mMapScene->get("biomeVisits");
@@ -157,7 +159,7 @@ void Main::_process()
 
 	if(mPan)
 	{
-		mSceneGenerator->updateDistance(deltaTime);
+		mSceneGenerator->updateDistance(mPan* deltaTime);
 		mSceneGenerator->update();
 
 	}
@@ -171,7 +173,8 @@ void Main::_process()
 			//std::string biome0 = String(visits[mCurrentBiomeIndex]).utf8().get_data();
 			//std::string biome1 = String(visits[mCurrentBiomeIndex + 1]).utf8().get_data();
 
-			mSceneGenerator->setBiomes(String(visits[mCurrentBiomeIndex]), String(visits[mCurrentBiomeIndex + 1]));
+			mSceneGenerator->setBiomes(String(Array(visits[mCurrentBiomeIndex])[0]), String(Array(visits[mCurrentBiomeIndex + 1])[0]), String(Array(visits[mCurrentBiomeIndex])[1]), String(Array(visits[mCurrentBiomeIndex + 1])[1]));
+
 		}
 		mCurrentBiomeIndex += 1;
 		
@@ -197,12 +200,15 @@ void Main::initSceneGenerator(Ref<ResourceInteractiveLoader> loader)
 		//std::string biome0 = String(visits[mCurrentBiomeIndex]).utf8().get_data();
 		//std::string biome1 = String(visits[mCurrentBiomeIndex + 1]).utf8().get_data();
 
-		mSceneGenerator->setBiomes(String(visits[mCurrentBiomeIndex]), String(visits[mCurrentBiomeIndex + 1]));
+		std::string var = String(Array(visits[mCurrentBiomeIndex])[0]).utf8().get_data();;
+
+		mSceneGenerator->setBiomes(String(Array(visits[mCurrentBiomeIndex])[0]), String(Array(visits[mCurrentBiomeIndex + 1])[0]), String(Array(visits[mCurrentBiomeIndex])[1]), String(Array(visits[mCurrentBiomeIndex + 1])[1]));
+
 	}
 	else if(mCurrentBiomeIndex + 1 == visits.size())
 	{
 		//std::string biome0 = String(visits[mCurrentBiomeIndex]).utf8().get_data();
-		mSceneGenerator->setBiomes(String(visits[mCurrentBiomeIndex]), String(visits[mCurrentBiomeIndex]));
+		mSceneGenerator->setBiomes(String(Array(visits[mCurrentBiomeIndex])[0]), String(Array(visits[mCurrentBiomeIndex])[0]), String(Array(visits[mCurrentBiomeIndex])[1]), String(Array(visits[mCurrentBiomeIndex])[1]));
 	}
 	else
 	{

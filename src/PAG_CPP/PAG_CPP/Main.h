@@ -37,7 +37,7 @@ namespace godot
 		Node2D* mMapScene;
 
 		int mTime;
-		bool mPan = false;
+		int mPan = 0;
 
 		Ref<ResourceInteractiveLoader> mLoader;
 		bool mIsLoading = false;

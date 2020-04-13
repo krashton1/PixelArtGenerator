@@ -52,7 +52,7 @@ namespace godot
 
 
 
-		void setBiomes(String initBiome, String destBiome, String backBiome = String());
+		void setBiomes(String initBiome, String destBiome, String backInitBiome = String(), String backDestBiome = String());
 
 	private:
 
@@ -107,7 +107,8 @@ namespace godot
 
 		Biome mInitBiome;
 		Biome mDestBiome;
-		Biome mBackgroundBiome;
+		Biome mBackgroundInitBiome;
+		Biome mBackgroundDestBiome;
 		int mBiomeIndex = -1;
 
 		int mCurrentMountainHeight = 5;

@@ -1,14 +1,6 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=2 format=2]
 
-[sub_resource type="GDNativeLibrary" id=1]
-entry/Windows.64 = "res://LibPAG_CPP-x64-Debug.dll"
-dependency/Windows.64 = [  ]
-
-[sub_resource type="NativeScript" id=2]
-resource_name = "Main"
-class_name = "Main"
-library = SubResource( 1 )
-script_class_name = "Main"
+[ext_resource path="res://Main.gdns" type="Script" id=1]
 
 [node name="Main" type="Node2D"]
-script = SubResource( 2 )
+script = ExtResource( 1 )
