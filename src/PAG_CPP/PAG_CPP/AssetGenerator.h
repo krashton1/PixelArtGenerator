@@ -35,8 +35,9 @@ namespace godot
 		void addLine(Vector2 origin, Vector2 dest, Color* color, int flag = 0);
 		void addCircle(Vector2 origin, float radius, int samples, Color* color);
 		void addShape(std::vector<Vector2> points, Color* lineColor, Color* fillColor = nullptr);
-		void fillColor(Vector2 origin, Color* destColor, Color* origColor = nullptr);
+		void fillColor(Vector2 origin, Color* destColor, Color* origColor = nullptr, Color* destColor2 = nullptr);
 		void sprayPixel(Vector2 origin, float size, float intensity, Color* color = nullptr, bool paintOver = false);
+		void blurPixels();
 
 		// Pixel Array (whole) Functions
 		void resetPixelArray();
@@ -48,6 +49,7 @@ namespace godot
 
 		// Debug Pixel Array Functions
 		void addSmile();
+		void addMountain(int height, Color* color1, Color* color2);
 
 		// Accessors / Processors
 		inline void setColorRamp(std::vector<Color*> newRamp) { mColorRamp = newRamp; }

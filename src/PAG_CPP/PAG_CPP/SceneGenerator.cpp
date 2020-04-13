@@ -21,35 +21,35 @@ namespace godot
 	{
 		// Screen size in pixels
 		mScreenSizePixel = Vector2(mScreenSize.x / mPixelSize, mScreenSize.y / mPixelSize);
-		
+
 		// The y position between bands
-		mBandInterupt[0]  = (mScreenSizePixel.y / 10.0f * 2.50f * mPixelSize) - mPixelSize;
-		mBandInterupt[1]  = (mScreenSizePixel.y / 10.0f * 2.50f * mPixelSize) - mPixelSize;
-		mBandInterupt[2]  = (mScreenSizePixel.y / 10.0f * 2.75f * mPixelSize) - mPixelSize;
-		mBandInterupt[3]  = (mScreenSizePixel.y / 10.0f * 3.00f * mPixelSize) - mPixelSize;
-		mBandInterupt[4]  = (mScreenSizePixel.y / 10.0f * 3.25f * mPixelSize) - mPixelSize;
-		mBandInterupt[5]  = (mScreenSizePixel.y / 10.0f * 3.60f * mPixelSize) - mPixelSize;
-		mBandInterupt[6]  = (mScreenSizePixel.y / 10.0f * 4.10f * mPixelSize) - mPixelSize;
-		mBandInterupt[7]  = (mScreenSizePixel.y / 10.0f * 4.80f * mPixelSize) - mPixelSize;
-		mBandInterupt[8]  = (mScreenSizePixel.y / 10.0f * 5.70f * mPixelSize) - mPixelSize;
-		mBandInterupt[9]  = (mScreenSizePixel.y / 10.0f * 6.80f * mPixelSize) - mPixelSize;
-		mBandInterupt[10]  = (mScreenSizePixel.y / 10.0f * 8.10f * mPixelSize) - mPixelSize;
+		mBandInterupt[0] = (mScreenSizePixel.y / 10.0f * 2.50f * mPixelSize) - mPixelSize;
+		mBandInterupt[1] = (mScreenSizePixel.y / 10.0f * 2.50f * mPixelSize) - mPixelSize;
+		mBandInterupt[2] = (mScreenSizePixel.y / 10.0f * 2.75f * mPixelSize) - mPixelSize;
+		mBandInterupt[3] = (mScreenSizePixel.y / 10.0f * 3.00f * mPixelSize) - mPixelSize;
+		mBandInterupt[4] = (mScreenSizePixel.y / 10.0f * 3.25f * mPixelSize) - mPixelSize;
+		mBandInterupt[5] = (mScreenSizePixel.y / 10.0f * 3.60f * mPixelSize) - mPixelSize;
+		mBandInterupt[6] = (mScreenSizePixel.y / 10.0f * 4.10f * mPixelSize) - mPixelSize;
+		mBandInterupt[7] = (mScreenSizePixel.y / 10.0f * 4.80f * mPixelSize) - mPixelSize;
+		mBandInterupt[8] = (mScreenSizePixel.y / 10.0f * 5.70f * mPixelSize) - mPixelSize;
+		mBandInterupt[9] = (mScreenSizePixel.y / 10.0f * 6.80f * mPixelSize) - mPixelSize;
+		mBandInterupt[10] = (mScreenSizePixel.y / 10.0f * 8.10f * mPixelSize) - mPixelSize;
 		mBandInterupt[11] = (mScreenSizePixel.y / 10.0f * 10.0f * mPixelSize);
 
 
 		// Scroll speed of each band in order to create parallax effect
-		mBandScrollSpeed[0] = 0.50f; 
-		mBandScrollSpeed[1] = 1.0f;
+		mBandScrollSpeed[0] = 1.50f;
+		mBandScrollSpeed[1] = 2.0f;
 		mBandScrollSpeed[2] = 3.0f;
 		mBandScrollSpeed[3] = 3.3f;
 		mBandScrollSpeed[4] = 3.6f;
 		mBandScrollSpeed[5] = 4.0f;
-		mBandScrollSpeed[6] = 4.6f; 
-		mBandScrollSpeed[7] = 5.6f; 
+		mBandScrollSpeed[6] = 4.6f;
+		mBandScrollSpeed[7] = 5.6f;
 		mBandScrollSpeed[8] = 6.8f;
-		mBandScrollSpeed[9] = 8.4f; 
-		mBandScrollSpeed[10] = 10.0f; 
-		mBandScrollSpeed[11] = 12.8f; 
+		mBandScrollSpeed[9] = 8.4f;
+		mBandScrollSpeed[10] = 10.0f;
+		mBandScrollSpeed[11] = 12.8f;
 
 		for (int i = 0; i < 12; i++)
 		{
@@ -57,18 +57,30 @@ namespace godot
 			mBandCurPos[i] = 0.0f;
 			mBandImageCount[i] = 1;
 		}
-		
+
 		// Ground colors
 		mGroundColors.insert({ BiomeCloud, std::vector<Color*> { new Color(.075, 0.705, 0.940), new Color(.075, 0.685, 0.910) } });
+		mGroundColors.insert({ BiomeMountain, std::vector<Color*> { new Color(0.4, 0.4, 0.5), new Color(0.5, 0.5, 0.6) } });
 		mGroundColors.insert({ BiomeGrass, std::vector<Color*> { new Color(0.2, 0.6, 0.2), new Color(0.2, 0.5, 0.2) } });
 		mGroundColors.insert({ BiomeBoreal, std::vector<Color*> { new Color(0.1, 0.2, 0.1), new Color(0.2, 0.3, 0.1) } });
-		mGroundColors.insert({ BiomeSand, std::vector<Color*> { new Color(0.8, 0.7, 0.6), new Color(0.95, 0.85, 0.75) } });
-		mGroundColors.insert({ BiomeSnow, std::vector<Color*> { new Color(0.95, 0.95, 1), new Color(0.85, 0.85, 0.95) } });
-		mGroundColors.insert({ BiomeRock, std::vector<Color*> { new Color(0.6, 0.6, 0.6), new Color(0.60, 0.55, 0.55) } });
+		mGroundColors.insert({ BiomeSand, std::vector<Color*> { new Color(0.8, 0.7, 0.6), new Color(0.95, 0.85, 0.75) } }); 
+		mGroundColors.insert({ BiomeSnow, std::vector<Color*> { new Color(0.95, 0.95, 1), new Color(0.85, 0.85, 0.95), new Color(0.1, 0.2, 0.1) } });
+		mGroundColors.insert({ BiomeRock, std::vector<Color*> { new Color(0.4, 0.4, 0.4), new Color(0.5, 0.5, 0.5) } });
+
+
+		mBiomeMountainHeights.insert({ BiomeCloud, 1 });
+		mBiomeMountainHeights.insert({ BiomeMountain, 20 });
+		mBiomeMountainHeights.insert({ BiomeGrass, 5 });
+		mBiomeMountainHeights.insert({ BiomeBoreal, 5 });
+		mBiomeMountainHeights.insert({ BiomeSand, 5 });
+		mBiomeMountainHeights.insert({ BiomeSnow, 5 });
+		mBiomeMountainHeights.insert({ BiomeRock, 20 });
 
 		mInitBiome = BiomeRock;
 		mDestBiome = BiomeSnow;
-		
+
+		mBackgroundBiome = mInitBiome;
+
 		setup();
 	}
 
@@ -101,10 +113,12 @@ namespace godot
 			{
 				AssetGenerator* assetGen = createAsset(mInitBiome, (i > 8 ? true : false));
 				assetGen->apply_scale(Vector2(scalings[i], scalings[i]));
-				
+
 				newAsset.band = i;
 				newAsset.bandPos = rand() % 360 - 20;
 				newAsset.asset = assetGen;
+
+				assetGen->set_z_index(20 + i);
 
 				add_child(assetGen);
 				mAssets.push_back(newAsset);
@@ -123,6 +137,7 @@ namespace godot
 				newAsset.bandPos = rand() % 360 - 20;
 				newAsset.asset = assetGen;
 
+				assetGen->set_z_index(20 + i);
 				add_child(assetGen);
 				mAssets.push_back(newAsset);
 				mNumAssets++;
@@ -141,6 +156,7 @@ namespace godot
 				newAsset.bandPos = rand() % 360 - 20;
 				newAsset.asset = assetGen;
 
+				assetGen->set_z_index(20 + i);
 				add_child(assetGen);
 				mAssets.push_back(newAsset);
 				mNumAssets++;
@@ -149,9 +165,27 @@ namespace godot
 
 
 
+		int numMountains = 20;
+		for (int j = 0; j < numMountains; j++)
+		{
+			//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+			assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
+			assetGen->apply_scale(Vector2(.175, .175));
+			assetGen->addMountain(mCurrentMountainHeight * 1.2, mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mInitBiome)][0], mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mInitBiome)][1]);
+
+			newAsset.band = 0;
+			newAsset.bandPos = (mScreenSizePixel.x + 80) / numMountains * j + (mScreenSizePixel.x + 80) / (2 * numMountains) - 40;
+			newAsset.asset = assetGen;
+			newAsset.yShift = 34;
+
+			assetGen->set_z_index(rand() % 10 + 1 );
+
+			add_child(assetGen);
+			mAssets.push_back(newAsset);
+			mNumAssets++;
+		}
+
 		// Clouds
-
-
 		for (int j = 0; j < 6; j++)
 		{
 			//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
@@ -162,12 +196,60 @@ namespace godot
 			newAsset.band = 0;
 			newAsset.bandPos = rand() % 360 - 20;
 			newAsset.asset = assetGen;
+			newAsset.yShift = 0;
+			newAsset.isCloud = true;
+
+
+			assetGen->set_z_index(11);
 
 			add_child(assetGen);
 			mAssets.push_back(newAsset);
 			mNumAssets++;
 		}
-		
+
+		for (int j = 0; j < numMountains; j++)
+		{
+			//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+			assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
+			assetGen->apply_scale(Vector2(.175, .175));
+			assetGen->addMountain(mCurrentMountainHeight * 1.2, mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mInitBiome)][0], mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mInitBiome)][1]);
+
+			newAsset.band = 1;
+			newAsset.bandPos = (mScreenSizePixel.x + 80) / numMountains * j - 40;
+			newAsset.asset = assetGen;
+			newAsset.yShift = 0;
+
+			newAsset.isCloud = false;
+
+			assetGen->set_z_index(rand() % 10 + 11);
+
+			add_child(assetGen);
+			mAssets.push_back(newAsset);
+			mNumAssets++;
+		}
+
+
+		for (int j = 0; j < 6; j++)
+		{
+			//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
+			assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
+			assetGen->apply_scale(Vector2(scalings[0], scalings[0]));
+			assetGen->setType(RockGenerator::RockTypeCloud);
+
+			newAsset.band = 1;
+			newAsset.bandPos = rand() % 360 - 20;
+			newAsset.asset = assetGen;
+			newAsset.yShift = -25;
+			newAsset.isCloud = true;
+
+
+			assetGen->set_z_index(rand() % 10 + 11);
+
+			add_child(assetGen);
+			mAssets.push_back(newAsset);
+			mNumAssets++;
+		}
+
 	}
 
 	void SceneGenerator::setup()
@@ -198,14 +280,14 @@ namespace godot
 			for (int x = 0; x < mScreenSizePixel.x; x++)
 			{
 				std::vector<Color*> tempCol;
-				for (int y = mBandInterupt[i-1]; y < mBandInterupt[i]; y+=mPixelSize)
+				for (int y = mBandInterupt[i - 1]; y < mBandInterupt[i]; y += mPixelSize)
 				{
 					tempCol.push_back(mGroundColors[mInitBiome][rand() % 2]);
 				}
 				bandTex.push_back(tempCol);
 			}
 			mBands.push_back(bandTex);
-			
+
 		}
 
 		// Create blended ground sprites
@@ -250,7 +332,7 @@ namespace godot
 						avgG = (mBands[i][x][y]->g + mBands[i][x][y + 1]->g + mBands[i][((x - 1) < 0 ? int(mScreenSizePixel.x) - 1 : x - 1)][y]->g + mBands[i][((x + 1) % int(mScreenSizePixel.x))][y]->g) / 4.0;
 						avgB = (mBands[i][x][y]->b + mBands[i][x][y + 1]->b + mBands[i][((x - 1) < 0 ? int(mScreenSizePixel.x) - 1 : x - 1)][y]->b + mBands[i][((x + 1) % int(mScreenSizePixel.x))][y]->b) / 4.0;
 					}
-					
+
 					else if (y == mBands[i][x].size() - 1)
 					{
 						avgR = (mBands[i][x][y]->r + mBands[i][x][y - 1]->r + mBands[i][((x - 1) < 0 ? int(mScreenSizePixel.x) - 1 : x - 1)][y]->r + mBands[i][((x + 1) % int(mScreenSizePixel.x))][y]->r) / 4.0;
@@ -271,8 +353,8 @@ namespace godot
 						a -= 0.5;
 					if (y == -1)
 						a -= 0.5;
-					if (i == 2 && y == -1)
-						a = 0.0;
+					//if (i == 2 && y == -1)
+					//	a = 0.0;
 
 					bandImage->set_pixel(x + 1, y + 1, Color(avgR, avgG, avgB, a));
 				}
@@ -309,15 +391,15 @@ namespace godot
 
 			for (int x = 0; x < mBandImages[i].size(); x++)
 			{
-				int prevX = (mBandImages[i][x]->get_width() == mScreenSizePixel.x + 1 ? 0: (mScreenSizePixel.x * mPixelSize) + (mBandImageCount[i] - mBandImages[i].size() + x - 2) * mBandImages[i][x]->get_width() * mPixelSize);
-				
+				int prevX = (mBandImages[i][x]->get_width() == mScreenSizePixel.x + 1 ? 0 : (mScreenSizePixel.x * mPixelSize) + (mBandImageCount[i] - mBandImages[i].size() + x - 2) * mBandImages[i][x]->get_width() * mPixelSize);
+
 				//for (int j = 0; j < x; j++)
 				//	prevX += mBandImages[i][j]->get_width() * mPixelSize;
 
 				int newX = -(mBandCurPos[i] * mPixelSize) + prevX;
 
-				Rect2 rect = Rect2(newX - mPixelSize, (i == 0 ? 0 : mBandInterupt[i - 1]) - mPixelSize, (mBandImages[i][x]->get_width() * mPixelSize) + mPixelSize * (i==0?4:1), mBandInterupt[i] - (i == 0 ? 0 : mBandInterupt[i - 1]) + mPixelSize);
-				
+				Rect2 rect = Rect2(newX - mPixelSize, (i == 0 ? 0 : mBandInterupt[i - 1]) - mPixelSize, (mBandImages[i][x]->get_width() * mPixelSize) + mPixelSize * (i == 0 ? 4 : 1), mBandInterupt[i] - (i == 0 ? 0 : mBandInterupt[i - 1]) + mPixelSize);
+
 				if (rect.get_position().x + rect.get_size().x > 0)
 					draw_texture_rect(mBandImages[i][x], rect, false);
 				else
@@ -336,12 +418,13 @@ namespace godot
 				x += mScreenSizePixel.x * mPixelSize + mAssets[i].asset->get_scale().x * 1024 * 1.5;
 
 			int y;
-			if(mAssets[i].band != 0)
+			if (mAssets[i].band != 0)
 				y = (mBandInterupt[mAssets[i].band] + mBandInterupt[mAssets[i].band - 1]) / 2 - (mAssets[i].asset->get_scale().y * 1024);
 			else
 				y = mBandInterupt[mAssets[i].band + 1] / 2 - (mAssets[i].asset->get_scale().y * 1024) * 0.7;
+			y += mAssets[i].yShift;
 
-			mAssets[i].asset->set_position(Vector2(x,y));
+			mAssets[i].asset->set_position(Vector2(x, y));
 		}
 	}
 
@@ -356,8 +439,10 @@ namespace godot
 			mBandCurPos[i] = (mDistance * mScreenSizePixel.x) * mBandScrollSpeed[i];
 		}
 
-		
-		
+
+		if (((1 / mBandScrollSpeed[2]) * (mBandCurPos[2] / mScreenSizePixel.x)) - (mBandScrollSpeed[2] * 1.5 / 100.0) > 0.5)
+			mBackgroundBiome = mDestBiome;
+
 		//float initBiomeDensity = 1.0 - mDistance;
 		//float initDestDensity = mDistance;
 
@@ -367,7 +452,7 @@ namespace godot
 			float transitionChance = ((1 / mBandScrollSpeed[i]) * (mBandCurPos[i] / mScreenSizePixel.x)) - (mBandScrollSpeed[i] * 1.5 / 100.0);
 
 			// Calculate the base colors of each pixel
-			if (mBandCurPos[i] > (mBandScrollSpeed[i] * ((mBandImageCount[i] - 1) * 4))- i*5) // todo turn on distributed loading for optimization "
+			if (mBandCurPos[i] > (mBandScrollSpeed[i] * ((mBandImageCount[i] - 1) * 4)) - i * 5) // todo turn on distributed loading for optimization "
 			{
 				if (i == 1)
 					continue;
@@ -379,9 +464,9 @@ namespace godot
 					for (int y = 0; y < (i != 1 ? mBands[i][(x != -1 ? x : 0)].size() : -1); y++)
 					{
 						if (float(rand()) / float(RAND_MAX) < transitionChance)
-							newVec.push_back(mGroundColors[(i == 0 ? BiomeCloud : mDestBiome)][rand() % 2]);
+							newVec.push_back(mGroundColors[(i == 0 ? BiomeCloud : mDestBiome)][rand() % mGroundColors[(i == 0 ? BiomeCloud : mDestBiome)].size()]);
 						else
-							newVec.push_back(mGroundColors[(i == 0 ? BiomeCloud : mInitBiome)][rand() % 2]);
+							newVec.push_back(mGroundColors[(i == 0 ? BiomeCloud : mInitBiome)][rand() % mGroundColors[(i == 0 ? BiomeCloud : mInitBiome)].size()]);
 					}
 					newBand.push_back(newVec);
 				}
@@ -389,7 +474,7 @@ namespace godot
 				// Calculate the blended texture
 				Ref<Image> newImage;
 				newImage.instance();
-				newImage->create(int(mBandScrollSpeed[i]*4 + 1), (mBandInterupt[i] - mBandInterupt[i - 1]) / mPixelSize + 1, false, Image::Format::FORMAT_RGBA8);
+				newImage->create(int(mBandScrollSpeed[i] * 4 + 1), (mBandInterupt[i] - mBandInterupt[i - 1]) / mPixelSize + 1, false, Image::Format::FORMAT_RGBA8);
 				newImage->lock();
 
 				int stupidVariableForStupidReasonX = int(mBandScrollSpeed[i] * 4); // if (-1 < mBands[i].size()) evals to false for some stupid reason. This is not a bug that should exist in 2020, but it do.
@@ -428,16 +513,16 @@ namespace godot
 						}
 						else if (y == newBand[x].size() - 1)
 						{
-							avgR = (newBand[x][y]->r + newBand[x][y - 1]->r + newBand[((x - 1) < 0 ? newBand.size() - 1:x - 1)][y]->r + newBand[((x + 1) % newBand.size())][y]->r) / 4.0;
-							avgG = (newBand[x][y]->g + newBand[x][y - 1]->g + newBand[((x - 1) < 0 ? newBand.size() - 1:x - 1)][y]->g + newBand[((x + 1) % newBand.size())][y]->g) / 4.0;
-							avgB = (newBand[x][y]->b + newBand[x][y - 1]->b + newBand[((x - 1) < 0 ? newBand.size() - 1:x - 1)][y]->b + newBand[((x + 1) % newBand.size())][y]->b) / 4.0;
+							avgR = (newBand[x][y]->r + newBand[x][y - 1]->r + newBand[((x - 1) < 0 ? newBand.size() - 1 : x - 1)][y]->r + newBand[((x + 1) % newBand.size())][y]->r) / 4.0;
+							avgG = (newBand[x][y]->g + newBand[x][y - 1]->g + newBand[((x - 1) < 0 ? newBand.size() - 1 : x - 1)][y]->g + newBand[((x + 1) % newBand.size())][y]->g) / 4.0;
+							avgB = (newBand[x][y]->b + newBand[x][y - 1]->b + newBand[((x - 1) < 0 ? newBand.size() - 1 : x - 1)][y]->b + newBand[((x + 1) % newBand.size())][y]->b) / 4.0;
 
 						}
 						else
 						{
-							avgR = (newBand[x][y]->r + newBand[x][y - 1]->r + newBand[x][y + 1]->r + newBand[((x - 1) < 0 ? newBand.size() - 1:x - 1)][y]->r + newBand[((x + 1) % newBand.size())][y]->r) / 5.0;
-							avgG = (newBand[x][y]->g + newBand[x][y - 1]->g + newBand[x][y + 1]->g + newBand[((x - 1) < 0 ? newBand.size() - 1:x - 1)][y]->g + newBand[((x + 1) % newBand.size())][y]->g) / 5.0;
-							avgB = (newBand[x][y]->b + newBand[x][y - 1]->b + newBand[x][y + 1]->b + newBand[((x - 1) < 0 ? newBand.size() - 1:x - 1)][y]->b + newBand[((x + 1) % newBand.size())][y]->b) / 5.0;
+							avgR = (newBand[x][y]->r + newBand[x][y - 1]->r + newBand[x][y + 1]->r + newBand[((x - 1) < 0 ? newBand.size() - 1 : x - 1)][y]->r + newBand[((x + 1) % newBand.size())][y]->r) / 5.0;
+							avgG = (newBand[x][y]->g + newBand[x][y - 1]->g + newBand[x][y + 1]->g + newBand[((x - 1) < 0 ? newBand.size() - 1 : x - 1)][y]->g + newBand[((x + 1) % newBand.size())][y]->g) / 5.0;
+							avgB = (newBand[x][y]->b + newBand[x][y - 1]->b + newBand[x][y + 1]->b + newBand[((x - 1) < 0 ? newBand.size() - 1 : x - 1)][y]->b + newBand[((x + 1) % newBand.size())][y]->b) / 5.0;
 						}
 
 						float a = 1.0;
@@ -446,8 +531,8 @@ namespace godot
 							a -= 0.5;
 						if (y == -1)
 							a -= 0.5;
-						if (i == 2 && y == -1)
-							a = 0.0;
+						//if (i == 2 && y == -1)
+						//	a = 0.0;
 
 						newImage->set_pixel(x + 1, y + 1, Color(avgR, avgG, avgB, a));
 						//newImage->set_pixel(x, y, *newBand[x][y]);
@@ -467,10 +552,10 @@ namespace godot
 		}
 
 		// Refresh any assets that are ready to be refreshed
-		for(int i = 0; i < mNumAssets ; i++)
+		for (int i = 0; i < mNumAssets; i++)
 		{
 			int x = mAssets[i].asset->get_position().x;
-			
+
 			if (mAssets[i].toUpdate && x > mScreenSize.x)
 			{
 				mAssets[i].toUpdate = false;
@@ -488,13 +573,17 @@ namespace godot
 					isInitBiome = false;
 
 				Biome biomeType = (isInitBiome ? mInitBiome : mDestBiome);
-				if (mAssets[i].band == 0)
+				if (mAssets[i].isCloud)
 					biomeType = BiomeCloud;
+				else if (mAssets[i].band <= 1)
+					biomeType = BiomeMountain;
 
 				AssetGenerator* assetGen = createAsset(biomeType, (mAssets[i].band > 8 ? true : false));
 
 				assetGen->apply_scale(mAssets[i].asset->get_scale());
 				assetGen->set_z_index(mAssets[i].band);
+
+				assetGen->set_z_index(mAssets[i].band * 10 + rand() % 10);
 
 				add_child(assetGen);
 				mAssets[i].asset = assetGen;
@@ -579,7 +668,19 @@ namespace godot
 		return pointsOnLine;
 	}
 
-	godot::AssetGenerator* SceneGenerator::createAsset(Biome biomeType, bool forcePrimary /*= false*/)
+	Color* SceneGenerator::getAvgColor(Color* color1, Color* color2, float ratio)
+	{
+		float subRatio = 1.0 - ratio;
+
+		float avgR = (color1->r * ratio + color2->r * subRatio);
+		float avgG = (color1->g * ratio + color2->g * subRatio);
+		float avgB = (color1->b * ratio + color2->b * subRatio);
+		float avgA = (color1->a * ratio + color2->a * subRatio);
+
+		return new Color(avgR, avgG, avgB, avgA);
+	}
+
+	AssetGenerator* SceneGenerator::createAsset(Biome biomeType, bool forcePrimary /*= false*/)
 	{
 		AssetGenerator* assetGen;
 
@@ -587,6 +688,19 @@ namespace godot
 		{
 			RockGenerator* rockGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
 			rockGen->setType(RockGenerator::RockTypeCloud);
+			assetGen = rockGen;
+		}
+		else if (biomeType == BiomeMountain)
+		{
+			float ratio = 1 - std::min(mDistance, 1.0f);
+
+			mCurrentMountainHeight = int(mBiomeMountainHeights[mInitBiome] * ratio + mBiomeMountainHeights[mDestBiome] * (1.0-ratio));
+
+			Color* c0 = getAvgColor(mGroundColors[mInitBiome][0], mGroundColors[mDestBiome][0], ratio);
+			Color* c1 = getAvgColor(mGroundColors[mInitBiome][mGroundColors[mInitBiome].size() - 1], mGroundColors[mDestBiome][mGroundColors[mDestBiome].size() - 1], ratio);
+
+			RockGenerator* rockGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
+			rockGen->addMountain(mCurrentMountainHeight, (mCurrentMountainHeight >= 15 ? mGroundColors[BiomeMountain][0] : c0), (mCurrentMountainHeight >= 15 ? mGroundColors[BiomeMountain][1] : c1));
 			assetGen = rockGen;
 		}
 		else if (biomeType == BiomeGrass)

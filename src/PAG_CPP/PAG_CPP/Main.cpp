@@ -52,6 +52,7 @@ void Main::_init()
 
 	AssetGenerator* smileGen = Object::cast_to<AssetGenerator>(artGenScene->instance());
 	smileGen->addSmile();
+	//smileGen->addMountain(40, new Color(0, 0, 0), new Color(1, 0, 0));
 	smileGen->set_position(Vector2(700, 0));
 	smileGen->apply_scale(Vector2(0.2, 0.2));
 	add_child(smileGen, "smileGen");

@@ -4,6 +4,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include <deque>
+
 namespace godot
 {
 
@@ -76,7 +78,7 @@ void AssetGenerator::setPixel(Vector2 pos, Color* color, int flag /*= 0*/)
 	// flag == 1 : only change pixel if it was previously colored
 	// flag == 2 : only change pixel if it was NOT previously colored
 
-	if (pos.x >= mAssetSize || pos.x < 0 || pos.y >= mAssetSize || pos.y < 0)
+	if (pos.x >= mAssetSize || pos.x < 0 || pos.y >= mAssetSize || pos.y < 0 || color == nullptr)
 		return;
 
 	mImage->lock();
@@ -160,7 +162,7 @@ void AssetGenerator::addShape(std::vector<Vector2> points, Color* lineColor, Col
 	}
 }
 
-void AssetGenerator::fillColor(Vector2 origin, Color* destColor, Color* origColor /*= nullptr*/)
+void AssetGenerator::fillColor(Vector2 origin, Color* destColor, Color* origColor /*= nullptr*/, Color* destColor2 /*= nullptr*/)
 {
 	if (origColor == nullptr)
 		origColor = mPixelArray[(int)origin.x][(int)origin.y];
@@ -175,7 +177,14 @@ void AssetGenerator::fillColor(Vector2 origin, Color* destColor, Color* origColo
 	} 
 
 	for (std::set<Vector2>::iterator it = likeValidNeighbours.begin(); it != likeValidNeighbours.end(); it++)
-		setPixel(*it, destColor);
+	{
+		Color* c = destColor;
+		if (destColor2 != nullptr)
+			if (rand() % 2 == 0)
+				c = destColor2;
+
+		setPixel(*it, c);
+	}
 }
 
 void AssetGenerator::sprayPixel(Vector2 origin, float size, float intensity, Color* color /*= nullptr*/, bool paintOver /*= false*/)
@@ -232,8 +241,85 @@ void AssetGenerator::sprayPixel(Vector2 origin, float size, float intensity, Col
 	}
 }
 
+void AssetGenerator::blurPixels()
+{
+
+	Color* newPixelArray[64][64];
+
+	for (int i = 0; i < mAssetSize; i++)
+	{
+		for (int j = 0; j < mAssetSize; j++)
+		{
+			newPixelArray[i][j] = nullptr;
+		}
+	}
+
+	for (int x = 0; x < mAssetSize ; x++)
+	{
+		for (int y = 0; y < mAssetSize; y++)
+		{
+			int n = 0;
+
+			Vector3 avgColor = Vector3(0, 0, 0);
+			float alpha = 0.0;
+
+			if (mPixelArray[x][y] != nullptr)
+			{
+				avgColor = avgColor + Vector3(mPixelArray[x][y]->r, mPixelArray[x][y]->g, mPixelArray[x][y]->b);
+				n++;
+				alpha = 1.0;
+			}
+			if (x - 1 >= 0 && mPixelArray[x-1][y] != nullptr)
+			{
+				avgColor = avgColor + Vector3(mPixelArray[x - 1][y]->r, mPixelArray[x - 1][y]->g, mPixelArray[x - 1][y]->b);
+				n++;
+			}
+			if (x + 1 < mAssetSize && mPixelArray[x+1][y] != nullptr)
+			{
+				avgColor = avgColor + Vector3(mPixelArray[x + 1][y]->r, mPixelArray[x + 1][y]->g, mPixelArray[x + 1][y]->b);
+				n++;
+			}
+			if (y - 1 >= 0 && mPixelArray[x][y-1] != nullptr)
+			{
+				avgColor = avgColor + Vector3(mPixelArray[x][y - 1]->r, mPixelArray[x][y - 1]->g, mPixelArray[x][y - 1]->b);
+				n++;
+			}
+			if (y + 1 < mAssetSize && mPixelArray[x][y+1] != nullptr)
+			{
+				avgColor = avgColor + Vector3(mPixelArray[x][y + 1]->r, mPixelArray[x][y + 1]->g, mPixelArray[x][y + 1]->b);
+				n++;
+			}
+
+			if (n != 0)
+			{
+				avgColor = avgColor / n;
+
+				Color* newColor = new Color(avgColor.x, avgColor.y, avgColor.z, alpha);
+				newPixelArray[x][y] = newColor;
+
+			}
+
+		}
+	}
+
+
+	for (int x = 0; x < mAssetSize; x++)
+	{
+		for (int y = 0; y < mAssetSize; y++)
+		{
+			if (newPixelArray[x][y] != nullptr)
+				setPixel(Vector2(x, y), newPixelArray[x][y]);
+		}
+	}
+}
+
 void AssetGenerator::resetPixelArray()
 {
+	mImage.instance();
+	mImage->create(mAssetSize, mAssetSize, false, Image::Format::FORMAT_RGBA8);
+
+	mImageTexture.instance();
+
 	for (int i = 0; i < mAssetSize; i++)
 	{
 		for (int j = 0; j < mAssetSize; j++)
@@ -336,6 +422,121 @@ void AssetGenerator::addSmile()
 	rotatePixelArray();
 }
 
+void AssetGenerator::addMountain(int height, Color* color1, Color* color2)
+{
+
+	resetPixelArray();
+
+	if (height < 2)
+		return;
+
+	Vector2 botLeft = Vector2(0, mAssetSize - 1);
+	Vector2 botRight = Vector2(mAssetSize - 1, mAssetSize - 1);
+	int centerX = rand() % 20 + (mAssetSize - 20) / 2;
+	int centerY = mAssetSize - height + (rand() % (height/2)) - height/4;
+	if (centerY >= mAssetSize - 1)
+		centerY = 1;
+	Vector2 peak = Vector2(centerX, centerY);
+
+	std::deque<Vector2> peaks;
+
+	//peaks.push_back(botLeft);
+	peaks.push_back(peak);
+	//peaks.push_back(botRight);
+
+
+	int smallerPeaks = (height - 10) / 2;
+
+	for (int i = 0; i < smallerPeaks; i++)
+	{
+
+		int smallPeakX = rand() % 50 + (mAssetSize - 50) / 2;
+		int variationY = (rand() % height /3) + ((peak.x - smallPeakX) > 0 ? (peak.x - smallPeakX) : (smallPeakX - peak.x));
+		int smallPeakY = mAssetSize - height + variationY;
+		if (smallPeakY >= mAssetSize - 1)
+			smallPeakY = mAssetSize - 2;
+		Vector2 smallPeak = Vector2(smallPeakX, smallPeakY);
+
+		//if (smallPeak.x < peak.x - 5)
+		//{
+		//	peaks.push_front(smallPeak);
+		//}
+		//else if (smallPeak.x > peak.x + 5)
+		//{
+		peaks.push_back(smallPeak);
+		//}
+
+
+	}
+
+
+	peaks.push_front(botLeft);
+	peaks.push_back(botRight);
+
+
+	std::deque<Vector2> peaksSorted;
+
+	std::set<int> doneX;
+
+	for (int i = 0; i < peaks.size(); i++)
+	{
+		int nextX = mAssetSize;
+		int nextIndex = -1;
+
+		for (int j = 0; j < peaks.size(); j++)
+		{
+			if (peaks[j].x < nextX && doneX.find(peaks[j].x) == doneX.end())
+			{
+				nextX = peaks[j].x;
+				nextIndex = j;
+			}
+		}
+
+		if (nextIndex != -1)
+		{
+
+			doneX.insert(peaks[nextIndex].x);
+			peaksSorted.push_back(peaks[nextIndex]);
+		}
+	}
+
+	for (int i = 1; i < peaksSorted.size(); i++)
+	{
+		addLine(peaksSorted[i - 1], peaksSorted[i], color1);
+	}
+
+
+	fillColor(Vector2(centerX, mAssetSize - 1), color1, nullptr, color2);
+
+
+	if (mPixelArray[0][0] != nullptr)
+	{
+		addMountain(height, color1, color2);
+		return;
+	}
+
+	//for (int i = 0; i < peaksSorted.size(); i++)
+	//{
+	//	if (mPixelArray[int(peaksSorted[i].x - 1)][int(peaksSorted[i].y)] == nullptr && mPixelArray[int(peaksSorted[i].x + 1)][int(peaksSorted[i].y)] == nullptr)
+	//	{
+	//		setPixel(peaksSorted[i], new Color(0, 0, 0, 0));
+
+	//		setPixel(peaksSorted[i] + Vector2(0, 1), color1);
+	//	}
+	//}
+
+
+	blurPixels();
+
+
+
+
+
+
+
+
+}
+
 void AssetGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNeighbours, std::set<Vector2> &toSearch, Color* origColor /*= nullptr*/)
 {
 	int x = origin.x;
@@ -396,10 +597,10 @@ void AssetGenerator::setup(Vector2 pos /*= Vector2(0, 0)*/, Vector2 size /*= Vec
 	resetPixelArray();
 
 
-	mImage.instance();
-	mImage->create(mAssetSize, mAssetSize, false, Image::Format::FORMAT_RGBA8);
+	//mImage.instance();
+	//mImage->create(mAssetSize, mAssetSize, false, Image::Format::FORMAT_RGBA8);
 
-	mImageTexture.instance();
+	//mImageTexture.instance();
 }
 
 }

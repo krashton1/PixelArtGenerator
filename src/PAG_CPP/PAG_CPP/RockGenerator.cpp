@@ -146,6 +146,7 @@ void RockGenerator::buildRock()
 			}
 		}
 
+		blurPixels();
 	}
 	else if (mRockType == RockTypeBush)
 	{
@@ -198,6 +199,35 @@ void RockGenerator::buildRock()
 				sprayPixel(Vector2(-2, -2) + pointsOnLine[j], floor(size * 1.2), 0.2, mColorRamp[4], true);
 			}
 		}
+
+
+		blurPixels();
+
+		int numFlowers = rand() % 5 + 5;
+		for (int i = 0; i < numFlowers; i++)
+		{
+			int x;
+			int y;
+			bool foundSpot = false;
+			while (!foundSpot)
+			{
+				x = rand() % 30 + 15;
+				y = rand() % mAssetSize;
+
+				if (mPixelArray[x][y] != nullptr)
+				{
+					foundSpot = true;
+				}
+			}
+
+			setPixel(Vector2(x, y), new Color(0.7, 0.1, 0.6));
+
+			setPixel(Vector2(x, y + 1), new Color(0.9, 0.4, 0.8));
+			setPixel(Vector2(x, y - 1), new Color(0.9, 0.4, 0.8));
+			setPixel(Vector2(x - 1, y), new Color(0.9, 0.4, 0.8));
+			setPixel(Vector2(x + 1, y), new Color(0.9, 0.4, 0.8));
+		}
+
 	}
 	else if (mRockType == RockTypeCloud)
 	{
@@ -214,6 +244,7 @@ void RockGenerator::buildRock()
 
 		}
 	}
+
 	
 	
 }

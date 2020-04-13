@@ -297,7 +297,7 @@ void TreeGenerator::buildTree()
 				mLeaves.append(static_cast<Vector2>(mNodes[buildOffNode]));
 			}
 
-
+		
 
 		}
 
@@ -359,6 +359,8 @@ void TreeGenerator::buildTree()
 				}
 			}
 		}
+
+		blurPixels();
 	}
 	else if (mTreeType == TreeTypeCactus)
 	{
@@ -531,6 +533,7 @@ void TreeGenerator::buildTree()
 
 	endCactusBranches:;
 
+		blurPixels();
 
 		int numFlowers = rand() % 5 - 1;
 		for (int i = 0; i < numFlowers; i++)
@@ -558,9 +561,9 @@ void TreeGenerator::buildTree()
 
 			
 
-
 		}
 
+		//blurPixels();
 
 	}
 

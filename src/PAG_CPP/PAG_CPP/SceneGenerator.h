@@ -42,6 +42,7 @@ namespace godot
 
 		void drawLine(Vector2 origin, Vector2 dest, Color* color, int flag /*= 0*/);
 		Array getLine(Vector2 origin, Vector2 dest);
+		Color* getAvgColor(Color* color1, Color* color2, float ratio);
 
 
 		inline float getDistance() { return mDistance; }
@@ -51,7 +52,8 @@ namespace godot
 
 		enum Biome
 		{
-			BiomeCloud = -1,
+			BiomeCloud = -2,
+			BiomeMountain = -1,
 			BiomeGrass = 0,
 			BiomeBoreal = 1,
 			BiomeSand = 2,
@@ -66,8 +68,10 @@ namespace godot
 		{
 			int band;
 			int bandPos;
+			int yShift = 0;
 			AssetGenerator* asset;
 			bool toUpdate = false;
+			bool isCloud = false;
 		};
 
 
@@ -97,8 +101,10 @@ namespace godot
 
 		Biome mInitBiome;
 		Biome mDestBiome;
+		Biome mBackgroundBiome;
 
-
+		int mCurrentMountainHeight = 30;
+		std::map<int, int> mBiomeMountainHeights;
 
 	};
 
