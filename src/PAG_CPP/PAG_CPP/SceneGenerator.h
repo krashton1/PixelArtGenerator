@@ -36,6 +36,8 @@ namespace godot
 		void _ready();
 		void _draw();
 
+		void build();
+
 
 		void updateDistance(float deltaTime);
 		void drawPixel(Vector2 pos, Color* color);
@@ -47,6 +49,10 @@ namespace godot
 
 		inline float getDistance() { return mDistance; }
 		inline void setDistance(float d) { mDistance = d; }
+
+
+
+		void setBiomes(String initBiome, String destBiome, String backBiome = String());
 
 	private:
 
@@ -102,8 +108,9 @@ namespace godot
 		Biome mInitBiome;
 		Biome mDestBiome;
 		Biome mBackgroundBiome;
+		int mBiomeIndex = -1;
 
-		int mCurrentMountainHeight = 30;
+		int mCurrentMountainHeight = 5;
 		std::map<int, int> mBiomeMountainHeights;
 
 	};

@@ -1,0 +1,85 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Map.gd" type="Script" id=1]
+[ext_resource path="res://Assets/pag.jpg" type="Texture" id=2]
+[ext_resource path="res://Assets/LoadingIcon.png" type="Texture" id=3]
+
+[sub_resource type="Animation" id=1]
+resource_name = "New Anim"
+length = 0.4
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+}
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="pag" type="Sprite" parent="."]
+position = Vector2( 634.498, 362.234 )
+scale = Vector2( 0.469016, 0.469016 )
+texture = ExtResource( 2 )
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+modulate = Color( 0, 0, 0, 1 )
+margin_left = 190.983
+margin_top = 441.785
+margin_right = 392.983
+margin_bottom = 546.785
+text = " 
+Ashton Woollard - 101011084
+
+             Honours Project
+			
+          Pixel Art Generator"
+
+[node name="Biomes" type="Area2D" parent="."]
+visible = false
+space_override = 1
+
+[node name="BiomeRock" type="CollisionPolygon2D" parent="Biomes"]
+position = Vector2( 0, -1.05267 )
+polygon = PoolVector2Array( 460.229, 578.815, 573.621, 503.405, 702.715, 396.952, 762.318, 414.538, 781.449, 481.783, 730.115, 598.312, 612.503, 605.868, 493.373, 697.02, 438.32, 661.823 )
+
+[node name="BiomeSand" type="CollisionPolygon2D" parent="Biomes"]
+polygon = PoolVector2Array( 735.248, 599.338, 786.069, 484.35, 763.434, 413.266, 870.16, 374.265, 920.422, 370.497, 952.846, 446.797, 945.913, 512.974, 993.182, 540.705, 998.854, 582.301, 974.275, 613.183, 923.855, 611.923, 850.116, 584.822, 838.141, 603.099 )
+
+[node name="BiomeGrass" type="CollisionPolygon2D" parent="Biomes"]
+polygon = PoolVector2Array( 460.536, 576.664, 475.226, 441.982, 557.158, 438.201, 557.158, 380.848, 512.798, 317.47, 485.697, 299.823, 472.075, 274.966, 538.881, 264.252, 765.141, 311.52, 809.258, 337.361, 910.728, 330.428, 919.542, 367.856, 869.762, 372.655, 760.099, 412.36, 702.746, 395.344, 570.394, 503.116 )
+
+[node name="BiomeBoreal" type="CollisionPolygon2D" parent="Biomes"]
+polygon = PoolVector2Array( 468.948, 273.783, 443.73, 241.531, 421.845, 198.816, 394.645, 202.797, 393.318, 184.884, 567.135, 146.406, 648.735, 194.172, 669.301, 240.612, 711.097, 265.822, 748.912, 253.217, 756.719, 226.314, 751.566, 198.816, 884.913, 178.914, 971.158, 222.699, 972.051, 253.492, 911.935, 328.51, 810.593, 335.851, 765.734, 309.751, 537.944, 262.505 )
+
+[node name="BiomeSnow" type="CollisionPolygon2D" parent="Biomes"]
+polygon = PoolVector2Array( 392.306, 183.803, 351.779, 111.395, 543.606, 94.6438, 775.569, 97.0162, 926.829, 103.949, 978.509, 177.688, 974.097, 221.175, 887.123, 175.167, 749.729, 196.596, 773.048, 103.949, 546.788, 99.5372, 566.842, 143.817 )
+
+[node name="MountainRanges" type="Area2D" parent="."]
+space_override = 1
+
+[node name="MountainRange1" type="CollisionPolygon2D" parent="MountainRanges"]
+position = Vector2( 0, -1.05267 )
+polygon = PoolVector2Array( 544.546, 545.615, 669.966, 412.002, 787.688, 411.458, 834.462, 468.094, 785.932, 598.556, 612.503, 605.868, 493.373, 697.02, 438.32, 661.823, 455.05, 590.363 )
+
+[node name="MountainRange2" type="CollisionPolygon2D" parent="MountainRanges"]
+polygon = PoolVector2Array( 379.904, 159.518, 474.873, 168.84, 549.839, 274.324, 617.262, 352.653, 622.816, 447.478, 559.791, 513.157, 470.892, 525.098, 462.031, 450.124, 513.474, 441.099, 502.644, 366.191, 397.954, 256.086 )
+
+[node name="LoadingIcon" type="Sprite" parent="."]
+visible = false
+position = Vector2( 42.5472, 42.8475 )
+scale = Vector2( 1.28635, 1.28635 )
+texture = ExtResource( 3 )
+hframes = 8
+frame = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="LoadingIcon"]
+autoplay = "New Anim"
+"anims/New Anim" = SubResource( 1 )

@@ -27,13 +27,22 @@ namespace godot
 		void _draw();
 		void _process();
 
+		void initSceneGenerator(Ref<ResourceInteractiveLoader> loader);
+
 	private:
 
 		std::vector<AssetGenerator*> mGenerators;
 		SceneGenerator* mSceneGenerator;
 
+		Node2D* mMapScene;
+
 		int mTime;
 		bool mPan = false;
+
+		Ref<ResourceInteractiveLoader> mLoader;
+		bool mIsLoading = false;
+
+		int mCurrentBiomeIndex = 0;
 
 	};
 
