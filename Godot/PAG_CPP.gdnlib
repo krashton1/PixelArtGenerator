@@ -7,7 +7,7 @@ reloadable=true
 
 [entry]
 
-Windows.64="res://LibPAG_CPP-x64-Release.dll"
+Windows.64="res://LibPAG_CPP-x64-Debug.dll"
 
 [dependencies]
 
