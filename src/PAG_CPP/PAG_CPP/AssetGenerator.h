@@ -74,6 +74,9 @@ namespace godot
 
 	protected:
 
+
+		bool mBlur = false;
+
 		void drawPixel(Vector2 pos, Color* color);
 		void drawPixelArray();
 

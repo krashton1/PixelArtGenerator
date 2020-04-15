@@ -52,6 +52,8 @@ void RockGenerator::setType(RockType rockType)
 
 	if (mRockType == RockTypeGraphite)
 	{
+		mDensity = 1.0;
+
 		mColorRamp.push_back(new Color(0.20, 0.20, 0.20));
 		mColorRamp.push_back(new Color(0.30, 0.30, 0.30));
 		mColorRamp.push_back(new Color(0.40, 0.40, 0.40));
@@ -61,6 +63,8 @@ void RockGenerator::setType(RockType rockType)
 	}
 	else if (mRockType == RockTypeBush)
 	{
+		mDensity = 1.0;
+
 		mColorRamp.push_back(new Color(0.20, 0.20, 0.20));
 		mColorRamp.push_back(new Color(0.30, 0.30, 0.30));
 		mColorRamp.push_back(new Color(0.175, 0.410, 0.255));
@@ -69,6 +73,8 @@ void RockGenerator::setType(RockType rockType)
 	}
 	else if (mRockType == RockTypeCloud)
 	{
+		mDensity = 1.0;
+
 		mColorRamp.push_back(new Color(0.7, 0.7, 0.7, 0.5));
 		mColorRamp.push_back(new Color(0.8, 0.8, 0.8, 0.6));
 		mColorRamp.push_back(new Color(0.85, 0.85, 0.85, 0.7));
@@ -146,7 +152,8 @@ void RockGenerator::buildRock()
 			}
 		}
 
-		blurPixels();
+		if (mBlur)
+			blurPixels();
 	}
 	else if (mRockType == RockTypeBush)
 	{
@@ -201,7 +208,8 @@ void RockGenerator::buildRock()
 		}
 
 
-		blurPixels();
+		if (mBlur)
+			blurPixels();
 
 		int numFlowers = rand() % 5 + 5;
 		for (int i = 0; i < numFlowers; i++)
@@ -243,6 +251,10 @@ void RockGenerator::buildRock()
 			sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.5, nullptr, true);
 
 		}
+
+
+		if (mBlur)
+			blurPixels();
 	}
 
 	

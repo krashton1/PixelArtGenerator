@@ -525,8 +525,8 @@ void AssetGenerator::addMountain(int height, Color* color1, Color* color2)
 	//	}
 	//}
 
-
-	blurPixels();
+	if (mBlur)
+		blurPixels();
 
 
 

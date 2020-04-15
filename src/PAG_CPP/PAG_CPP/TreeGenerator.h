@@ -67,6 +67,18 @@ namespace godot
 
 		bool mMirrorBranches;
 
+		int mMinBranchLength;
+		int mMaxBranchLength;
+
+		int mBranchBendAngle;
+		float mLeafDensity = 1.0;
+
+		bool mTaperTrunk=true;
+
+		bool mSnow = false;
+
+		int mNumFlowers = 0;
+
 		TreeType mTreeType;
 };
 

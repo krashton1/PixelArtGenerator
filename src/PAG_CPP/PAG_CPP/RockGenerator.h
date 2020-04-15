@@ -52,6 +52,8 @@ namespace godot
 		int mMaxPts;
 		int mMinRadius;
 		int mMaxRadius;
+
+		float mDensity = 1;
 	};
 
 }

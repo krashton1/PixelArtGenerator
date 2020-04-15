@@ -49,10 +49,9 @@ void Main::_init()
 	Ref<PackedScene> mapGenScene = ResourceLoader::get_singleton()->load("res://Map.tscn");
 
 
-	Node2D* mapScene = Object::cast_to<Node2D>(mapGenScene->instance());
-	mMapScene = mapScene;
-	add_child(mapScene);
-	//get_tree()->set_current_scene(mapScene);
+	//Node2D* mapScene = Object::cast_to<Node2D>(mapGenScene->instance());
+	//mMapScene = mapScene;
+	//add_child(mapScene);
 
 
 	// ---------------------------------------- Art ---------------------------------------- //
@@ -66,21 +65,30 @@ void Main::_init()
 	//mGenerators.push_back(smileGen);
 
 
-	////// ---------------------------------------- Rocks ---------------------------------------- //
+	//// ---------------------------------------- Rocks ---------------------------------------- //
 
-	//for (int i = 0; i < 6; i++)
-	//{
-	//	for (int j = 0; j < 3; j++)
-	//	{
-	//		RockGenerator* rockGen = Object::cast_to<RockGenerator>(rockGenScene->instance());
-	//		rockGen->setType(RockGenerator::RockTypeCloud);
+	for (int i = 0; i < 6; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			RockGenerator* rockGen = Object::cast_to<RockGenerator>(rockGenScene->instance());
+			
+			//if (j == 0)
+			//	rockGen->setType(RockGenerator::RockTypeGraphite);
+			//else if (j == 1)
+			//	rockGen->setType(RockGenerator::RockTypeBush);
+			//else if (j == 2)
+			//	rockGen->setType(RockGenerator::RockTypeCloud);
 
-	//		rockGen->apply_scale(Vector2(0.2, 0.2));
-	//		rockGen->set_position(Vector2(i * 200, j * 200));
-	//		add_child(rockGen, "rockGen" + i + j);
-	//		mGenerators.push_back(rockGen);
-	//	}
-	//}
+			rockGen->addMountain(20, new Color(0.4, 0.4, 0.5), new Color(0.5, 0.5, 0.6));
+
+
+			rockGen->apply_scale(Vector2(0.2, 0.2));
+			rockGen->set_position(Vector2(i * 200, j * 200));
+			add_child(rockGen, "rockGen" + i + j);
+			mGenerators.push_back(rockGen);
+		}
+	}
 
 
 	//// ---------------------------------------- Trees ---------------------------------------- //
@@ -89,7 +97,14 @@ void Main::_init()
 	//	for (int j = 0; j < 3; j++)
 	//	{
 	//		TreeGenerator* treeGen = Object::cast_to<TreeGenerator>(treeGenScene->instance());
-	//		treeGen->setType(TreeGenerator::TreeTypeCactus);
+
+	//		if(j==0)
+	//			treeGen->setType(TreeGenerator::TreeTypeDeciduous);
+	//		else if(j==1)
+	//			treeGen->setType(TreeGenerator::TreeTypeSnowConiferous);
+	//		else if(j==2)
+	//			treeGen->setType(TreeGenerator::TreeTypeCactus);
+
 	//		treeGen->apply_scale(Vector2(0.2, 0.2));
 	//		treeGen->set_position(Vector2(i * 200, j * 200));
 	//		add_child(treeGen, "treeGen" + i + j);
