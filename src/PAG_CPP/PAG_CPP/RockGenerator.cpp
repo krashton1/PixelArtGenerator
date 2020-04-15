@@ -74,6 +74,7 @@ void RockGenerator::setType(RockType rockType)
 	else if (mRockType == RockTypeCloud)
 	{
 		mDensity = 1.0;
+		mBlur = false;
 
 		mColorRamp.push_back(new Color(0.7, 0.7, 0.7, 0.5));
 		mColorRamp.push_back(new Color(0.8, 0.8, 0.8, 0.6));

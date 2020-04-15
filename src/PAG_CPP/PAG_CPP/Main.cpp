@@ -49,9 +49,9 @@ void Main::_init()
 	Ref<PackedScene> mapGenScene = ResourceLoader::get_singleton()->load("res://Map.tscn");
 
 
-	//Node2D* mapScene = Object::cast_to<Node2D>(mapGenScene->instance());
-	//mMapScene = mapScene;
-	//add_child(mapScene);
+	Node2D* mapScene = Object::cast_to<Node2D>(mapGenScene->instance());
+	mMapScene = mapScene;
+	add_child(mapScene);
 
 
 	// ---------------------------------------- Art ---------------------------------------- //
@@ -65,30 +65,30 @@ void Main::_init()
 	//mGenerators.push_back(smileGen);
 
 
-	//// ---------------------------------------- Rocks ---------------------------------------- //
+	////// ---------------------------------------- Rocks ---------------------------------------- //
 
-	for (int i = 0; i < 6; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			RockGenerator* rockGen = Object::cast_to<RockGenerator>(rockGenScene->instance());
-			
-			//if (j == 0)
-			//	rockGen->setType(RockGenerator::RockTypeGraphite);
-			//else if (j == 1)
-			//	rockGen->setType(RockGenerator::RockTypeBush);
-			//else if (j == 2)
-			//	rockGen->setType(RockGenerator::RockTypeCloud);
+	//for (int i = 0; i < 6; i++)
+	//{
+	//	for (int j = 0; j < 3; j++)
+	//	{
+	//		RockGenerator* rockGen = Object::cast_to<RockGenerator>(rockGenScene->instance());
+	//		
+	//		//if (j == 0)
+	//		//	rockGen->setType(RockGenerator::RockTypeGraphite);
+	//		//else if (j == 1)
+	//		//	rockGen->setType(RockGenerator::RockTypeBush);
+	//		//else if (j == 2)
+	//		//	rockGen->setType(RockGenerator::RockTypeCloud);
 
-			rockGen->addMountain(20, new Color(0.4, 0.4, 0.5), new Color(0.5, 0.5, 0.6));
+	//		rockGen->addMountain(20, new Color(0.4, 0.4, 0.5), new Color(0.5, 0.5, 0.6));
 
 
-			rockGen->apply_scale(Vector2(0.2, 0.2));
-			rockGen->set_position(Vector2(i * 200, j * 200));
-			add_child(rockGen, "rockGen" + i + j);
-			mGenerators.push_back(rockGen);
-		}
-	}
+	//		rockGen->apply_scale(Vector2(0.2, 0.2));
+	//		rockGen->set_position(Vector2(i * 200, j * 200));
+	//		add_child(rockGen, "rockGen" + i + j);
+	//		mGenerators.push_back(rockGen);
+	//	}
+	//}
 
 
 	//// ---------------------------------------- Trees ---------------------------------------- //
