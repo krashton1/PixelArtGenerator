@@ -422,7 +422,7 @@ void AssetGenerator::addSmile()
 	rotatePixelArray();
 }
 
-void AssetGenerator::addMountain(int height, Color* color1, Color* color2)
+void AssetGenerator::addMountain(int height, Color* color0, Color* color1, Color* color2)
 {
 
 	resetPixelArray();
@@ -502,7 +502,7 @@ void AssetGenerator::addMountain(int height, Color* color1, Color* color2)
 
 	for (int i = 1; i < peaksSorted.size(); i++)
 	{
-		addLine(peaksSorted[i - 1], peaksSorted[i], color1);
+		addLine(peaksSorted[i - 1], peaksSorted[i], color0);
 	}
 
 
@@ -511,7 +511,7 @@ void AssetGenerator::addMountain(int height, Color* color1, Color* color2)
 
 	if (mPixelArray[0][0] != nullptr)
 	{
-		addMountain(height, color1, color2);
+		addMountain(height, color0, color1, color2);
 		return;
 	}
 

@@ -73,14 +73,14 @@ void Main::_init()
 	//	{
 	//		RockGenerator* rockGen = Object::cast_to<RockGenerator>(rockGenScene->instance());
 	//		
-	//		//if (j == 0)
+	//		//if (i%3 == 0)
 	//		//	rockGen->setType(RockGenerator::RockTypeGraphite);
-	//		//else if (j == 1)
+	//		//else if (i % 3 == 1)
 	//		//	rockGen->setType(RockGenerator::RockTypeBush);
-	//		//else if (j == 2)
+	//		//else if (i % 3 == 2)
 	//		//	rockGen->setType(RockGenerator::RockTypeCloud);
 
-	//		rockGen->addMountain(20, new Color(0.4, 0.4, 0.5), new Color(0.5, 0.5, 0.6));
+	//		rockGen->addMountain(20, new Color(0.25, 0.25, 0.25), new Color(0.4, 0.4, 0.5), new Color(0.5, 0.5, 0.6));
 
 
 	//		rockGen->apply_scale(Vector2(0.2, 0.2));

@@ -54,7 +54,7 @@ void RockGenerator::setType(RockType rockType)
 	{
 		mDensity = 1.0;
 
-		mColorRamp.push_back(new Color(0.20, 0.20, 0.20));
+		mColorRamp.push_back(new Color(0.25, 0.25, 0.25));
 		mColorRamp.push_back(new Color(0.30, 0.30, 0.30));
 		mColorRamp.push_back(new Color(0.40, 0.40, 0.40));
 		mColorRamp.push_back(new Color(0.45, 0.45, 0.45));
@@ -240,18 +240,18 @@ void RockGenerator::buildRock()
 	}
 	else if (mRockType == RockTypeCloud)
 	{
-		for (int i = 0; i < 12; i++)
-		{
-			int x = rand() % 30 + 15;
-			int y = rand() % 15 + 30;
+	for (int i = 0; i < 12; i++)
+	{
+		int x = rand() % 30 + 15;
+		int y = rand() % 15 + 30;
 
-			sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.75, mColorRamp[1], false);
-			sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.5, nullptr, true);
-			sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.5, nullptr, true);
-			sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.5, nullptr, true);
-			sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.5, nullptr, true);
+		sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.75, mColorRamp[1], false);
+		sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.5, nullptr, true);
+		sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.5, nullptr, true);
+		sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.5, nullptr, true);
+		sprayPixel(Vector2(x, y), rand() % 6 + 6, 0.5, nullptr, true);
 
-		}
+	}
 
 
 		if (mBlur)

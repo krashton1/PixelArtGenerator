@@ -60,7 +60,7 @@ namespace godot
 
 		// Ground colors
 		mGroundColors.insert({ BiomeCloud, std::vector<Color*> { new Color(.075, 0.705, 0.940), new Color(.075, 0.685, 0.910) } });
-		mGroundColors.insert({ BiomeMountain, std::vector<Color*> { new Color(0.4, 0.4, 0.5), new Color(0.5, 0.5, 0.6) } });
+		mGroundColors.insert({ BiomeMountain, std::vector<Color*> { new Color(0.25, 0.25, 0.25), new Color(0.4, 0.4, 0.5), new Color(0.5, 0.5, 0.6) } });
 		mGroundColors.insert({ BiomeGrass, std::vector<Color*> { new Color(0.2, 0.6, 0.2), new Color(0.2, 0.5, 0.2) } });
 		mGroundColors.insert({ BiomeBoreal, std::vector<Color*> { new Color(0.1, 0.2, 0.1), new Color(0.2, 0.3, 0.1) } });
 		mGroundColors.insert({ BiomeSand, std::vector<Color*> { new Color(0.8, 0.7, 0.6), new Color(0.95, 0.85, 0.75) } }); 
@@ -301,7 +301,12 @@ namespace godot
 			//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
 			assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
 			assetGen->apply_scale(Vector2(.175, .175));
-			assetGen->addMountain(mCurrentMountainHeight * 1.2, mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mBackgroundInitBiome)][0], mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mBackgroundInitBiome)][mGroundColors[mBackgroundInitBiome].size() - 1]);
+
+			Color* c1 = mGroundColors[mInitBiome][0];
+			Color* c2 = mGroundColors[mInitBiome][mGroundColors[mInitBiome].size() - 1];
+			Color* c0 = getAvgColor(c1, new Color(0, 0, 0), 0.5);
+
+			assetGen->addMountain(mCurrentMountainHeight, (mCurrentMountainHeight >= 10 ? mGroundColors[BiomeMountain][0] : c0), (mCurrentMountainHeight >= 10 ? mGroundColors[BiomeMountain][1] : c1), (mCurrentMountainHeight >= 15 ? mGroundColors[BiomeMountain][2] : c2));
 
 			newAsset.band = 0;
 			newAsset.bandPos = (mScreenSizePixel.x + 80) / numMountains * j + (mScreenSizePixel.x + 80) / (2 * numMountains) - 40;
@@ -342,7 +347,12 @@ namespace godot
 			//assetGen = Object::cast_to<TreeGenerator>(mTreeGenScene->instance());
 			assetGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
 			assetGen->apply_scale(Vector2(.175, .175));
-			assetGen->addMountain(mCurrentMountainHeight * 1.2, mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mBackgroundInitBiome)][0], mGroundColors[(mCurrentMountainHeight >= 15 ? BiomeMountain : mBackgroundInitBiome)][mGroundColors[mBackgroundInitBiome].size() - 1]);
+
+			Color* c1 = mGroundColors[mInitBiome][0];
+			Color* c2 = mGroundColors[mInitBiome][mGroundColors[mInitBiome].size() - 1];
+			Color* c0 = getAvgColor(c1, new Color(0, 0, 0), 0.5);
+
+			assetGen->addMountain(mCurrentMountainHeight, (mCurrentMountainHeight >= 10 ? mGroundColors[BiomeMountain][0] : c0), (mCurrentMountainHeight >= 10 ? mGroundColors[BiomeMountain][1] : c1), (mCurrentMountainHeight >= 15 ? mGroundColors[BiomeMountain][2] : c2));
 
 			newAsset.band = 1;
 			newAsset.bandPos = (mScreenSizePixel.x + 80) / numMountains * j - 40;
@@ -780,11 +790,12 @@ namespace godot
 
 			mCurrentMountainHeight = int(mBiomeMountainHeights[mBackgroundInitBiome] * ratio + mBiomeMountainHeights[mBackgroundDestBiome] * (1.0 - ratio));
 
-			Color* c0 = getAvgColor(mGroundColors[mInitBiome][0], mGroundColors[mDestBiome][0], ratio);
-			Color* c1 = getAvgColor(mGroundColors[mInitBiome][mGroundColors[mInitBiome].size() - 1], mGroundColors[mDestBiome][mGroundColors[mDestBiome].size() - 1], ratio);
+			Color* c1 = getAvgColor(mGroundColors[mInitBiome][0], mGroundColors[mDestBiome][0], ratio);
+			Color* c2 = getAvgColor(mGroundColors[mInitBiome][mGroundColors[mInitBiome].size() - 1], mGroundColors[mDestBiome][mGroundColors[mDestBiome].size() - 1], ratio);
+			Color* c0 = getAvgColor(c1, new Color(0,0,0), 0.5);
 
 			RockGenerator* rockGen = Object::cast_to<RockGenerator>(mRockGenScene->instance());
-			rockGen->addMountain(mCurrentMountainHeight, (mCurrentMountainHeight >= 15 ? mGroundColors[BiomeMountain][0] : c0), (mCurrentMountainHeight >= 15 ? mGroundColors[BiomeMountain][1] : c1));
+			rockGen->addMountain(mCurrentMountainHeight, (mCurrentMountainHeight >= 10 ? mGroundColors[BiomeMountain][0] : c0), (mCurrentMountainHeight >= 10 ? mGroundColors[BiomeMountain][1] : c1), (mCurrentMountainHeight >= 15 ? mGroundColors[BiomeMountain][2] : c2));
 			assetGen = rockGen;
 		}
 		else if (biomeType == BiomeGrass)

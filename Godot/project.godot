@@ -9,7 +9,7 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "",
+"base": "Node2D",
 "class": "Main",
 "language": "NativeScript",
 "path": "res://Main.gdns"
@@ -122,4 +122,5 @@ ui_click={
 
 [rendering]
 
+environment/default_clear_color=Color( 0.486275, 0.2, 0.333333, 1 )
 environment/default_environment="res://default_env.tres"
