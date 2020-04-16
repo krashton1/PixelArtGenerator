@@ -42,6 +42,8 @@ namespace godot
 		Ref<ResourceInteractiveLoader> mLoader;
 		bool mIsLoading = false;
 
+		Array mVisits;
+
 		int mCurrentBiomeIndex = 0;
 
 	};

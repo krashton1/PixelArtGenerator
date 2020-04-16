@@ -144,7 +144,7 @@ void Main::_process()
 
 	if (Input::get_singleton()->is_action_just_pressed("ui_right"))
 	{
-		//if(mPan<5)
+		if (mPan < 20)
 			mPan++;
 	}
 
@@ -157,8 +157,7 @@ void Main::_process()
 	if (Input::get_singleton()->is_action_just_pressed("ui_accept") && mSceneGenerator == nullptr)
 	{
 
-		Array visits = mMapScene->get("biomeVisits");
-		if (visits.size() >= 1)
+		if (Array(mMapScene->get("biomeVisits")).size() >= 1)
 		{
 
 			Node* loadingIcon = mMapScene->get_node("LoadingIcon");
@@ -182,13 +181,13 @@ void Main::_process()
 	if (mSceneGenerator != nullptr && mSceneGenerator->getDistance() >=  1.5 * mCurrentBiomeIndex)
 	{
 
-		Array visits = mMapScene->get("biomeVisits");
-		if (mCurrentBiomeIndex + 1 < visits.size())
+		//Array visits = mMapScene->get("biomeVisits");
+		if (mCurrentBiomeIndex + 1 < mVisits.size())
 		{
 			//std::string biome0 = String(visits[mCurrentBiomeIndex]).utf8().get_data();
 			//std::string biome1 = String(visits[mCurrentBiomeIndex + 1]).utf8().get_data();
 
-			mSceneGenerator->setBiomes(String(Array(visits[mCurrentBiomeIndex])[0]), String(Array(visits[mCurrentBiomeIndex + 1])[0]), String(Array(visits[mCurrentBiomeIndex])[1]), String(Array(visits[mCurrentBiomeIndex + 1])[1]));
+			mSceneGenerator->setBiomes(String(Array(mVisits[mCurrentBiomeIndex])[0]), String(Array(mVisits[mCurrentBiomeIndex + 1])[0]), String(Array(mVisits[mCurrentBiomeIndex])[1]), String(Array(mVisits[mCurrentBiomeIndex + 1])[1]));
 
 		}
 		mCurrentBiomeIndex += 1;
@@ -209,21 +208,27 @@ void Main::initSceneGenerator(Ref<ResourceInteractiveLoader> loader)
 
 	mCurrentBiomeIndex = 0;
 
+	mVisits.clear();
 	Array visits = mMapScene->get("biomeVisits");
-	if (mCurrentBiomeIndex + 1 < visits.size())
+	for (int x = 0; x < visits.size(); x++)
+	{
+		mVisits.append(visits[x]);
+	}
+
+	if (mCurrentBiomeIndex + 1 < mVisits.size())
 	{
 		//std::string biome0 = String(visits[mCurrentBiomeIndex]).utf8().get_data();
 		//std::string biome1 = String(visits[mCurrentBiomeIndex + 1]).utf8().get_data();
 
-		std::string var = String(Array(visits[mCurrentBiomeIndex])[0]).utf8().get_data();;
+		std::string var = String(Array(mVisits[mCurrentBiomeIndex])[0]).utf8().get_data();;
 
-		mSceneGenerator->setBiomes(String(Array(visits[mCurrentBiomeIndex])[0]), String(Array(visits[mCurrentBiomeIndex + 1])[0]), String(Array(visits[mCurrentBiomeIndex])[1]), String(Array(visits[mCurrentBiomeIndex + 1])[1]));
+		mSceneGenerator->setBiomes(String(Array(mVisits[mCurrentBiomeIndex])[0]), String(Array(mVisits[mCurrentBiomeIndex + 1])[0]), String(Array(mVisits[mCurrentBiomeIndex])[1]), String(Array(mVisits[mCurrentBiomeIndex + 1])[1]));
 
 	}
-	else if(mCurrentBiomeIndex + 1 == visits.size())
+	else if(mCurrentBiomeIndex + 1 == mVisits.size())
 	{
-		//std::string biome0 = String(visits[mCurrentBiomeIndex]).utf8().get_data();
-		mSceneGenerator->setBiomes(String(Array(visits[mCurrentBiomeIndex])[0]), String(Array(visits[mCurrentBiomeIndex])[0]), String(Array(visits[mCurrentBiomeIndex])[1]), String(Array(visits[mCurrentBiomeIndex])[1]));
+		//std::string biome0 = String(mVisits[mCurrentBiomeIndex]).utf8().get_data();
+		mSceneGenerator->setBiomes(String(Array(mVisits[mCurrentBiomeIndex])[0]), String(Array(mVisits[mCurrentBiomeIndex])[0]), String(Array(mVisits[mCurrentBiomeIndex])[1]), String(Array(mVisits[mCurrentBiomeIndex])[1]));
 	}
 	else
 	{
