@@ -69,6 +69,9 @@ namespace godot
 
 		int mMinBranchLength;
 		int mMaxBranchLength;
+		Vector2 mBranchAngle1;
+		Vector2 mBranchAngle2;
+
 
 		int mBranchBendAngle;
 		float mLeafDensity = 1.0;

@@ -252,14 +252,14 @@ void TreeGenerator::buildTree()
 			if (!mMirrorBranches)
 			{
 				branchLength = std::max((rand() % 10 + 9) - std::max(buildOffNode, 5), 4);
-				branchEnd = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * branchLength, static_cast<Vector2>(mNodes[buildOffNode]).y - (rand() % 5 + 3));
-				branchMid = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * (branchLength - 3), static_cast<Vector2>(mNodes[buildOffNode]).y - 2);
+				branchEnd = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * branchLength * mBranchAngle1.x, static_cast<Vector2>(mNodes[buildOffNode]).y * mBranchAngle1.y - (rand() % 5 + 3));
+				branchMid = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * (branchLength - 3) * mBranchAngle2.x, static_cast<Vector2>(mNodes[buildOffNode]).y  * mBranchAngle2.y - 2);
 			}
 			else
 			{
-				branchLength = (mNodes.size() - (buildOffNode / 2 * 2)) * 0.7;
-				branchEnd = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * branchLength, static_cast<Vector2>(mNodes[buildOffNode]).y + 1);
-				branchMid = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * (branchLength - 3), static_cast<Vector2>(mNodes[buildOffNode]).y + 1);
+				branchLength = (mNodes.size() - (buildOffNode / 2 * 2)) * 0.35;
+				branchEnd = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * branchLength * mBranchAngle1.x, static_cast<Vector2>(mNodes[buildOffNode]).y * mBranchAngle1.y + 1);
+				branchMid = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * (branchLength - 3) * mBranchAngle2.x, static_cast<Vector2>(mNodes[buildOffNode]).y * mBranchAngle2.y + 1);
 			}
 
 
@@ -289,9 +289,14 @@ void TreeGenerator::buildTree()
 		}
 		else // Same as above, but if we arent tapering, then its easier to use spray pixel to fill branches
 		{
-			branchLength = (mNodes.size() - (buildOffNode / 2 * 2)) * 1.0;
-			branchEnd = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * branchLength, static_cast<Vector2>(mNodes[buildOffNode]).y + 1);
-			branchMid = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * (branchLength - 3), static_cast<Vector2>(mNodes[buildOffNode]).y + 1);
+			//branchLength = (mNodes.size() - (buildOffNode / 2 * 2)) * 1.0;
+			//branchEnd = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * branchLength, static_cast<Vector2>(mNodes[buildOffNode]).y + 1);
+			//branchMid = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * (branchLength - 3), static_cast<Vector2>(mNodes[buildOffNode]).y + 1);
+
+			branchLength = (mNodes.size() - (buildOffNode / 2 * 2)) * 0.5;
+			branchEnd = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * branchLength * mBranchAngle1.x, (static_cast<Vector2>(mNodes[buildOffNode]).y + 1 * 1));
+			branchMid = Vector2(static_cast<Vector2>(mNodes[buildOffNode]).x + (buildOffNode % 2 == 0 ? -1 : 1) * (branchLength * mBranchAngle2.x - 3), static_cast<Vector2>(mNodes[buildOffNode]).y + 1 * 1);
+
 			float armSize = 2;
 			sprayPixel((Vector2(0, 0) + branchMid + mNodes[buildOffNode]) / 2.0, armSize, 1.0, mTrunkColorRamp[0]);
 			sprayPixel((Vector2(0, 0) + branchMid + mNodes[buildOffNode]) / 2.0, armSize, 0.1, mTrunkColorRamp[2]);
@@ -303,15 +308,15 @@ void TreeGenerator::buildTree()
 			sprayPixel(branchEnd, armSize, 1.0, mTrunkColorRamp[0]);
 			sprayPixel(branchEnd, armSize, 0.1, mTrunkColorRamp[2]);
 			addLine(branchEnd, branchMid, mTrunkColorRamp[1], 1);
-			sprayPixel(branchEnd + Vector2(0, -2), armSize, 1.0, mTrunkColorRamp[0]);
-			sprayPixel(branchEnd + Vector2(0, -2), armSize, 0.1, mTrunkColorRamp[2]);
-			sprayPixel(branchEnd + Vector2(0, -5), armSize, 1.0, mTrunkColorRamp[0]);
-			sprayPixel(branchEnd + Vector2(0, -5), armSize, 0.2, mTrunkColorRamp[2]);
-			addLine(branchEnd, branchEnd + Vector2(0, -5), mTrunkColorRamp[1], 1);
+			sprayPixel(branchEnd + Vector2(0, -mBranchAngle2.y * 1), armSize, 1.0, mTrunkColorRamp[0]);
+			sprayPixel(branchEnd + Vector2(0, -mBranchAngle2.y * 1), armSize, 0.1, mTrunkColorRamp[2]);
+			sprayPixel(branchEnd + Vector2(0, -mBranchAngle2.y * 2.5), armSize, 1.0, mTrunkColorRamp[0]);
+			sprayPixel(branchEnd + Vector2(0, -mBranchAngle2.y * 2.5), armSize, 0.2, mTrunkColorRamp[2]);
+			addLine(branchEnd, branchEnd + Vector2(0, -mBranchAngle2.y * 2.5), mTrunkColorRamp[1], 1);
 			if (rand() % 2 == 0)
 			{
-				sprayPixel(branchEnd + Vector2(0, -7), armSize, 1.0, mTrunkColorRamp[0]);
-				sprayPixel(branchEnd + Vector2(0, -7), armSize, 0.3, mTrunkColorRamp[2]);
+				sprayPixel(branchEnd + Vector2(0, -mBranchAngle2.y * 3.5), armSize, 1.0, mTrunkColorRamp[0]);
+				sprayPixel(branchEnd + Vector2(0, -mBranchAngle2.y * 3.5), armSize, 0.3, mTrunkColorRamp[2]);
 			}
 			sprayPixel(branchEnd, branchLength, 0.1, mTrunkColorRamp[1], true);
 			sprayPixel(branchEnd, branchLength, 0.1, mTrunkColorRamp[0], true);
@@ -426,6 +431,9 @@ void TreeGenerator::setType(TreeType treeType)
 		mMinBranch = 2;
 		mMaxBranch = 5;
 		mLeafDensity = 1.0;
+		mBranchAngle1 = Vector2(1, 1);
+		mBranchAngle2 = Vector2(1, 1);
+
 		mMirrorBranches = false;
 
 
@@ -449,6 +457,9 @@ void TreeGenerator::setType(TreeType treeType)
 		mMinBranch = 20;
 		mMaxBranch = 30;
 		mLeafDensity = 1.0;
+		mBranchAngle1 = Vector2(2, 1);
+		mBranchAngle2 = Vector2(2, 1);
+
 		mMirrorBranches = true;
 
 		if (mTreeType == TreeTypeSnowConiferous)
@@ -473,6 +484,8 @@ void TreeGenerator::setType(TreeType treeType)
 		mMaxOffsetFromCenter = 0;
 		mMinBranch = 1;
 		mMaxBranch = 2;
+		mBranchAngle1 = Vector2(2.0, 1.0);
+		mBranchAngle2 = Vector2(2.0, 2.0);
 		mLeafDensity = 0;
 		mMirrorBranches = false;
 		mTaperTrunk = false;
