@@ -290,7 +290,7 @@ void AssetGenerator::blurPixels()
 				n++;
 			}
 
-			if (n != 0)
+			if (n != 0 && alpha != 0.0)
 			{
 				avgColor = avgColor / n;
 
@@ -535,6 +535,28 @@ void AssetGenerator::addMountain(int height, Color* color0, Color* color1, Color
 
 
 
+}
+
+void AssetGenerator::addOutline(Color* outlineColor)
+{
+	for (int i = 0; i < mAssetSize; i++)
+	{
+		for (int j = 0; j < mAssetSize; j++)
+		{
+			if (mPixelArray[i][j] == nullptr)
+			{
+				if (
+					i < mAssetSize - 1 && mPixelArray[i + 1][j] != nullptr && !compareColor(mPixelArray[i + 1][j], outlineColor) ||
+					i > 0 && mPixelArray[i - 1][j] != nullptr && !compareColor(mPixelArray[i - 1][j], outlineColor) ||
+					j < mAssetSize - 1 && mPixelArray[i][j + 1] != nullptr && !compareColor(mPixelArray[i][j + 1], outlineColor) ||
+					j > 0 && mPixelArray[i][j - 1] != nullptr && !compareColor(mPixelArray[i][j - 1], outlineColor)
+					)
+				{
+					setPixel(Vector2(i, j), outlineColor);
+				}
+			}
+		}
+	}
 }
 
 void AssetGenerator::findLikeNeighbours(Vector2 origin, std::set<Vector2> &validNeighbours, std::set<Vector2> &toSearch, Color* origColor /*= nullptr*/)

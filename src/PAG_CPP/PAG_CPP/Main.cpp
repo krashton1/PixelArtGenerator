@@ -65,7 +65,7 @@ void Main::_init()
 	//mGenerators.push_back(smileGen);
 
 
-	////// ---------------------------------------- Rocks ---------------------------------------- //
+	// ---------------------------------------- Rocks ---------------------------------------- //
 
 	//for (int i = 0; i < 6; i++)
 	//{
@@ -73,14 +73,14 @@ void Main::_init()
 	//	{
 	//		RockGenerator* rockGen = Object::cast_to<RockGenerator>(rockGenScene->instance());
 	//		
-	//		//if (i%3 == 0)
-	//		//	rockGen->setType(RockGenerator::RockTypeGraphite);
-	//		//else if (i % 3 == 1)
-	//		//	rockGen->setType(RockGenerator::RockTypeBush);
-	//		//else if (i % 3 == 2)
-	//		//	rockGen->setType(RockGenerator::RockTypeCloud);
+	//		if (i % 3 == 0)
+	//			rockGen->setType(RockGenerator::RockTypeGraphite);
+	//		else if (i % 3 == 1)
+	//			rockGen->setType(RockGenerator::RockTypeBush);
+	//		else if (i % 3 == 2)
+	//			rockGen->setType(RockGenerator::RockTypeCloud);
 
-	//		rockGen->addMountain(20, new Color(0.25, 0.25, 0.25), new Color(0.4, 0.4, 0.5), new Color(0.5, 0.5, 0.6));
+	//		//rockGen->addMountain(20, new Color(0.25, 0.25, 0.25), new Color(0.4, 0.4, 0.5), new Color(0.5, 0.5, 0.6));
 
 
 	//		rockGen->apply_scale(Vector2(0.2, 0.2));
@@ -91,7 +91,7 @@ void Main::_init()
 	//}
 
 
-	//// ---------------------------------------- Trees ---------------------------------------- //
+	// ---------------------------------------- Trees ---------------------------------------- //
 	//for (int i = 0; i < 6; i++)
 	//{
 	//	for (int j = 0; j < 3; j++)

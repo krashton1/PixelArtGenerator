@@ -395,6 +395,8 @@ branchEnd:;
 
 	}
 
+	addOutline(new Color(0.1, 0.1, 0.1));
+
 	return;
 
 

@@ -155,6 +155,9 @@ void RockGenerator::buildRock()
 
 		if (mBlur)
 			blurPixels();
+
+
+		addOutline(new Color(0.1, 0.1, 0.1));
 	}
 	else if (mRockType == RockTypeBush)
 	{
@@ -236,6 +239,9 @@ void RockGenerator::buildRock()
 			setPixel(Vector2(x - 1, y), new Color(0.9, 0.4, 0.8));
 			setPixel(Vector2(x + 1, y), new Color(0.9, 0.4, 0.8));
 		}
+
+
+		addOutline(new Color(0.1, 0.1, 0.1));
 
 	}
 	else if (mRockType == RockTypeCloud)

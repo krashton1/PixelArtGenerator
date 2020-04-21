@@ -50,6 +50,7 @@ namespace godot
 		// Debug Pixel Array Functions
 		void addSmile();
 		void addMountain(int height, Color* color0, Color* color1, Color* color2);
+		void addOutline(Color* outlineColor);
 
 		// Accessors / Processors
 		inline void setColorRamp(std::vector<Color*> newRamp) { mColorRamp = newRamp; }
